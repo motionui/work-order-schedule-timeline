@@ -10,3 +10,13 @@ npm install --save-dev prettier
 npm install --save-dev eslint-config-prettier (Turns off ESLint rules that conflict with Prettier formatting.)
 npm install --save-dev husky lint-staged (Add auto format to pre-commit to ensure consistent code.)
 ```
+
+```
+Timescale dropdown
+- chevron color not consistent
+- icon direction (should be pointing up when dropdown menu is opened)
+
+Work order drawer
+- form field labels (sentense case or capitalized)
+- status dropdown seems to have a different chevron icon
+```
