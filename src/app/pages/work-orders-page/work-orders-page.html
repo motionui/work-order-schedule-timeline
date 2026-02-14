@@ -1,0 +1,13 @@
+<div class="work-orders-page">
+  <app-page-header headerLabel="Work Orders" />
+
+  <app-timeline />
+  <!-- <app-timeline (workOrderClick)="openDrawer($event)" /> -->
+
+  <!-- <app-work-order-drawer
+    *ngIf="selectedWorkOrder()"
+    [order]="selectedWorkOrder()!"
+    (close)="closeDrawer()"
+  /> -->
+  <app-work-order-drawer [workOrder]="selectedWorkOrder()" />
+</div>

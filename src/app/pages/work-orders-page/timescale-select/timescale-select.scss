@@ -1,0 +1,86 @@
+.timescale-select {
+  height: 25px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.timescale-trigger {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 6px;
+  border-radius: 5px;
+
+  background: #eef0f6;
+  border: none;
+  cursor: pointer;
+}
+
+.label {
+  color: #687196;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.value {
+  color: #3e40db;
+  font-size: 13px;
+  font-weight: 500;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timescale-menu {
+  margin-top: 8px;
+  padding: 8px 0;
+
+  width: 200px;
+
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.timescale-menu button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 16px;
+
+  font-size: 15px;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timescale-menu button:hover {
+  background: #f5f6fb;
+}
+
+.timescale-menu button.active {
+  color: #4f46e5;
+}
+
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+.chevron-icon {
+  transform: rotate(0deg);
+
+  &.open {
+    transform: rotate(180deg);
+  }
+}

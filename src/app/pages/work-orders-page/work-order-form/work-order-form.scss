@@ -1,0 +1,49 @@
+.work-order-form {
+  padding: 16px 0;
+}
+
+.header {
+  padding: 0 24px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+}
+
+.header-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .title {
+  }
+
+  .description {
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-fields {
+  padding: 0 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    > * {
+      width: 100%;
+    }
+  }
+}
