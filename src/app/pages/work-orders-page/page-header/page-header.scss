@@ -1,0 +1,19 @@
+@use 'typography' as typography;
+@use 'colors' as colors;
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+}
+
+.logo-container {
+  padding: 20px 0;
+}
+
+.header-label {
+  line-height: 34px;
+  font-size: typography.$font-size-xl;
+  font-weight: typography.$font-weight-medium;
+  color: colors.$text-1;
+}

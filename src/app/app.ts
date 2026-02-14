@@ -1,12 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { Timeline } from './pages/work-orders-page/timeline/timeline';
+import { WorkOrdersPage } from './pages/work-orders-page/work-orders-page';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, WorkOrdersPage],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  protected readonly title = signal('work-order-schedule-timeline');
+  protected readonly title = signal('Work Order Schedule Yimeline');
 }

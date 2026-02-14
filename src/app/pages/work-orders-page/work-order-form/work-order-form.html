@@ -1,0 +1,32 @@
+<section class="work-order-form">
+  <form [formGroup]="formGroup" novalidate>
+    <header class="header">
+      <hgroup class="header-group">
+        <h4 class="title">Work Order Details</h4>
+        <span class="description">Specify the dates, name and status for this order</span>
+      </hgroup>
+      <div class="actions">
+        <button type="button" aria-label="Cancel button">Cancel</button>
+        <button type="button" aria-label="Create button">Create</button>
+      </div>
+    </header>
+    <div class="form-fields">
+      <div class="form-field">
+        <label for="name">Work Order Name</label>
+        <input id="name" type="text" formControlName="name" />
+      </div>
+      <div class="form-field">
+        <label for="status">Status</label>
+        <input id="status" type="text" formControlName="status" />
+      </div>
+      <div class="form-field">
+        <label for="endDate">End Date</label>
+        <input id="endDate" type="text" formControlName="endDate" />
+      </div>
+      <div class="form-field">
+        <label for="startDate">Start Date</label>
+        <input id="startDate" type="text" formControlName="startDate" />
+      </div>
+    </div>
+  </form>
+</section>

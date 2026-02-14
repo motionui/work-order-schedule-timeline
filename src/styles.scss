@@ -1,6 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
 
-/* Importing Bootstrap SCSS file. */
+@use 'bootstrap/scss/bootstrap';
 
-// TODO: we might not need this.  commented out for now.
-// @use 'bootstrap/scss/bootstrap';
+@use 'reset';
+@use 'colors' as color;
+@use 'typography' as typography;
+@use 'variables' as variables;
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: typography.$font-family-base;
+  background-color: color.$white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ngb offcanvas width override
+.offcanvas.work-order-drawer {
+  width: variables.$offcanvas-width;
+  max-width: 100%;
+}
