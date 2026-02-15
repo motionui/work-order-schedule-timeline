@@ -40,8 +40,9 @@ export class WorkOrderDrawer {
     this.offcanvasRef = this.offCanvas.open(this.content, {
       position: 'end',
       // in order to maintain style isolation and prevent future accidentially leak
-      // the following selector is placed in the global styles.scss
+      // the following selectors are placed in the global styles.scss
       panelClass: 'work-order-drawer',
+      backdropClass: 'work-order-backdrop',
     });
 
     this.offcanvasRef.result

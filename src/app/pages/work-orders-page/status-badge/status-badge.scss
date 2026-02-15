@@ -1,0 +1,31 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  height: 22px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.blocked {
+  color: #b13600;
+  background-color: #fceeb5;
+}
+
+.complete {
+  color: #08a268;
+  background-color: #e1ffcc;
+}
+
+.in-progress {
+  color: #3e40db;
+  background-color: #d6d8ff;
+}
+
+.open {
+  color: #00b0bf;
+  background-color: #cefbff;
+}

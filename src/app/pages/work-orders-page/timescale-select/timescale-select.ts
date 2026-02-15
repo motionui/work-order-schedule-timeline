@@ -1,22 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, model, signal, ViewChild } from '@angular/core';
-import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem } from '@ng-bootstrap/ng-bootstrap/dropdown';
+import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 export type Timescale = 'hour' | 'day' | 'week' | 'month';
 
 @Component({
   selector: 'app-timescale-select',
   standalone: true,
-  imports: [CommonModule, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownItem],
+  imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './timescale-select.html',
   styleUrl: './timescale-select.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimescaleSelect {
-  @ViewChild('dropdown') dropdown!: NgbDropdown;
-
   selected = model<Timescale>('month');
-  menuOpen = signal(false);
 
   protected options: { label: string; value: Timescale }[] = [
     { label: 'Hour', value: 'hour' },
@@ -25,6 +23,5 @@ export class TimescaleSelect {
     { label: 'Month', value: 'month' },
   ];
 
-  // computed signal
   selectedLabel = computed(() => this.options.find((item) => item.value === this.selected())?.label ?? '');
 }

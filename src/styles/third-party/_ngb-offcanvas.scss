@@ -1,0 +1,19 @@
+@use 'variables' as variables;
+@use 'colors' as colors;
+
+// ngb offcanvas override
+.offcanvas.work-order-drawer {
+  width: variables.$offcanvas-width;
+  max-width: 100%;
+  box-shadow:
+    0 5px 15px 0 rgba(216, 220, 235, 1),
+    0 2.5px 3px -1.5px rgba(200, 207, 233, 1),
+    0 4.5px 5px -1px rgba(216, 220, 235, 1);
+  border-radius: 12px 0px 0px 12px;
+  background-color: colors.$white;
+}
+
+// ngb offcanvas backdrop override
+.offcanvas-backdrop.work-order-backdrop {
+  background-color: #f7f9fc80;
+}

@@ -1,3 +1,7 @@
+@use 'colors' as colors;
+@use 'typography' as typography;
+@use 'variables' as variables;
+
 .work-order-form {
   padding: 16px 0;
 }
@@ -14,12 +18,22 @@
 .header-group {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 5px;
 
   .title {
+    color: colors.$text-2;
+    font-size: 20px;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 1.2;
   }
 
   .description {
+    color: colors.$text-4;
+    font-size: 16px;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 1.2;
   }
 }
 
@@ -27,11 +41,18 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
+}
+
+.separator {
+  margin-top: 16px;
+  width: 100%;
+  height: 1px;
+  border-top: 1px solid rgba(230, 235, 240, 1);
 }
 
 .form-fields {
-  padding: 0 24px;
+  padding: 24px;
 
   display: flex;
   flex-direction: column;
@@ -45,5 +66,29 @@
     > * {
       width: 100%;
     }
+
+    label {
+      color: colors.$text-4;
+      font-size: 14px;
+      font-weight: 500;
+      font-style: normal;
+      line-height: 1.2;
+    }
   }
+}
+
+.cancel-button {
+  color: colors.$text-2;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 1),
+    0 1px 3px 0 rgba(200, 207, 233, 1);
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.submit-button {
+  color: colors.$white;
+  box-shadow:
+    0 0 0 1px rgba(86, 89, 255, 1),
+    0 1px 3px 0 rgba(200, 207, 233, 1);
+  background-color: rgba(86, 89, 255, 1);
 }

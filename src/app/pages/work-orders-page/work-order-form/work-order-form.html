@@ -6,26 +6,70 @@
         <span class="description">Specify the dates, name and status for this order</span>
       </hgroup>
       <div class="actions">
-        <button type="button" aria-label="Cancel button">Cancel</button>
-        <button type="button" aria-label="Create button">Create</button>
+        <button type="buttons" class="wo-button cancel-button" aria-label="Cancel button">Cancel</button>
+        <button type="submit" class="wo-button submit-button" aria-label="Create button">Create</button>
       </div>
     </header>
+
+    <div class="separator"></div>
+
     <div class="form-fields">
+      <span class="badge">Edwin</span>
+
+      <!-- work order name -->
       <div class="form-field">
         <label for="name">Work Order Name</label>
         <input id="name" type="text" formControlName="name" />
       </div>
+
+      <!-- work order status -->
       <div class="form-field">
         <label for="status">Status</label>
-        <input id="status" type="text" formControlName="status" />
+        <ng-select
+          class="status-select"
+          formControlName="status"
+          bindLabel="label"
+          bindValue="value"
+          labelForId="status"
+          [items]="statusOptions"
+          [searchable]="false"
+          [clearable]="false"
+        >
+          <!-- selected value template -->
+          <ng-template ng-label-tmp let-item="item">
+            <app-status-badge [status]="item.value"></app-status-badge>
+          </ng-template>
+          <!-- option template -->
+          <ng-template ng-option-tmp let-item="item" let-index="index">
+            <span [class.active]="item.value === status.value">
+              {{ item.label }}
+            </span>
+          </ng-template>
+        </ng-select>
       </div>
+
+      <!-- end date -->
       <div class="form-field">
         <label for="endDate">End Date</label>
-        <input id="endDate" type="text" formControlName="endDate" />
+        <input
+          placeholder="yyyy-mm-dd"
+          formControlName="endDate"
+          ngbDatepicker
+          #endDateDatePicker="ngbDatepicker"
+          (click)="endDateDatePicker.toggle()"
+        />
       </div>
+
+      <!-- start date -->
       <div class="form-field">
         <label for="startDate">Start Date</label>
-        <input id="startDate" type="text" formControlName="startDate" />
+        <input
+          placeholder="yyyy-mm-dd"
+          formControlName="startDate"
+          ngbDatepicker
+          #startDateDatePicker="ngbDatepicker"
+          (click)="startDateDatePicker.toggle()"
+        />
       </div>
     </div>
   </form>

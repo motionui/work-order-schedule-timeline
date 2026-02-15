@@ -1,4 +1,4 @@
-import { DocumentType } from './document-type.model';
+import { DocumentType } from './doc-type.model';
 
 export interface WorkCenterDocument {
   docId: string;
