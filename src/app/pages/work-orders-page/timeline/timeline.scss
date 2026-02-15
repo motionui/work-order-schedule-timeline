@@ -3,10 +3,6 @@
 @use 'typography' as typography;
 @use 'variables' as variables;
 
-/* ───────────────────────── */
-/* OUTER WRAPPER */
-/* ───────────────────────── */
-
 .timeline {
   padding-top: 26px;
   display: flex;
@@ -14,20 +10,14 @@
   gap: 24px;
 }
 
-/* ───────────────────────── */
-/* 2 × 2 GRID LAYOUT */
-/* ───────────────────────── */
-
+// 2 x 2 grid layout
 .work-orders-timeline {
   display: grid;
   grid-template-columns: variables.$grid-work-center-width 1fr;
   grid-template-rows: variables.$grid-header-row-height auto;
 }
 
-/* ───────────────────────── */
-/* TOP LEFT (Work Center Header) */
-/* ───────────────────────── */
-
+// top left - work center header
 .work-center-header {
   grid-column: 1;
   grid-row: 1;
@@ -45,10 +35,7 @@
   font-weight: 600;
 }
 
-/* ───────────────────────── */
-/* RIGHT COLUMN (Scroll Container) */
-/* ───────────────────────── */
-
+// right column - scroll container
 .right-column {
   grid-column: 2;
   grid-row: 1 / span 2;
@@ -58,10 +45,7 @@
   position: relative;
 }
 
-/* ───────────────────────── */
-/* TOP RIGHT (Timeline Header) */
-/* ───────────────────────── */
-
+// top right - timeline header
 .timeline-header {
   position: sticky;
   top: 0;
@@ -81,10 +65,7 @@
   height: variables.$grid-header-row-height;
 }
 
-/* ───────────────────────── */
-/* BOTTOM LEFT (Work Centers) */
-/* ───────────────────────── */
-
+// bottom left - work centers
 .work-centers {
   grid-column: 1;
   grid-row: 2;
@@ -99,12 +80,25 @@
   flex-direction: column;
 }
 
-/* ───────────────────────── */
-/* BOTTOM RIGHT (Timeline Rows) */
-/* ───────────────────────── */
-
+// bottom right - timeline rows
 .timeline-rows {
   min-width: max-content;
   display: flex;
   flex-direction: column;
+}
+
+// element styles
+.work-center-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  & > span {
+    color: #687196;
+
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    font-weight: 500;
+  }
 }
