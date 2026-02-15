@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 @use 'bootstrap/scss/bootstrap';
+@use 'third-party/ng-select';
+@use 'third-party/ngb-offcanvas';
 
 @use 'reset';
 @use 'colors' as colors;
@@ -69,70 +71,4 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
   -webkit-text-fill-color: #2f3059;
-}
-
-// ngb offcanvas override
-.offcanvas.work-order-drawer {
-  width: variables.$offcanvas-width;
-  max-width: 100%;
-  box-shadow:
-    0 5px 15px 0 rgba(216, 220, 235, 1),
-    0 2.5px 3px -1.5px rgba(200, 207, 233, 1),
-    0 4.5px 5px -1px rgba(216, 220, 235, 1);
-  border-radius: 12px 0px 0px 12px;
-  background-color: colors.$white;
-}
-
-// ngb offcanvas backdrop override
-.offcanvas-backdrop.work-order-backdrop {
-  background-color: #f7f9fc80;
-}
-
-// ng-select status select overrides
-/* ng-select styled like input */
-.ng-select.status-select .ng-select-container {
-  height: 38px;
-  min-height: 38px;
-  padding: 0 12px;
-  border-radius: 5px;
-  background: #fff;
-
-  border: 1px solid rgba(216, 220, 235, 1);
-
-  box-shadow:
-    0 1.5px 3px -1.5px rgba(200, 207, 233, 1),
-    0 1px 0.5px -1px rgba(216, 220, 235, 1);
-
-  outline: none;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-/* ng-select focus state */
-.ng-select.status-select.ng-select-focused .ng-select-container {
-  border: 2px solid rgba(170, 175, 255, 1);
-  box-shadow: none;
-}
-
-.ng-dropdown-panel {
-  background-color: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  z-index: 1100;
-}
-
-.ng-select .ng-value-container,
-.ng-select .ng-value {
-  display: flex;
-  align-items: center;
-}
-
-.ng-arrow {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 5px 4px 0 4px;
-  border-color: #999 transparent transparent transparent;
 }

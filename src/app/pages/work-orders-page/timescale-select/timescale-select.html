@@ -1,18 +1,18 @@
-<div #dropdown="ngbDropdown" class="timescale-select" ngbDropdown (openChange)="menuOpen.set($event)">
-  <button class="timescale-trigger" ngbDropdownToggle>
-    <span class="label">Timescale</span>
-
-    <span class="value">
-      {{ selectedLabel() }}
-      <img class="chevron-icon" [class.open]="menuOpen()" src="images/chevron-down.svg" />
-    </span>
-  </button>
-
-  <div class="timescale-menu" ngbDropdownMenu>
-    @for (option of options; track option.value) {
-      <button ngbDropdownItem (click)="selected.set(option.value)" [class.active]="option.value === selected()">
-        {{ option.label }}
-      </button>
-    }
-  </div>
+<div class="timescale-select">
+  <ng-select
+    bindLabel="label"
+    bindValue="value"
+    appendTo="body"
+    [items]="options"
+    [searchable]="false"
+    [clearable]="false"
+    [(ngModel)]="selected"
+  >
+    <ng-template ng-label-tmp let-item="item">
+      <div class="trigger">
+        <span class="label">Timescale</span>
+        <span class="value">{{ item.label }}</span>
+      </div>
+    </ng-template>
+  </ng-select>
 </div>
