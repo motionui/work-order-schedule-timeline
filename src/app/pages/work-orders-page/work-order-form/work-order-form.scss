@@ -1,3 +1,7 @@
+@use 'colors' as colors;
+@use 'typography' as typography;
+@use 'variables' as variables;
+
 .work-order-form {
   padding: 16px 0;
 }
@@ -14,12 +18,22 @@
 .header-group {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 5px;
 
   .title {
+    color: colors.$text-2;
+    font-size: 20px;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 1.2;
   }
 
   .description {
+    color: colors.$text-4;
+    font-size: 16px;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 1.2;
   }
 }
 
@@ -27,11 +41,18 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
+}
+
+.separator {
+  margin-top: 16px;
+  width: 100%;
+  height: 1px;
+  border-top: 1px solid rgba(230, 235, 240, 1);
 }
 
 .form-fields {
-  padding: 0 24px;
+  padding: 24px;
 
   display: flex;
   flex-direction: column;
@@ -45,5 +66,102 @@
     > * {
       width: 100%;
     }
+
+    label {
+      color: colors.$text-4;
+      font-size: 14px;
+      font-weight: 500;
+      font-style: normal;
+      line-height: 1.2;
+    }
   }
 }
+
+.cancel-button {
+  color: colors.$text-2;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 1),
+    0 1px 3px 0 rgba(200, 207, 233, 1);
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.submit-button {
+  color: colors.$white;
+  box-shadow:
+    0 0 0 1px rgba(86, 89, 255, 1),
+    0 1px 3px 0 rgba(200, 207, 233, 1);
+  background-color: rgba(86, 89, 255, 1);
+}
+
+// ng-select overrides
+/* Container */
+::ng-deep .status-select .ng-select-container {
+  min-height: 44px;
+  border-radius: 10px;
+  border: 1px solid #d9dce8;
+  padding: 4px 8px;
+  box-shadow: none;
+}
+
+/* Focus state */
+::ng-deep .status-select.ng-select-focused .ng-select-container {
+  border-color: #5b5ce2;
+}
+
+/* Hide default arrow spacing issue */
+::ng-deep .status-select .ng-arrow-wrapper {
+  padding-right: 8px;
+}
+
+/* Tag styling */
+.tag {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Status colors */
+.tag.open {
+  background: #e6f7fb;
+  color: #0ea5c6;
+}
+
+.tag.in-progress {
+  background: #ede9fe;
+  color: #5b5ce2;
+}
+
+.tag.complete {
+  background: #e7f7ee;
+  color: #16a34a;
+}
+
+.tag.blocked {
+  background: #fff4e5;
+  color: #f59e0b;
+}
+
+/* Dropdown panel */
+::ng-deep .ng-dropdown-panel {
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 8px 0;
+}
+
+/* Options */
+::ng-deep .ng-option {
+  padding: 10px 16px;
+  font-size: 15px;
+}
+
+::ng-deep .ng-option:hover {
+  background: #f5f6fb;
+}
+
+::ng-deep .ng-option-selected {
+  color: #4f46e5;
+  background: transparent;
+}
+// ng-select overrides

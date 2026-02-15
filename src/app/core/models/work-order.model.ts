@@ -1,6 +1,18 @@
-import { DocumentType } from './document-type.model';
+import { DocumentType } from './doc-type.model';
 
-export type WorkOrderStatus = 'open' | 'in-progress' | 'complete' | 'blocked';
+export const WORK_ORDER_STATUS: Record<string, string> = {
+  open: 'Open',
+  'in-progress': 'In progress',
+  complete: 'Complete',
+  blocked: 'Blocked',
+} as const;
+
+export type WorkOrderStatus = keyof typeof WORK_ORDER_STATUS;
+
+export const WORK_ORDER_STATUS_OPTIONS = Object.entries(WORK_ORDER_STATUS).map(([value, label]) => ({
+  value: value as WorkOrderStatus,
+  label,
+}));
 
 export interface WorkOrderDocument {
   docId: string;
