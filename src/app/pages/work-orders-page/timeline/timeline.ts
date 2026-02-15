@@ -1,5 +1,5 @@
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, signal, ViewChild } from '@angular/core';
 import { Timescale, TimescaleSelect } from '../timescale-select/timescale-select';
 
 @Component({
