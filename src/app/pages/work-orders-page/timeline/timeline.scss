@@ -1,6 +1,110 @@
+@use 'colors' as colors;
+@use 'spacing' as spacing;
+@use 'typography' as typography;
+@use 'variables' as variables;
+
+/* ───────────────────────── */
+/* OUTER WRAPPER */
+/* ───────────────────────── */
+
 .timeline {
   padding-top: 26px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+/* ───────────────────────── */
+/* 2 × 2 GRID LAYOUT */
+/* ───────────────────────── */
+
+.work-orders-timeline {
+  display: grid;
+  grid-template-columns: variables.$grid-work-center-width 1fr;
+  grid-template-rows: variables.$grid-header-row-height auto;
+}
+
+/* ───────────────────────── */
+/* TOP LEFT (Work Center Header) */
+/* ───────────────────────── */
+
+.work-center-header {
+  grid-column: 1;
+  grid-row: 1;
+
+  position: sticky;
+  top: 0;
+  z-index: 30;
+
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 600;
+}
+
+/* ───────────────────────── */
+/* RIGHT COLUMN (Scroll Container) */
+/* ───────────────────────── */
+
+.right-column {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+
+  overflow-x: auto;
+  overflow-y: visible;
+  position: relative;
+}
+
+/* ───────────────────────── */
+/* TOP RIGHT (Timeline Header) */
+/* ───────────────────────── */
+
+.timeline-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.timeline-header-inner {
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+.work-center-header,
+.timeline-header {
+  height: variables.$grid-header-row-height;
+}
+
+/* ───────────────────────── */
+/* BOTTOM LEFT (Work Centers) */
+/* ───────────────────────── */
+
+.work-centers {
+  grid-column: 1;
+  grid-row: 2;
+
+  position: sticky;
+  left: 0;
+  z-index: 10;
+
+  background: #fff;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* ───────────────────────── */
+/* BOTTOM RIGHT (Timeline Rows) */
+/* ───────────────────────── */
+
+.timeline-rows {
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
 }
