@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, model, signal, ViewChild 
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 
-export type Timescale = 'hour' | 'day' | 'week' | 'month';
+export type Timescale = 'day' | 'week' | 'month';
 
 @Component({
   selector: 'app-timescale-select',
@@ -14,10 +14,9 @@ export type Timescale = 'hour' | 'day' | 'week' | 'month';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimescaleSelect {
-  selected = model<Timescale>('month');
+  selected = model<Timescale>('day');
 
   protected options: { label: string; value: Timescale }[] = [
-    { label: 'Hour', value: 'hour' },
     { label: 'Day', value: 'day' },
     { label: 'Week', value: 'week' },
     { label: 'Month', value: 'month' },

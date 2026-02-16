@@ -1,0 +1,33 @@
+@use 'colors' as colors;
+@use 'spacing' as spacing;
+@use 'variables' as variables;
+
+.timeline-header {
+  height: variables.$grid-header-row-height;
+  display: flex;
+  align-items: center;
+  background: colors.$background-default;
+  border-bottom: 1px solid colors.$border-default;
+}
+
+.timeline-header-inner {
+  display: flex;
+  min-width: max-content;
+
+  font-size: 14px;
+  color: #687196;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.timeline-header-cell {
+  min-width: 120px; // adjust later per zoom
+  padding: 0 spacing.$spacing-4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // font-size: 12px;
+  // font-weight: 500;
+  // color: colors.$text-4;
+  //   border-right: 1px solid colors.$separator;
+}

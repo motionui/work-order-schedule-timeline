@@ -15,6 +15,8 @@ npm install --save-dev husky lint-staged (Add auto format to pre-commit to ensur
 Timescale dropdown
 - chevron color not consistent
 - icon direction (should be pointing up when dropdown menu is opened)
+- requirement stated default zoom level is day and video state month
+- this demo will assume day zoom level
 
 Work order drawer
 - form field labels (sentense case or capitalized)

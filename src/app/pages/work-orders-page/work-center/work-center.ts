@@ -3,13 +3,13 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { WorkCenterDocument } from '../../../core/models/work-center.model';
 
 @Component({
-  selector: 'app-work-center-column',
+  selector: 'app-work-center',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './work-center-column.html',
-  styleUrl: './work-center-column.scss',
+  templateUrl: './work-center.html',
+  styleUrl: './work-center.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WorkCenterColumn {
-  workCenters = input<WorkCenterDocument[]>();
+export class WorkCenter {
+  workCenter = input<WorkCenterDocument>();
 }

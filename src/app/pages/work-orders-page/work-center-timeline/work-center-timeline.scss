@@ -1,0 +1,13 @@
+@use 'colors' as colors;
+@use 'spacing' as spacing;
+@use 'typography' as typography;
+@use 'variables' as variables;
+
+.work-center-timeline {
+  background-color: transparent;
+  width: 100%;
+  height: variables.$grid-data-row-height;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}

@@ -9,42 +9,39 @@
     <div class="right-column">
       <div class="timeline-header">
         <div class="timeline-header-inner">
-          date header date header date header date header date header date header date header date header date header date
-          header date header date header date header date header date header date header date header
+          <app-timeline-header [timeScale]="zoomLevel()" />
         </div>
       </div>
 
       <div class="timeline-scroll">
         <div class="timeline-rows">
-          <p>
-            timeline row asfasfasdf asd fasdfasdfasdf asdf asdf asdf asdfasdfasdfasdfasdf asdfasdfasdfasfdasdf
-            asdfasfafasdfasdfasdfasdfasdf asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfas
-            asdfasdfasdfasdfasdfasfasdfasdfasdfasdfasdfasdfa asdfasdfasdf 1
-          </p>
-          <p>
-            timeline row asfasfasdf asd fasdfasdfasdf asdf asdf asdf asdfasdfasdfasdfasdf asdfasdfasdfasfdasdf
-            asdfasfafasdfasdfasdfasdfasdf asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfas
-            asdfasdfasdfasdfasdfasfasdfasdfasdfasdfasdfasdfa asdfasdfasdf 2
-          </p>
-          <p>
-            timeline row asfasfasdf asd fasdfasdfasdf asdf asdf asdf asdfasdfasdfasdfasdf asdfasdfasdfasfdasdf
-            asdfasfafasdfasdfasdfasdfasdf asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfas
-            asdfasdfasdfasdfasdfasfasdfasdfasdfasdfasdfasdfa asdfasdfasdf 3
-          </p>
-          <p>
-            timeline row asfasfasdf asd fasdfasdfasdf asdf asdf asdf asdfasdfasdfasdfasdf asdfasdfasdfasfdasdf
-            asdfasfafasdfasdfasdfasdfasdf asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfas
-            asdfasdfasdfasdfasdfasfasdfasdfasdfasdfasdfasdfa asdfasdfasdf 4
-          </p>
+          @for (group of workOrdersGroupByWorkCenters(); track group.workCenter.docId; let i = $index) {
+            <div
+              class="timeline-row"
+              [class.hovered]="hoveredWorkCenter()?.docId === group.workCenter.docId"
+              (mouseenter)="hoveredWorkCenter.set(group.workCenter)"
+              (mouseleave)="hoveredWorkCenter.set(null)"
+            >
+              @for (order of group.workOrders; track order.docId) {
+                <app-work-center-timeline [workCenter]="group.workCenter" [workOrders]="group.workOrders" />
+              }
+            </div>
+          }
         </div>
       </div>
     </div>
 
     <div class="work-centers">
-      <p>work center 1</p>
-      <p>work center 2</p>
-      <p>work center 3</p>
-      <p>work center 4</p>
+      @for (group of workOrdersGroupByWorkCenters(); track group.workCenter.docId) {
+        <div
+          class="work-center-row"
+          [class.hovered]="hoveredWorkCenter()?.docId === group.workCenter.docId"
+          (mouseenter)="hoveredWorkCenter.set(group.workCenter)"
+          (mouseleave)="hoveredWorkCenter.set(null)"
+        >
+          <app-work-center [workCenter]="group.workCenter" />
+        </div>
+      }
     </div>
   </section>
 </section>

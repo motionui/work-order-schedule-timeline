@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WorkCenterColumn } from './work-center-column';
+import { TimelineHeader } from './timeline-header';
 
-describe('WorkCenterColumn', () => {
-  let component: WorkCenterColumn;
-  let fixture: ComponentFixture<WorkCenterColumn>;
+describe('TimelineHeader', () => {
+  let component: TimelineHeader;
+  let fixture: ComponentFixture<TimelineHeader>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WorkCenterColumn],
+      imports: [TimelineHeader],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(WorkCenterColumn);
+    fixture = TestBed.createComponent(TimelineHeader);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

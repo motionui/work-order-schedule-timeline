@@ -15,6 +15,8 @@
   display: grid;
   grid-template-columns: variables.$grid-work-center-width 1fr;
   grid-template-rows: variables.$grid-header-row-height auto;
+  border-top: 1px solid #e5e7eb;
+  border-left: 1px solid #e5e7eb;
 }
 
 // top left - work center header
@@ -27,6 +29,8 @@
   z-index: 30;
 
   background: #fff;
+
+  // border-top: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
 
   display: flex;
@@ -52,6 +56,7 @@
   z-index: 20;
 
   background: #fff;
+  border-top: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
 }
 
@@ -62,7 +67,10 @@
 
 .work-center-header,
 .timeline-header {
+  // box-sizing: border-box;
   height: variables.$grid-header-row-height;
+  display: flex;
+  align-items: center;
 }
 
 // bottom left - work centers
@@ -78,6 +86,7 @@
 
   display: flex;
   flex-direction: column;
+  // min-height: 100vh;
 }
 
 // bottom right - timeline rows
@@ -85,6 +94,7 @@
   min-width: max-content;
   display: flex;
   flex-direction: column;
+  background-color: #f7f9fcff;
 }
 
 // element styles
@@ -101,4 +111,30 @@
     line-height: 1.2;
     font-weight: 500;
   }
+}
+
+.timeline-row,
+.work-center-row {
+  display: flex;
+  align-items: center;
+  min-height: variables.$grid-data-row-height;
+  padding: 0 16px;
+  box-sizing: border-box;
+  height: variables.$grid-data-row-height;
+}
+
+.timeline-row {
+}
+
+.work-center-row {
+  box-shadow: inset 0 -1px 0 colors.$border-default;
+  border-right: 1px solid colors.$border-default;
+}
+
+.work-center-row.hovered {
+  background-color: #f5f7ff;
+}
+
+.timeline-row.hovered {
+  background-color: #eef0ff;
 }
