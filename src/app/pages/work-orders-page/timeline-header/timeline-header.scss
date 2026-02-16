@@ -21,13 +21,9 @@
 }
 
 .timeline-header-cell {
-  min-width: 120px; // adjust later per zoom
+  min-width: variables.$work-order-timeline-cell-width;
   padding: 0 spacing.$spacing-4;
   display: flex;
   align-items: center;
   justify-content: center;
-  // font-size: 12px;
-  // font-weight: 500;
-  // color: colors.$text-4;
-  //   border-right: 1px solid colors.$separator;
 }

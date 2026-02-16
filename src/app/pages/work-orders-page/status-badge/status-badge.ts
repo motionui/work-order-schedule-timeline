@@ -12,5 +12,6 @@ import { WORK_ORDER_STATUS, WorkOrderStatus } from '../../../core/models/work-or
 })
 export class StatusBadge {
   status = input<WorkOrderStatus>('open');
+
   statusLabel = computed(() => WORK_ORDER_STATUS[this.status()]);
 }

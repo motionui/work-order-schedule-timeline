@@ -9,13 +9,13 @@
     <div class="right-column">
       <div class="timeline-header">
         <div class="timeline-header-inner">
-          <app-timeline-header [timeScale]="zoomLevel()" />
+          <app-timeline-header [timeScale]="zoomLevel()" [dateRange]="visibleDateRange()" />
         </div>
       </div>
 
       <div class="timeline-scroll">
         <div class="timeline-rows">
-          @for (group of workOrdersGroupByWorkCenters(); track group.workCenter.docId; let i = $index) {
+          @for (group of workOrdersGroupByWorkCenters(); track group.workCenter.docId) {
             <div
               class="timeline-row"
               [class.hovered]="hoveredWorkCenter()?.docId === group.workCenter.docId"
@@ -23,7 +23,14 @@
               (mouseleave)="hoveredWorkCenter.set(null)"
             >
               @for (order of group.workOrders; track order.docId) {
-                <app-work-center-timeline [workCenter]="group.workCenter" [workOrders]="group.workOrders" />
+                <app-work-center-timeline
+                  [timeScale]="zoomLevel()"
+                  [dateRange]="visibleDateRange()"
+                  [workCenter]="group.workCenter"
+                  [workOrders]="group.workOrders"
+                  (edit)="onEdit($event)"
+                  (delete)="onDelete($event)"
+                />
               }
             </div>
           }

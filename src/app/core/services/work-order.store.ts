@@ -61,9 +61,9 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: '',
       workCenterId: 'WORKCENTER-01',
-      status: 'open',
-      startDate: '2025-01-15',
-      endDate: '',
+      status: 'in-progress',
+      startDate: '2026-02-01',
+      endDate: '2026-02-02',
     },
   },
   {
@@ -72,9 +72,9 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: '',
       workCenterId: 'WORKCENTER-01',
-      status: 'open',
-      startDate: '2025-01-17',
-      endDate: '',
+      status: 'in-progress',
+      startDate: '2026-02-05',
+      endDate: '2026-02-07',
     },
   },
   {
@@ -83,9 +83,9 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: '',
       workCenterId: 'WORKCENTER-01',
-      status: 'open',
-      startDate: '2025-01-20',
-      endDate: '',
+      status: 'in-progress',
+      startDate: '2026-02-08',
+      endDate: '2026-02-09',
     },
   },
   {
@@ -94,9 +94,9 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: '',
       workCenterId: 'WORKCENTER-01',
-      status: 'open',
-      startDate: '2025-01-23',
-      endDate: '',
+      status: 'in-progress',
+      startDate: '2026-02-11',
+      endDate: '2026-02-15',
     },
   },
   {
@@ -105,9 +105,9 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: '',
       workCenterId: 'WORKCENTER-01',
-      status: 'open',
-      startDate: '2025-01-25',
-      endDate: '',
+      status: 'in-progress',
+      startDate: '2026-02-16',
+      endDate: '2026-02-17',
     },
   },
   {
@@ -116,9 +116,9 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: '',
       workCenterId: 'WORKCENTER-01',
-      status: 'open',
-      startDate: '2025-01-28',
-      endDate: '',
+      status: 'in-progress',
+      startDate: '2026-02-19',
+      endDate: '2026-02-20',
     },
   },
   {
@@ -127,9 +127,9 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: '',
       workCenterId: 'WORKCENTER-01',
-      status: 'open',
-      startDate: '2025-01-30',
-      endDate: '',
+      status: 'in-progress',
+      startDate: '2026-02-21',
+      endDate: '2026-02-22',
     },
   },
   {
@@ -138,9 +138,9 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: '',
       workCenterId: 'WORKCENTER-01',
-      status: 'open',
-      startDate: '2025-02-02',
-      endDate: '',
+      status: 'in-progress',
+      startDate: '2026-02-24',
+      endDate: '2026-02-25',
     },
   },
 ];

@@ -1,7 +1,7 @@
 <div class="work-orders-page">
   <app-page-header headerLabel="Work Orders" />
 
-  <app-timeline />
+  <app-timeline (edit)="selectedWorkOrder.set($event)" (delete)="onDelete($event)" />
   <!-- <app-timeline (workOrderClick)="openDrawer($event)" /> -->
 
   <!-- <app-work-order-drawer

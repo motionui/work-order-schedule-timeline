@@ -1,3 +1,17 @@
-<div class="work-center-timeline">
-  {{ workOrders() }}
+<div class="work-center-timeline" (click)="onTimelineClick($event)">
+  @for (item of positionedOrders(); track item.order.docId) {
+    <div
+      class="work-order-wrapper"
+      [style.left.px]="item.left"
+      [style.width.px]="item.width"
+      (click)="$event.stopPropagation()"
+    >
+      <app-work-order
+        [workCenter]="workCenter()"
+        [workOrder]="item.order"
+        (edit)="onEdit($event)"
+        (delete)="onDelete($event)"
+      />
+    </div>
+  }
 </div>
