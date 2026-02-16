@@ -24,8 +24,8 @@ export interface DateRange {
 export class Timeline implements OnInit {
   private readonly store = inject(WorkOrderStore);
 
-  edit = output<WorkOrderDocument>();
-  delete = output<WorkOrderDocument>();
+  // edit = output<WorkOrderDocument>();
+  // delete = output<WorkOrderDocument>();
 
   // -----------------------------
   // ZOOM
@@ -99,11 +99,11 @@ export class Timeline implements OnInit {
     return this.startOfDay(d);
   }
 
-  onEdit(order: WorkOrderDocument) {
-    this.edit.emit(order);
-  }
+  // onEdit(order: WorkOrderDocument) {
+  //   this.edit.emit(order);
+  // }
 
-  onDelete(order: WorkOrderDocument) {
-    this.delete.emit(order);
-  }
+  // onDelete(order: WorkOrderDocument) {
+  //   this.delete.emit(order);
+  // }
 }

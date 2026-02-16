@@ -1,10 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { WorkOrderDocument } from '../../../core/models/work-order.model';
 import { WorkCenterDocument } from '../../../core/models/work-center.model';
 import { DateRange } from '../timeline/timeline';
 import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrder } from '../work-order/work-order';
+import { WorkOrderDrawerService } from '../../../core/services/work-order-drawer.service';
+import { WorkOrderStore } from '../../../core/services/work-order.store';
+
+const TIMESCALE_UNIT_WIDTH = 150;
+const GUTTER = 8;
 
 @Component({
   selector: 'app-work-center-timeline',
@@ -15,15 +20,13 @@ import { WorkOrder } from '../work-order/work-order';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkCenterTimeline {
+  private workOrderDrawerService = inject(WorkOrderDrawerService);
+  private workOrderStore = inject(WorkOrderStore);
+
   timeScale = input<Timescale>('day');
   dateRange = input.required<DateRange>();
   workCenter = input.required<WorkCenterDocument>();
   workOrders = input.required<WorkOrderDocument[]>();
-
-  edit = output<WorkOrderDocument>();
-  delete = output<WorkOrderDocument>();
-
-  private readonly DAY_WIDTH = 120;
 
   visibleOrders = computed(() => {
     const { start, end } = this.dateRange();
@@ -44,9 +47,8 @@ export class WorkCenterTimeline {
       const clampedStart = orderStart < range.start ? range.start : orderStart;
       const clampedEnd = orderEnd > range.end ? range.end : orderEnd;
 
-      const left = this.daysBetween(range.start, clampedStart) * this.DAY_WIDTH;
-
-      const width = (this.daysBetween(clampedStart, clampedEnd) + 1) * this.DAY_WIDTH;
+      const left = this.daysBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH + GUTTER / 2;
+      const width = (this.daysBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH - GUTTER;
 
       return { order, left, width };
     });
@@ -57,7 +59,7 @@ export class WorkCenterTimeline {
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const x = event.clientX - rect.left;
 
-    const dayIndex = Math.floor(x / this.DAY_WIDTH);
+    const dayIndex = Math.floor(x / TIMESCALE_UNIT_WIDTH);
     const clickedDate = this.addDays(range.start, dayIndex);
 
     console.log('Create work order on:', clickedDate);
@@ -76,10 +78,10 @@ export class WorkCenterTimeline {
   }
 
   onEdit(workOrder: WorkOrderDocument) {
-    this.edit.emit(workOrder);
+    this.workOrderDrawerService.selectedWorkOrder.set(workOrder);
   }
 
   onDelete(workOrder: WorkOrderDocument) {
-    this.delete.emit(workOrder);
+    this.workOrderStore.delete(workOrder);
   }
 }

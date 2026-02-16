@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { Timeline } from './timeline/timeline';
 import { WorkOrderDrawer } from './work-order-drawer/work-order-drawer';
 import { WorkOrderDocument } from '../../core/models/work-order.model';
+import { WorkOrderDrawerService } from '../../core/services/work-order-drawer.service';
 
 @Component({
   selector: 'app-work-orders-page',
@@ -16,6 +17,7 @@ import { WorkOrderDocument } from '../../core/models/work-order.model';
 })
 export class WorkOrdersPage implements OnInit {
   private titleService = inject(Title);
+  protected workOrderDrawerService = inject(WorkOrderDrawerService);
 
   selectedWorkOrder = signal<WorkOrderDocument | undefined>(undefined);
 

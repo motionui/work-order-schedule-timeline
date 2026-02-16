@@ -1,12 +1,11 @@
-<div class="work-order">
+<div class="work-order" [ngClass]="workOrder()?.data?.status">
   <span class="work-center">{{ workCenter()?.data?.name }}</span>
   <div class="status">
     <app-status-badge [status]="workOrder()?.data?.status || ''" />
-    <div ngbDropdown class="d-inline-block">
+    <div ngbDropdown>
       <button class="three-dots-button" ngbDropdownToggle>
-        <img src="images/three-dots.svg" class="action-icon" />
+        <img src="images/three-dots.svg" class="icon" />
       </button>
-
       <div ngbDropdownMenu>
         <button ngbDropdownItem (click)="onClickEdit()">Edit</button>
         <button ngbDropdownItem (click)="onClickDelete()">Delete</button>

@@ -4,14 +4,11 @@
 @use 'variables' as variables;
 
 .work-order {
-  border: 1px green solid;
   height: 38px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 0 0 1px rgba(222, 224, 255, 1);
   border-radius: 8px;
-  background-color: rgba(237, 238, 255, 1);
   padding: 10px 8px;
 }
 
@@ -29,8 +26,15 @@
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-  background-color: rgba(216, 220, 235, 1);
+  background-color: #f1f3f8;
   border: none;
+
+  &:hover {
+    background-color: #d8dceb;
+  }
+  .icon {
+    padding-top: 1px;
+  }
 }
 
 .status {
@@ -42,4 +46,24 @@
 
 .dropdown-toggle::after {
   display: none;
+}
+
+.open {
+  box-shadow: 0 0 0 1px colors.$status-open-parent-border-color;
+  background-color: colors.$status-open-parent-background-color;
+}
+
+.in-progress {
+  box-shadow: 0 0 0 1px colors.$status-in-progress-parent-border-color;
+  background-color: colors.$status-in-progress-parent-background-color;
+}
+
+.complete {
+  box-shadow: 0 0 0 1px colors.$status-complete-parent-border-color;
+  background-color: colors.$status-complete-parent-background-color;
+}
+
+.blocked {
+  box-shadow: 0 0 0 1px colors.$status-blocked-parent-border-color;
+  background-color: colors.$status-blocked-parent-background-color;
 }
