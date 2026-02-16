@@ -118,16 +118,17 @@
   align-items: center;
   min-height: variables.$grid-data-row-height;
   padding: 0 16px;
-  box-sizing: border-box;
+  box-sizing: content-box;
   height: variables.$grid-data-row-height;
 }
 
-.timeline-row {
+.work-center-row {
+  border-bottom: 1px solid colors.$border-default;
+  border-right: 1px solid colors.$border-default;
 }
 
-.work-center-row {
-  box-shadow: inset 0 -1px 0 colors.$border-default;
-  border-right: 1px solid colors.$border-default;
+.timeline-row {
+  border-bottom: 1px solid transparent;
 }
 
 .work-center-row.hovered {
@@ -136,4 +137,5 @@
 
 .timeline-row.hovered {
   background-color: #eef0ff;
+  border-bottom-color: #eef0ff;
 }
