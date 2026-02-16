@@ -1,4 +1,54 @@
 <section class="timeline">
   <app-timescale-select [(selected)]="zoomLevel"></app-timescale-select>
-  <span>{{ zoomLevel() }}</span>
+
+  <section class="work-orders-timeline">
+    <div class="work-center-header">
+      <span>Work Center</span>
+    </div>
+
+    <div class="right-column">
+      <div class="timeline-header">
+        <div class="timeline-header-inner">
+          <app-timeline-header [timeScale]="zoomLevel()" [dateRange]="visibleDateRange()" />
+        </div>
+      </div>
+
+      <div class="timeline-scroll">
+        <div class="timeline-rows">
+          @for (group of workOrdersGroupByWorkCenters(); track group.workCenter.docId) {
+            <div
+              class="timeline-row"
+              [class.hovered]="hoveredWorkCenter()?.docId === group.workCenter.docId"
+              (mouseenter)="hoveredWorkCenter.set(group.workCenter)"
+              (mouseleave)="hoveredWorkCenter.set(null)"
+            >
+              @for (order of group.workOrders; track order.docId) {
+                <app-work-center-timeline
+                  [timeScale]="zoomLevel()"
+                  [dateRange]="visibleDateRange()"
+                  [workCenter]="group.workCenter"
+                  [workOrders]="group.workOrders"
+                  (edit)="onEdit($event)"
+                  (delete)="onDelete($event)"
+                />
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="work-centers">
+      @for (group of workOrdersGroupByWorkCenters(); track group.workCenter.docId) {
+        <div
+          class="work-center-row"
+          [class.hovered]="hoveredWorkCenter()?.docId === group.workCenter.docId"
+          (mouseenter)="hoveredWorkCenter.set(group.workCenter)"
+          (mouseleave)="hoveredWorkCenter.set(null)"
+        >
+          <app-work-center [workCenter]="group.workCenter" />
+        </div>
+      }
+    </div>
+  </section>
 </section>

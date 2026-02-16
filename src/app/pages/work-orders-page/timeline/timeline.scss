@@ -1,6 +1,146 @@
+@use 'colors' as colors;
+@use 'spacing' as spacing;
+@use 'typography' as typography;
+@use 'variables' as variables;
+
 .timeline {
   padding-top: 26px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+// 2 x 2 grid layout
+.work-orders-timeline {
+  display: grid;
+  grid-template-columns: variables.$grid-work-center-width 1fr;
+  grid-template-rows: variables.$grid-header-row-height auto;
+  border-top: 1px solid #e5e7eb;
+  border-left: 1px solid #e5e7eb;
+}
+
+// top left - work center header
+.work-center-header {
+  grid-column: 1;
+  grid-row: 1;
+
+  position: sticky;
+  top: 0;
+  z-index: 30;
+
+  background: #fff;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 600;
+}
+
+// right column - scroll container
+.right-column {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+
+  overflow-x: auto;
+  overflow-y: visible;
+  position: relative;
+}
+
+// top right - timeline header
+.timeline-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.timeline-header-inner {
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+.work-center-header,
+.timeline-header {
+  // box-sizing: border-box;
+  height: variables.$grid-header-row-height;
+  display: flex;
+  align-items: center;
+}
+
+// bottom left - work centers
+.work-centers {
+  grid-column: 1;
+  grid-row: 2;
+
+  position: sticky;
+  left: 0;
+  z-index: 10;
+
+  background: #fff;
+
+  display: flex;
+  flex-direction: column;
+}
+
+// bottom right - timeline rows
+.timeline-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1;
+  background-color: #f7f9fc;
+}
+
+.timeline-rows {
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
+}
+
+// element styles
+.work-center-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  & > span {
+    color: #687196;
+
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+}
+
+.timeline-row,
+.work-center-row {
+  display: flex;
+  align-items: center;
+  min-height: variables.$grid-data-row-height;
+  padding: 0 16px;
+  box-sizing: content-box;
+  height: variables.$grid-data-row-height;
+}
+
+.work-center-row {
+  border-bottom: 1px solid colors.$border-default;
+  border-right: 1px solid colors.$border-default;
+}
+
+.timeline-row {
+  border-bottom: 1px solid transparent;
+}
+
+.work-center-row.hovered {
+  background-color: #f5f7ff;
+}
+
+.timeline-row.hovered {
+  background-color: #eef0ff;
+  border-bottom-color: #eef0ff;
 }

@@ -17,19 +17,11 @@ import { WorkOrderDocument } from '../../core/models/work-order.model';
 export class WorkOrdersPage implements OnInit {
   private titleService = inject(Title);
 
-  selectedWorkOrder = signal<WorkOrderDocument>({
-    docId: 'Edwin',
-    docType: 'workOrder',
-    data: {
-      name: 'Edwin',
-      workCenterId: 'Condi',
-      status: 'complete',
-      startDate: '2025-01-01',
-      endDate: '2025-01-20',
-    },
-  });
+  selectedWorkOrder = signal<WorkOrderDocument | undefined>(undefined);
 
   ngOnInit(): void {
     this.titleService.setTitle('Naologic: Work Orders');
   }
+
+  onDelete(workOrder: WorkOrderDocument): void {}
 }

@@ -1,0 +1,13 @@
+@use 'variables' as variables;
+
+.work-center-timeline {
+  position: relative;
+  width: 100%;
+  height: variables.$grid-data-row-height;
+}
+
+.work-order-wrapper {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
