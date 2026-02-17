@@ -61,9 +61,9 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: '',
       workCenterId: 'WORKCENTER-01',
-      status: 'in-progress',
-      startDate: '2026-02-01',
-      endDate: '2026-02-02',
+      status: 'open',
+      startDate: '2026-02-03',
+      endDate: '2026-02-04',
     },
   },
   {
@@ -74,7 +74,7 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
       workCenterId: 'WORKCENTER-01',
       status: 'in-progress',
       startDate: '2026-02-05',
-      endDate: '2026-02-07',
+      endDate: '2026-02-06',
     },
   },
   {
@@ -83,9 +83,9 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: '',
       workCenterId: 'WORKCENTER-01',
-      status: 'in-progress',
-      startDate: '2026-02-08',
-      endDate: '2026-02-09',
+      status: 'complete',
+      startDate: '2026-02-07',
+      endDate: '2026-02-08',
     },
   },
   {
@@ -94,9 +94,9 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: '',
       workCenterId: 'WORKCENTER-01',
-      status: 'in-progress',
-      startDate: '2026-02-11',
-      endDate: '2026-02-15',
+      status: 'blocked',
+      startDate: '2026-02-09',
+      endDate: '2026-02-10',
     },
   },
   {
@@ -165,8 +165,8 @@ export class WorkOrderStore {
     );
   }
 
-  delete(docId: string): void {
-    this.workOrders.update((workOrders) => workOrders.filter((workOrder) => workOrder.docId !== docId));
+  delete(workOrder: WorkOrderDocument): void {
+    this.workOrders.update((workOrders) => workOrders.filter((item) => item.docId !== workOrder.docId));
   }
 
   loadSampleData(): void {

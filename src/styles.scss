@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-
 @use 'bootstrap/scss/bootstrap';
+
 @use 'third-party/ng-select';
 @use 'third-party/ngb-offcanvas';
 
@@ -72,4 +72,17 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
   -webkit-text-fill-color: #2f3059;
+}
+
+.hide-scrollbar {
+  /* Hide scrollbar for Chrome, Safari, Edge */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for Firefox */
+  scrollbar-width: none;
+
+  /* Hide scrollbar for IE */
+  -ms-overflow-style: none;
 }

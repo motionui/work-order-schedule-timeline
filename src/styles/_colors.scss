@@ -1,14 +1,34 @@
 $white: #fff;
+
 $text-1: #030929;
 $text-2: #2f3059;
 $text-4: #687196;
-
-$status-open: #2563eb;
-$status-in-progress: #6366f1;
-$status-complete: #16a34a;
-$status-blocked: #f59e0b;
 
 $background-default: #ffffff;
 $border-default: #e5e7eb;
 
 $separator: #e6ebf0;
+
+// work order status
+$status-open-color: #00b0bf;
+$status-open-background-color: #e4fdff;
+// place holder colors - missing in sketch
+$status-open-parent-background-color: #f1feff;
+$status-open-parent-border-color: #ccf6fa;
+
+$status-in-progress-color: #3e40db;
+$status-in-progress-background-color: #d6d8ff;
+$status-in-progress-parent-background-color: #edeeff;
+$status-in-progress-parent-border-color: #dee0ff;
+
+$status-complete-color: #08a268;
+$status-complete-background-color: #e1ffcc;
+$status-complete-parent-background-color: #f8fff3;
+$status-complete-parent-border-color: #d1fab3;
+
+$status-blocked-color: #b13600;
+$status-blocked-background-color: #fceeb5;
+$status-blocked-parent-background-color: #fffcf1;
+$status-blocked-parent-border-color: #fff5cf;
+
+$dropdown-selected-color: #3e40db;

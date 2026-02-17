@@ -1,3 +1,7 @@
+@use 'colors' as colors;
+@use 'typography' as typography;
+@use 'variables' as variables;
+
 // ng-select overrides
 .ng-select .ng-select-container {
   height: 38px;
@@ -6,27 +10,14 @@
   border-radius: 5px;
   background: #fff;
 
-  border: 1px solid rgba(216, 220, 235, 1);
+  border: 1px solid #e5e7eb;
+  box-sizing: border-box;
 
-  box-shadow:
-    0 1.5px 3px -1.5px rgba(200, 207, 233, 1),
-    0 1px 0.5px -1px rgba(216, 220, 235, 1);
-
-  outline: none;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-// ng-select focus state
-.ng-select.ng-select-focused .ng-select-container {
-  border: 2px solid rgba(170, 175, 255, 1);
-  box-shadow: none;
+  box-shadow: 1px 2.5px 3px -1.5px rgba(200, 207, 233, 1);
 }
 
 .ng-dropdown-panel {
   background-color: #ffffff;
-  border-radius: 12px;
   border: 1px solid #e5e7eb;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   z-index: 1100;
@@ -38,45 +29,44 @@
   align-items: center;
 }
 
-// hide the default arrow
-.ng-select .ng-arrow {
-  display: none;
-}
-
-// add custom chevron
-.ng-select .ng-arrow-wrapper {
-  width: 20px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: url('/images/chevron-down.svg') no-repeat center;
-  background-size: 12px;
-  transform-origin: center;
-}
-
-.ng-select.ng-select-opened .ng-arrow-wrapper {
-  transform: rotate(180deg);
-}
-
 .ng-dropdown-panel {
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  padding: 8px 0;
+  margin-top: 5px;
+
+  box-shadow:
+    0 0 0 1px rgba(104, 113, 150, 0.1),
+    0 2.5px 3px -1.5px rgba(200, 207, 233, 1),
+    0 4.5px 5px -1px rgba(216, 220, 235, 1);
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.ng-dropdown-panel-items {
+  padding: 12px 0;
 }
 
 .ng-option {
-  padding: 10px 16px;
-  font-size: 15px;
-}
-
-.ng-option:hover {
-  background: #f5f6fb;
+  padding: 5px 12px;
+  height: 28px;
+  color: colors.$text-2;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .ng-option-selected {
-  color: #4f46e5;
-  background: transparent;
+  color: colors.$dropdown-selected-color;
+}
+
+// since we do not include the ng-select css
+// create the ng-select dropdown indicator
+.ng-select .ng-arrow {
+  border-color: #687196 transparent transparent;
+  border-style: solid;
+  border-width: 5px 5px 0 5px;
+  width: 0;
+  height: 0;
+}
+
+.ng-select.ng-select-opened .ng-arrow {
+  border-color: transparent transparent #687196 transparent;
+  border-width: 0 5px 5px 5px;
 }

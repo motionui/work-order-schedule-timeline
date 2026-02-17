@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, TemplateRef,
 import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap/offcanvas';
 import { WorkOrderDocument } from '../../../core/models/work-order.model';
 import { WorkOrderForm } from '../work-order-form/work-order-form';
+import { WorkOrderDrawerService } from '../../../core/services/work-order-drawer.service';
 
 @Component({
   selector: 'app-work-order-drawer',
@@ -14,11 +15,12 @@ import { WorkOrderForm } from '../work-order-form/work-order-form';
 })
 export class WorkOrderDrawer {
   private offCanvas = inject(NgbOffcanvas);
+  private workOrderDrawerService = inject(WorkOrderDrawerService);
 
   @ViewChild('content', { static: true })
   content!: TemplateRef<any>;
 
-  workOrder = input<WorkOrderDocument>();
+  workOrder = input<WorkOrderDocument | null>(null);
   private offcanvasRef?: NgbOffcanvasRef;
 
   constructor() {
@@ -50,6 +52,7 @@ export class WorkOrderDrawer {
       .catch(() => {})
       .finally(() => {
         this.offcanvasRef = undefined;
+        this.workOrderDrawerService.selectedWorkOrder.set(null);
       });
   }
 }
