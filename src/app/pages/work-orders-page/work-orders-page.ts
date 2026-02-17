@@ -19,7 +19,7 @@ export class WorkOrdersPage implements OnInit {
   private titleService = inject(Title);
   protected workOrderDrawerService = inject(WorkOrderDrawerService);
 
-  selectedWorkOrder = signal<WorkOrderDocument | undefined>(undefined);
+  // selectedWorkOrder = signal<WorkOrderDocument | undefined>(undefined);
 
   ngOnInit(): void {
     this.titleService.setTitle('Naologic: Work Orders');

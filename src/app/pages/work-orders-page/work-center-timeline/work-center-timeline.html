@@ -6,12 +6,7 @@
       [style.width.px]="item.width"
       (click)="$event.stopPropagation()"
     >
-      <app-work-order
-        [workCenter]="workCenter()"
-        [workOrder]="item.order"
-        (edit)="onEdit($event)"
-        (delete)="onDelete($event)"
-      />
+      <app-work-order [workOrder]="item.order" (edit)="onEdit($event)" (delete)="onDelete($event)" />
     </div>
   }
 </div>

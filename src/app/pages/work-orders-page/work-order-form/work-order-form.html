@@ -7,7 +7,9 @@
       </hgroup>
       <div class="actions">
         <button type="buttons" class="wo-button cancel-button" aria-label="Cancel button">Cancel</button>
-        <button type="submit" class="wo-button submit-button" aria-label="Create button">Create</button>
+        <button type="submit" class="wo-button submit-button" aria-label="Create button">
+          {{ formData()?.mode === 'create' ? 'Create' : 'Edit' }}
+        </button>
       </div>
     </header>
 
@@ -50,7 +52,7 @@
       <div class="form-field">
         <label for="endDate">End Date</label>
         <input
-          placeholder="yyyy-mm-dd"
+          placeholder="mm.dd.yyyy"
           formControlName="endDate"
           ngbDatepicker
           #endDateDatePicker="ngbDatepicker"
@@ -62,7 +64,7 @@
       <div class="form-field">
         <label for="startDate">Start Date</label>
         <input
-          placeholder="yyyy-mm-dd"
+          placeholder="mm.dd.yyyy"
           formControlName="startDate"
           ngbDatepicker
           #startDateDatePicker="ngbDatepicker"

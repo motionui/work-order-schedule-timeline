@@ -25,7 +25,6 @@ export class WorkCenterTimeline {
 
   timeScale = input<Timescale>('day');
   dateRange = input.required<DateRange>();
-  workCenter = input.required<WorkCenterDocument>();
   workOrders = input.required<WorkOrderDocument[]>();
 
   visibleOrders = computed(() => {

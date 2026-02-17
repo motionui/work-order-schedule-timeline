@@ -1,30 +1,53 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { WORK_ORDER_STATUS_OPTIONS, WorkOrderStatus } from '../../../core/models/work-order.model';
+import { WORK_ORDER_STATUS_OPTIONS, WorkOrderDocument, WorkOrderStatus } from '../../../core/models/work-order.model';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { StatusBadge } from '../status-badge/status-badge';
-import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { DataPickerDateFormatService } from '../../../core/services/data-picker-date-format.service';
+
+// ui model for passing data into the form
+export interface WorkOrderFormData {
+  mode: 'create' | 'edit';
+  workOrder: WorkOrderDocument;
+  currentWorkOrders: WorkOrderDocument[];
+}
 
 @Component({
   selector: 'app-work-order-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, NgSelectModule, StatusBadge, NgbDatepickerModule],
+  providers: [{ provide: NgbDateParserFormatter, useClass: DataPickerDateFormatService }],
   templateUrl: './work-order-form.html',
   styleUrl: './work-order-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkOrderForm {
-  workOrderStatus: WorkOrderStatus = 'open';
+  formData = input<WorkOrderFormData | null>();
 
   protected statusOptions = WORK_ORDER_STATUS_OPTIONS;
 
-  formGroup: FormGroup = new FormGroup({
+  protected formGroup: FormGroup = new FormGroup({
     name: new FormControl<string>('', { nonNullable: true }),
     status: new FormControl<WorkOrderStatus>('open', { nonNullable: true }),
     startDate: new FormControl<string>('', { nonNullable: true }),
     endDate: new FormControl<string>('', { nonNullable: true }),
   });
+
+  constructor() {
+    effect(() => {
+      const workOrderData = this.formData()?.workOrder;
+      if (workOrderData) {
+        this.formGroup.patchValue({
+          name: workOrderData.data.name,
+          status: workOrderData.data.status,
+          startDate: workOrderData.data.startDate,
+          endDate: workOrderData.data.endDate,
+        });
+      }
+    });
+  }
 
   get name(): FormControl {
     return this.formGroup.get('name') as FormControl;
@@ -42,4 +65,3 @@ export class WorkOrderForm {
     return this.formGroup.get('endDate') as FormControl;
   }
 }
-// Use a mode flag: `'create' | 'edit'`

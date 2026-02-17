@@ -14,7 +14,6 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkOrder {
-  workCenter = input<WorkCenterDocument>();
   workOrder = input<WorkOrderDocument>();
 
   edit = output<WorkOrderDocument>();

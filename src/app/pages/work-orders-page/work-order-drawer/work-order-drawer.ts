@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild, computed, effect, inject } from '@angular/core';
 import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap/offcanvas';
-import { WorkOrderDocument } from '../../../core/models/work-order.model';
-import { WorkOrderForm } from '../work-order-form/work-order-form';
+
 import { WorkOrderDrawerService } from '../../../core/services/work-order-drawer.service';
+import { WorkOrderStore } from '../../../core/services/work-order.store';
+import { WorkOrderForm, WorkOrderFormData } from '../work-order-form/work-order-form';
 
 @Component({
   selector: 'app-work-order-drawer',
@@ -14,24 +15,36 @@ import { WorkOrderDrawerService } from '../../../core/services/work-order-drawer
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkOrderDrawer {
-  private offCanvas = inject(NgbOffcanvas);
-  private workOrderDrawerService = inject(WorkOrderDrawerService);
+  private readonly offCanvas = inject(NgbOffcanvas);
+  private readonly drawerService = inject(WorkOrderDrawerService);
+  private readonly store = inject(WorkOrderStore);
 
-  @ViewChild('content', { static: true })
-  content!: TemplateRef<any>;
+  @ViewChild('content', { static: true }) content!: TemplateRef<any>;
 
-  workOrder = input<WorkOrderDocument | null>(null);
   private offcanvasRef?: NgbOffcanvasRef;
+
+  readonly formData = computed<WorkOrderFormData | null>(() => {
+    const workOrder = this.drawerService.selectedWorkOrder();
+    if (!workOrder) return null;
+
+    return {
+      mode: 'edit',
+      workOrder,
+      currentWorkOrders: this.store.workOrders$(),
+    };
+  });
 
   constructor() {
     effect(() => {
-      const wo = this.workOrder();
+      const workOrder = this.drawerService.selectedWorkOrder();
 
-      if (wo && !this.offcanvasRef) {
+      // open when we have a work order
+      if (workOrder && !this.offcanvasRef) {
         this.open();
       }
 
-      if (!wo && this.offcanvasRef) {
+      // close when cleared
+      if (!workOrder && this.offcanvasRef) {
         this.offcanvasRef.close();
         this.offcanvasRef = undefined;
       }
@@ -41,18 +54,14 @@ export class WorkOrderDrawer {
   private open() {
     this.offcanvasRef = this.offCanvas.open(this.content, {
       position: 'end',
-      // in order to maintain style isolation and prevent future accidentially leak
-      // the following selectors are placed in the global styles.scss
       panelClass: 'work-order-drawer',
       backdropClass: 'work-order-backdrop',
     });
 
-    this.offcanvasRef.result
-      .then(() => {})
-      .catch(() => {})
-      .finally(() => {
-        this.offcanvasRef = undefined;
-        this.workOrderDrawerService.selectedWorkOrder.set(null);
-      });
+    this.offcanvasRef.result.finally(() => {
+      this.offcanvasRef = undefined;
+      // Ensure state resets when user closes by ESC/backdrop
+      this.drawerService.closeDrawer();
+    });
   }
 }

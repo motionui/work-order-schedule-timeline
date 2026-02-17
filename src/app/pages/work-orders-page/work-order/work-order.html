@@ -1,5 +1,5 @@
 <div class="work-order" [ngClass]="workOrder()?.data?.status">
-  <span class="work-center">{{ workCenter()?.data?.name }}</span>
+  <span class="work-center">{{ workOrder()?.data?.name }}</span>
   <div class="status">
     <app-status-badge [status]="workOrder()?.data?.status || ''" />
     <div ngbDropdown>
