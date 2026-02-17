@@ -17,7 +17,7 @@
       </div>
 
       <!-- BODY -->
-      <div class="timeline-rows">
+      <div class="timeline-rows" [style.width.px]="totalWidth()">
         @for (group of workOrdersGroupByWorkCenters(); track group.workCenter.docId) {
           <div
             class="timeline-row"

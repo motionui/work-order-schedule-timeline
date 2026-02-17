@@ -13,6 +13,11 @@ export interface DateRange {
   end: Date;
 }
 
+// must match $work-order-timeline-cell-width in _variables.scss
+export const TIMESCALE_UNIT_WIDTH_PX = 150;
+// total horizontal gap between work orders
+export const GUTTER_WIDTH_PX = 8;
+
 @Component({
   selector: 'app-timeline',
   standalone: true,
@@ -41,6 +46,13 @@ export class Timeline implements OnInit {
   // Default 14-day window (±14 from today)
   visibleStartDate = signal(this.addDays(this.today, -14));
   visibleEndDate = signal(this.addDays(this.today, 14));
+
+  totalWidth = computed(() => {
+    const { start, end } = this.visibleDateRange();
+    const days = Math.floor((end.getTime() - start.getTime()) / 86400000) + 1;
+
+    return days * TIMESCALE_UNIT_WIDTH_PX;
+  });
 
   visibleDateRange = computed<DateRange>(() => ({
     start: this.visibleStartDate(),
