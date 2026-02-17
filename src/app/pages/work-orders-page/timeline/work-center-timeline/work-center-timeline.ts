@@ -9,6 +9,7 @@ import { WorkOrder } from './work-order/work-order';
 
 // must match $work-order-timeline-cell-width in _variables.scss
 const TIMESCALE_UNIT_WIDTH = 150;
+// total horizontal gap between work orders
 const GUTTER = 8;
 
 @Component({
