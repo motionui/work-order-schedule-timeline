@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild, computed, e
 import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap/offcanvas';
 
 import { WorkOrderDrawerService } from '../../../core/services/work-order-drawer.service';
-import { WorkOrderStore } from '../../../core/services/work-order.store';
 import { WorkOrderForm, WorkOrderFormData } from './work-order-form/work-order-form';
 
 @Component({
@@ -17,36 +16,29 @@ import { WorkOrderForm, WorkOrderFormData } from './work-order-form/work-order-f
 export class WorkOrderDrawer {
   private readonly offCanvas = inject(NgbOffcanvas);
   private readonly drawerService = inject(WorkOrderDrawerService);
-  private readonly store = inject(WorkOrderStore);
 
   @ViewChild('content', { static: true }) content!: TemplateRef<any>;
 
   private offcanvasRef?: NgbOffcanvasRef;
 
-  readonly formData = computed<WorkOrderFormData | null>(() => {
-    const workOrder = this.drawerService.selectedWorkOrder();
-    if (!workOrder) {
-      return null;
-    }
-
-    return {
-      mode: 'edit',
-      workOrder,
-      currentWorkOrders: this.store.workOrders$(),
-    };
-  });
+  /**
+   * The drawer now simply reflects the service state.
+   * If drawerState is null → drawer closed
+   * If drawerState has value → drawer open
+   */
+  readonly formData = computed<WorkOrderFormData | null>(() => this.drawerService.drawerState());
 
   constructor() {
     effect(() => {
-      const workOrder = this.drawerService.selectedWorkOrder();
+      const state = this.drawerService.drawerState();
 
-      // open when we have a work order
-      if (workOrder && !this.offcanvasRef) {
+      // Open drawer when state exists
+      if (state && !this.offcanvasRef) {
         this.open();
       }
 
-      // close when cleared
-      if (!workOrder && this.offcanvasRef) {
+      // Close drawer when state is cleared
+      if (!state && this.offcanvasRef) {
         this.offcanvasRef.close();
         this.offcanvasRef = undefined;
       }
@@ -62,7 +54,6 @@ export class WorkOrderDrawer {
 
     this.offcanvasRef.result.finally(() => {
       this.offcanvasRef = undefined;
-      // Ensure state resets when user closes by ESC/backdrop
       this.drawerService.closeDrawer();
     });
   }

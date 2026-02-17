@@ -1,17 +1,17 @@
 import { Injectable, signal } from '@angular/core';
-import { WorkOrderDocument } from '../models/work-order.model';
+import { WorkOrderFormData } from '../../pages/work-orders-page/work-order-drawer/work-order-form/work-order-form';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WorkOrderDrawerService {
-  selectedWorkOrder = signal<WorkOrderDocument | null>(null);
+  drawerState = signal<WorkOrderFormData | null>(null);
 
-  openDrawer(order: WorkOrderDocument) {
-    this.selectedWorkOrder.set(order);
+  openDrawer(data: WorkOrderFormData) {
+    this.drawerState.set(data);
   }
 
   closeDrawer() {
-    this.selectedWorkOrder.set(null);
+    this.drawerState.set(null);
   }
 }

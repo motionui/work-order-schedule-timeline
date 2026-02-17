@@ -1,13 +1,15 @@
 <section class="work-order-form">
-  <form [formGroup]="formGroup" novalidate>
+  <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()">
     <header class="header">
       <hgroup class="header-group">
         <h4 class="title">Work Order Details</h4>
-        <span class="description">Specify the dates, name and status for this order</span>
+        <span class="description"> Specify the dates, name and status for this order </span>
       </hgroup>
+
       <div class="actions">
-        <button type="buttons" class="wo-button cancel-button" aria-label="Cancel button">Cancel</button>
-        <button type="submit" class="wo-button submit-button" aria-label="Create button">
+        <button type="button" class="secondary-button" aria-label="Cancel button" (click)="onClickCancel()">Cancel</button>
+
+        <button type="submit" class="primary-button" aria-label="Submit button" [disabled]="formGroup.invalid">
           {{ formData()?.mode === 'create' ? 'Create' : 'Edit' }}
         </button>
       </div>
@@ -16,13 +18,13 @@
     <div class="separator"></div>
 
     <div class="form-fields">
-      <!-- work order name -->
+      <!-- Name -->
       <div class="form-field">
         <label for="name">Work Order Name</label>
         <input id="name" type="text" formControlName="name" />
       </div>
 
-      <!-- work order status -->
+      <!-- Status -->
       <div class="form-field">
         <label for="status">Status</label>
         <ng-select
@@ -35,23 +37,21 @@
           [searchable]="false"
           [clearable]="false"
         >
-          <!-- selected value template -->
           <ng-template ng-label-tmp let-item="item">
             <app-status-badge [status]="item.value"></app-status-badge>
           </ng-template>
-          <!-- option template -->
-          <ng-template ng-option-tmp let-item="item" let-index="index">
-            <span [class.active]="item.value === status.value">
-              {{ item.label }}
-            </span>
+
+          <ng-template ng-option-tmp let-item="item">
+            {{ item.label }}
           </ng-template>
         </ng-select>
       </div>
 
-      <!-- end date -->
+      <!-- End Date -->
       <div class="form-field">
         <label for="endDate">End Date</label>
         <input
+          id="endDate"
           placeholder="mm.dd.yyyy"
           formControlName="endDate"
           ngbDatepicker
@@ -60,10 +60,11 @@
         />
       </div>
 
-      <!-- start date -->
+      <!-- Start Date -->
       <div class="form-field">
         <label for="startDate">Start Date</label>
         <input
+          id="startDate"
           placeholder="mm.dd.yyyy"
           formControlName="startDate"
           ngbDatepicker

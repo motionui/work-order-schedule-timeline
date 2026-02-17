@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, input } from '@angular/core';
-import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
+import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { NgbDateParserFormatter, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+
 import { StatusBadge } from '../../components/status-badge/status-badge';
 import { DataPickerDateFormatService } from '../../../../core/services/data-picker-date-format.service';
 import { WORK_ORDER_STATUS_OPTIONS, WorkOrderDocument, WorkOrderStatus } from '../../../../core/models/work-order.model';
+import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
+import { WorkOrderStore } from '../../../../core/services/work-order.store';
 
-// ui model for passing data into the form
 export interface WorkOrderFormData {
   mode: 'create' | 'edit';
   workOrder: WorkOrderDocument;
@@ -24,44 +26,97 @@ export interface WorkOrderFormData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkOrderForm {
+  private workOrderDrawerService = inject(WorkOrderDrawerService);
+  private workOrderStore = inject(WorkOrderStore);
+
   formData = input<WorkOrderFormData | null>();
 
   protected statusOptions = WORK_ORDER_STATUS_OPTIONS;
 
-  protected formGroup: FormGroup = new FormGroup({
-    name: new FormControl<string>('', { nonNullable: true }),
-    status: new FormControl<WorkOrderStatus>('open', { nonNullable: true }),
-    startDate: new FormControl<string>('', { nonNullable: true }),
-    endDate: new FormControl<string>('', { nonNullable: true }),
+  protected formGroup = new FormGroup({
+    name: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    status: new FormControl<WorkOrderStatus>('open', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    startDate: new FormControl<NgbDateStruct | null>(null, {
+      validators: [Validators.required],
+    }),
+    endDate: new FormControl<NgbDateStruct | null>(null, {
+      validators: [Validators.required],
+    }),
   });
 
   constructor() {
     effect(() => {
-      const workOrderData = this.formData()?.workOrder;
-      if (workOrderData) {
-        this.formGroup.patchValue({
-          name: workOrderData.data.name,
-          status: workOrderData.data.status,
-          startDate: workOrderData.data.startDate,
-          endDate: workOrderData.data.endDate,
-        });
-      }
+      const data = this.formData();
+      if (!data) return;
+
+      const workOrder = data.workOrder;
+
+      this.formGroup.patchValue({
+        name: workOrder.data.name,
+        status: workOrder.data.status,
+        startDate: this.toDateStruct(workOrder.data.startDate),
+        endDate: this.toDateStruct(workOrder.data.endDate),
+      });
     });
   }
 
-  get name(): FormControl {
-    return this.formGroup.get('name') as FormControl;
+  private toDateStruct(iso: string | null): NgbDateStruct | null {
+    if (!iso) {
+      return null;
+    }
+    const [year, month, day] = iso.split('-').map(Number);
+    return { year, month, day };
   }
 
-  get status(): FormControl {
-    return this.formGroup.get('status') as FormControl;
+  private toIso(date: NgbDateStruct | null): string {
+    if (!date) {
+      return '';
+    }
+    const mm = String(date.month).padStart(2, '0');
+    const dd = String(date.day).padStart(2, '0');
+    return `${date.year}-${mm}-${dd}`;
   }
 
-  get startDate(): FormControl {
-    return this.formGroup.get('startDate') as FormControl;
+  onClickCancel(): void {
+    this.workOrderDrawerService.closeDrawer();
   }
 
-  get endDate(): FormControl {
-    return this.formGroup.get('endDate') as FormControl;
+  onSubmit(): void {
+    if (this.formGroup.invalid) {
+      this.formGroup.markAllAsTouched();
+      return;
+    }
+
+    const data = this.formData();
+    if (!data) {
+      return;
+    }
+
+    const formValue = this.formGroup.getRawValue();
+
+    const payload: WorkOrderDocument = {
+      ...data.workOrder,
+      data: {
+        ...data.workOrder.data,
+        name: formValue.name,
+        status: formValue.status,
+        startDate: this.toIso(formValue.startDate),
+        endDate: this.toIso(formValue.endDate),
+      },
+    };
+
+    if (data.mode === 'create') {
+      this.workOrderStore.add(payload);
+    } else {
+      this.workOrderStore.update(payload);
+    }
+
+    this.workOrderDrawerService.closeDrawer();
   }
 }
