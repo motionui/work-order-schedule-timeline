@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, input } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { WORK_ORDER_STATUS_OPTIONS, WorkOrderDocument, WorkOrderStatus } from '../../../core/models/work-order.model';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { StatusBadge } from '../status-badge/status-badge';
 import { NgbDateParserFormatter, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
-import { DataPickerDateFormatService } from '../../../core/services/data-picker-date-format.service';
+import { StatusBadge } from '../../components/status-badge/status-badge';
+import { DataPickerDateFormatService } from '../../../../core/services/data-picker-date-format.service';
+import { WORK_ORDER_STATUS_OPTIONS, WorkOrderDocument, WorkOrderStatus } from '../../../../core/models/work-order.model';
 
 // ui model for passing data into the form
 export interface WorkOrderFormData {

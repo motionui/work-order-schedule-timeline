@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
-import { WorkOrderDocument } from '../../../core/models/work-order.model';
-import { WorkCenterDocument } from '../../../core/models/work-center.model';
-import { DateRange } from '../timeline/timeline';
+import { WorkOrderDocument } from '../../../../core/models/work-order.model';
+import { DateRange } from '../timeline';
 import { Timescale } from '../timescale-select/timescale-select';
-import { WorkOrder } from '../work-order/work-order';
-import { WorkOrderDrawerService } from '../../../core/services/work-order-drawer.service';
-import { WorkOrderStore } from '../../../core/services/work-order.store';
+import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
+import { WorkOrderStore } from '../../../../core/services/work-order.store';
+import { WorkOrder } from './work-order/work-order';
 
 const TIMESCALE_UNIT_WIDTH = 150;
 const GUTTER = 8;

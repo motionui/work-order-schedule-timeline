@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { WORK_ORDER_STATUS, WorkOrderStatus } from '../../../core/models/work-order.model';
+import { WORK_ORDER_STATUS, WorkOrderStatus } from '../../../../core/models/work-order.model';
 
 @Component({
   selector: 'app-status-badge',

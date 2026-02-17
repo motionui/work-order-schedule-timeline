@@ -4,7 +4,7 @@ import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap/offcan
 
 import { WorkOrderDrawerService } from '../../../core/services/work-order-drawer.service';
 import { WorkOrderStore } from '../../../core/services/work-order.store';
-import { WorkOrderForm, WorkOrderFormData } from '../work-order-form/work-order-form';
+import { WorkOrderForm, WorkOrderFormData } from './work-order-form/work-order-form';
 
 @Component({
   selector: 'app-work-order-drawer',
@@ -25,7 +25,9 @@ export class WorkOrderDrawer {
 
   readonly formData = computed<WorkOrderFormData | null>(() => {
     const workOrder = this.drawerService.selectedWorkOrder();
-    if (!workOrder) return null;
+    if (!workOrder) {
+      return null;
+    }
 
     return {
       mode: 'edit',
