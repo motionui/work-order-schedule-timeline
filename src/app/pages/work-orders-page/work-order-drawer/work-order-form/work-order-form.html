@@ -22,6 +22,11 @@
       <div class="form-field">
         <label for="name">Work Order Name</label>
         <input id="name" type="text" formControlName="name" />
+        <span class="validation-error">
+          @if (name.touched && name.errors?.['required']) {
+            Work order name is required.
+          }
+        </span>
       </div>
 
       <!-- Status -->
@@ -45,6 +50,11 @@
             {{ item.label }}
           </ng-template>
         </ng-select>
+        <span class="validation-error">
+          @if (status.touched && status.errors?.['required']) {
+            Work order status is required.
+          }
+        </span>
       </div>
 
       <!-- End Date -->
@@ -56,8 +66,14 @@
           formControlName="endDate"
           ngbDatepicker
           #endDateDatePicker="ngbDatepicker"
+          [minDate]="startDate.value || undefined"
           (click)="endDateDatePicker.toggle()"
         />
+        <span class="validation-error">
+          @if (endDate.touched && formGroup.hasError('overlappingRange')) {
+            The selected end date overlaps with the next scheduled work order.
+          }
+        </span>
       </div>
 
       <!-- Start Date -->
@@ -69,8 +85,14 @@
           formControlName="startDate"
           ngbDatepicker
           #startDateDatePicker="ngbDatepicker"
+          [maxDate]="endDate.value || undefined"
           (click)="startDateDatePicker.toggle()"
         />
+        <span class="validation-error">
+          @if (startDate.touched && formGroup.hasError('overlappingRange')) {
+            The selected start date overlaps with the previous scheduled work order.
+          }
+        </span>
       </div>
     </div>
   </form>
