@@ -1,8 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+@use 'bootstrap/scss/bootstrap';
+
 @use 'third-party/ng-select';
 @use 'third-party/ngb-offcanvas';
-
-// @use 'bootstrap/scss/bootstrap';
 
 @use 'reset';
 @use 'colors' as colors;

@@ -9,24 +9,11 @@
   padding: 0 12px;
   border-radius: 5px;
   background: #fff;
-
   box-shadow: 1px 2.5px 3px -1.5px rgba(200, 207, 233, 1);
-
-  outline: none;
-  // transition:
-  //   border-color 0.15s ease,
-  //   box-shadow 0.15s ease;
-}
-
-// ng-select focus state
-.ng-select.ng-select-focused .ng-select-container {
-  // border: 2px solid rgba(170, 175, 255, 1);
-  // box-shadow: none;
 }
 
 .ng-dropdown-panel {
   background-color: #ffffff;
-  // border-radius: 12px;
   border: 1px solid #e5e7eb;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   z-index: 1100;
@@ -36,28 +23,6 @@
 .ng-select .ng-value {
   display: flex;
   align-items: center;
-}
-
-// hide the default arrow
-.ng-select .ng-arrow {
-  display: none;
-}
-
-// add custom chevron
-.ng-select .ng-arrow-wrapper {
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: url('/images/chevron-down.svg') no-repeat center;
-  background-size: 12px;
-  transform-origin: center;
-}
-
-.ng-select.ng-select-opened .ng-arrow-wrapper {
-  transform: rotate(180deg);
 }
 
 .ng-dropdown-panel {
