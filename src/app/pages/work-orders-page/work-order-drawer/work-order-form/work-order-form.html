@@ -1,0 +1,99 @@
+<section class="work-order-form">
+  <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()">
+    <header class="header">
+      <hgroup class="header-group">
+        <h4 class="title">Work Order Details</h4>
+        <span class="description"> Specify the dates, name and status for this order </span>
+      </hgroup>
+
+      <div class="actions">
+        <button type="button" class="secondary-button" aria-label="Cancel button" (click)="onClickCancel()">Cancel</button>
+
+        <button type="submit" class="primary-button" aria-label="Submit button" [disabled]="formGroup.invalid">
+          {{ formData()?.mode === 'create' ? 'Create' : 'Edit' }}
+        </button>
+      </div>
+    </header>
+
+    <div class="separator"></div>
+
+    <div class="form-fields">
+      <!-- Name -->
+      <div class="form-field">
+        <label for="name">Work Order Name</label>
+        <input id="name" type="text" formControlName="name" />
+        <span class="validation-error">
+          @if (name.touched && name.errors?.['required']) {
+            Work order name is required.
+          }
+        </span>
+      </div>
+
+      <!-- Status -->
+      <div class="form-field">
+        <label for="status">Status</label>
+        <ng-select
+          class="status-select"
+          formControlName="status"
+          bindLabel="label"
+          bindValue="value"
+          labelForId="status"
+          [items]="statusOptions"
+          [searchable]="false"
+          [clearable]="false"
+        >
+          <ng-template ng-label-tmp let-item="item">
+            <app-status-badge [status]="item.value"></app-status-badge>
+          </ng-template>
+
+          <ng-template ng-option-tmp let-item="item">
+            {{ item.label }}
+          </ng-template>
+        </ng-select>
+        <span class="validation-error">
+          @if (status.touched && status.errors?.['required']) {
+            Work order status is required.
+          }
+        </span>
+      </div>
+
+      <!-- End Date -->
+      <div class="form-field">
+        <label for="endDate">End Date</label>
+        <input
+          id="endDate"
+          placeholder="mm.dd.yyyy"
+          formControlName="endDate"
+          ngbDatepicker
+          #endDateDatePicker="ngbDatepicker"
+          [minDate]="startDate.value || undefined"
+          (click)="endDateDatePicker.toggle()"
+        />
+        <span class="validation-error">
+          @if (endDate.touched && formGroup.hasError('overlappingRange')) {
+            The selected end date overlaps with the next scheduled work order.
+          }
+        </span>
+      </div>
+
+      <!-- Start Date -->
+      <div class="form-field">
+        <label for="startDate">Start Date</label>
+        <input
+          id="startDate"
+          placeholder="mm.dd.yyyy"
+          formControlName="startDate"
+          ngbDatepicker
+          #startDateDatePicker="ngbDatepicker"
+          [maxDate]="endDate.value || undefined"
+          (click)="startDateDatePicker.toggle()"
+        />
+        <span class="validation-error">
+          @if (startDate.touched && formGroup.hasError('overlappingRange')) {
+            The selected start date overlaps with the previous scheduled work order.
+          }
+        </span>
+      </div>
+    </div>
+  </form>
+</section>

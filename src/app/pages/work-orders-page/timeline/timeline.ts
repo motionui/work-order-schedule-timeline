@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Timescale, TimescaleSelect } from '../timescale-select/timescale-select';
-import { WorkCenter } from '../work-center/work-center';
+import { Timescale, TimescaleSelect } from './timescale-select/timescale-select';
+import { WorkCenter } from './work-center/work-center';
 import { WorkCenterDocument } from '../../../core/models/work-center.model';
 import { WorkOrderStore } from '../../../core/services/work-order.store';
-import { WorkCenterTimeline } from '../work-center-timeline/work-center-timeline';
+import { WorkCenterTimeline } from './work-center-timeline/work-center-timeline';
 import { WorkOrderDocument } from '../../../core/models/work-order.model';
-import { TimelineHeader } from '../timeline-header/timeline-header';
+import { TimelineHeader } from './timeline-header/timeline-header';
 
 export interface DateRange {
   start: Date;

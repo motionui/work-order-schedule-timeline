@@ -1,5 +1,15 @@
 <div class="work-order" [ngClass]="workOrder()?.data?.status">
-  <span class="work-center">{{ workCenter()?.data?.name }}</span>
+  <span
+    class="name truncate"
+    [ngbTooltip]="workOrder()?.data?.name"
+    placement="top"
+    [openDelay]="650"
+    [closeDelay]="50"
+    container="body"
+  >
+    {{ workOrder()?.data?.name }}
+  </span>
+
   <div class="status">
     <app-status-badge [status]="workOrder()?.data?.status || ''" />
     <div ngbDropdown>

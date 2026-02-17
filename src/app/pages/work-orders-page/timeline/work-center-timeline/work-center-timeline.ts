@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
-import { WorkOrderDocument } from '../../../core/models/work-order.model';
-import { WorkCenterDocument } from '../../../core/models/work-center.model';
-import { DateRange } from '../timeline/timeline';
+import { WorkOrderDocument } from '../../../../core/models/work-order.model';
+import { DateRange } from '../timeline';
 import { Timescale } from '../timescale-select/timescale-select';
-import { WorkOrder } from '../work-order/work-order';
-import { WorkOrderDrawerService } from '../../../core/services/work-order-drawer.service';
-import { WorkOrderStore } from '../../../core/services/work-order.store';
+import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
+import { WorkOrderStore } from '../../../../core/services/work-order.store';
+import { WorkOrder } from './work-order/work-order';
 
+// must match $work-order-timeline-cell-width in _variables.scss
 const TIMESCALE_UNIT_WIDTH = 150;
 const GUTTER = 8;
 
@@ -25,7 +25,6 @@ export class WorkCenterTimeline {
 
   timeScale = input<Timescale>('day');
   dateRange = input.required<DateRange>();
-  workCenter = input.required<WorkCenterDocument>();
   workOrders = input.required<WorkOrderDocument[]>();
 
   visibleOrders = computed(() => {
@@ -41,8 +40,8 @@ export class WorkCenterTimeline {
     const range = this.dateRange();
 
     return this.visibleOrders().map((order) => {
-      const orderStart = new Date(order.data.startDate);
-      const orderEnd = new Date(order.data.endDate);
+      const orderStart = this.toLocalDate(order.data.startDate);
+      const orderEnd = this.toLocalDate(order.data.endDate);
 
       const clampedStart = orderStart < range.start ? range.start : orderStart;
       const clampedEnd = orderEnd > range.end ? range.end : orderEnd;
@@ -77,8 +76,17 @@ export class WorkCenterTimeline {
     return d;
   }
 
+  private toLocalDate(iso: string): Date {
+    const [year, month, day] = iso.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  }
+
   onEdit(workOrder: WorkOrderDocument) {
-    this.workOrderDrawerService.selectedWorkOrder.set(workOrder);
+    this.workOrderDrawerService.openDrawer({
+      mode: 'edit',
+      workOrder,
+      currentWorkOrders: this.workOrders(),
+    });
   }
 
   onDelete(workOrder: WorkOrderDocument) {

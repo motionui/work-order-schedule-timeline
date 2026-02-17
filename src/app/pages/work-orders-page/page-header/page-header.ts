@@ -9,6 +9,4 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   styleUrl: './page-header.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PageHeader {
-  headerLabel = input('');
-}
+export class PageHeader {}

@@ -59,7 +59,7 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     docId: 'WORKORDER-01-00',
     docType: 'workOrder',
     data: {
-      name: '',
+      name: 'Work order 01',
       workCenterId: 'WORKCENTER-01',
       status: 'open',
       startDate: '2026-02-03',
@@ -70,7 +70,7 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     docId: 'WORKORDER-01-01',
     docType: 'workOrder',
     data: {
-      name: '',
+      name: 'Work order 02',
       workCenterId: 'WORKCENTER-01',
       status: 'in-progress',
       startDate: '2026-02-05',
@@ -81,7 +81,7 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     docId: 'WORKORDER-01-02',
     docType: 'workOrder',
     data: {
-      name: '',
+      name: 'Work order 03',
       workCenterId: 'WORKCENTER-01',
       status: 'complete',
       startDate: '2026-02-07',
@@ -92,7 +92,7 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     docId: 'WORKORDER-01-03',
     docType: 'workOrder',
     data: {
-      name: '',
+      name: 'Work order 04',
       workCenterId: 'WORKCENTER-01',
       status: 'blocked',
       startDate: '2026-02-09',
@@ -103,7 +103,7 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     docId: 'WORKORDER-01-04',
     docType: 'workOrder',
     data: {
-      name: '',
+      name: 'Work order 05',
       workCenterId: 'WORKCENTER-01',
       status: 'in-progress',
       startDate: '2026-02-16',
@@ -114,7 +114,7 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     docId: 'WORKORDER-01-05',
     docType: 'workOrder',
     data: {
-      name: '',
+      name: 'Work order 06',
       workCenterId: 'WORKCENTER-01',
       status: 'in-progress',
       startDate: '2026-02-19',
@@ -125,7 +125,7 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     docId: 'WORKORDER-01-06',
     docType: 'workOrder',
     data: {
-      name: '',
+      name: 'Work order 07',
       workCenterId: 'WORKCENTER-01',
       status: 'in-progress',
       startDate: '2026-02-21',
@@ -136,7 +136,7 @@ const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     docId: 'WORKORDER-01-07',
     docType: 'workOrder',
     data: {
-      name: '',
+      name: 'Work order 08',
       workCenterId: 'WORKCENTER-01',
       status: 'in-progress',
       startDate: '2026-02-24',

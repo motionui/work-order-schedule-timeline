@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { Timescale } from '../timescale-select/timescale-select';
-import { DateRange } from '../timeline/timeline';
+import { DateRange } from '../timeline';
 
 @Component({
   selector: 'app-timeline-header',

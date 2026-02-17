@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { WorkCenterDocument } from '../../../core/models/work-center.model';
+import { WorkCenterDocument } from '../../../../core/models/work-center.model';
 
 @Component({
   selector: 'app-work-center',
