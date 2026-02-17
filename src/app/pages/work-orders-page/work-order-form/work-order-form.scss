@@ -2,12 +2,17 @@
 @use 'typography' as typography;
 @use 'variables' as variables;
 
+:host ::ng-deep .ng-select.ng-select-focused .ng-select-container {
+  border: 2px solid rgba(170, 175, 255, 1);
+  box-shadow: none;
+}
+
 .work-order-form {
   padding: 16px 0;
 }
 
 .header {
-  padding: 0 24px;
+  padding: 24px;
 
   display: flex;
   justify-content: space-between;
@@ -75,11 +80,6 @@
       line-height: 1.2;
     }
   }
-}
-
-:host ::ng-deep .ng-select.ng-select-focused .ng-select-container {
-  border: 2px solid rgba(170, 175, 255, 1);
-  box-shadow: none;
 }
 
 .cancel-button {

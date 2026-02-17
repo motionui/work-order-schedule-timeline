@@ -9,6 +9,10 @@
   padding: 0 12px;
   border-radius: 5px;
   background: #fff;
+
+  border: 1px solid #e5e7eb;
+  box-sizing: border-box;
+
   box-shadow: 1px 2.5px 3px -1.5px rgba(200, 207, 233, 1);
 }
 
@@ -50,4 +54,19 @@
 
 .ng-option-selected {
   color: colors.$dropdown-selected-color;
+}
+
+// since we do not include the ng-select css
+// create the ng-select dropdown indicator
+.ng-select .ng-arrow {
+  border-color: #687196 transparent transparent;
+  border-style: solid;
+  border-width: 5px 5px 0 5px;
+  width: 0;
+  height: 0;
+}
+
+.ng-select.ng-select-opened .ng-arrow {
+  border-color: transparent transparent #687196 transparent;
+  border-width: 0 5px 5px 5px;
 }
