@@ -48,7 +48,7 @@ export class WorkCenterTimeline {
       const clampedEnd = orderEnd > range.end ? range.end : orderEnd;
 
       const left = this.daysBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH + GUTTER / 2;
-      const width = (this.daysBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH - GUTTER;
+      const width = (this.daysBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH - GUTTER - 1;
 
       return { order, left, width };
     });
