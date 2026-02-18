@@ -135,8 +135,11 @@ export class WorkCenterTimeline {
           let endDayOfWeek = clampedEnd.getDay();
           startDayOfWeek = (startDayOfWeek + 6) % 7;
           endDayOfWeek = (endDayOfWeek + 6) % 7;
+          // Add spacing between adjacent work orders (2px gap between slots)
+          const slotCount = endDayOfWeek - startDayOfWeek + 1;
+          const gap = 2;
           const left = weekCellLeft + slotWidth * startDayOfWeek;
-          const width = slotWidth * (endDayOfWeek - startDayOfWeek + 1) - 2;
+          const width = slotWidth * slotCount - gap * (slotCount - 1);
           result.push({ order, left, width });
         }
       }
@@ -171,8 +174,11 @@ export class WorkCenterTimeline {
           const clampedEnd = orderEnd > monthEnd ? monthEnd : orderEnd;
           const startDayOfMonth = clampedStart.getDate() - 1; // 0-based
           const endDayOfMonth = clampedEnd.getDate() - 1; // 0-based
+          // Add spacing between adjacent work orders (2px gap between slots)
+          const slotCount = endDayOfMonth - startDayOfMonth + 1;
+          const gap = 2;
           const left = monthCellLeft + slotWidth * startDayOfMonth;
-          const width = slotWidth * (endDayOfMonth - startDayOfMonth + 1) - 2;
+          const width = slotWidth * slotCount - gap * (slotCount - 1);
           result.push({ order, left, width });
         }
       }
