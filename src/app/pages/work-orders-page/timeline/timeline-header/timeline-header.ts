@@ -14,12 +14,12 @@ import { Timescale } from '../timescale-select/timescale-select';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineHeader {
-  timeScale = input<Timescale>('day');
+  timescale = input<Timescale>('day');
   dateRange = input.required<DateRange>();
 
   columns = computed(() => {
     const { start, end } = this.dateRange();
-    const scale = this.timeScale();
+    const scale = this.timescale();
 
     const result: Date[] = [];
 
@@ -57,7 +57,7 @@ export class TimelineHeader {
   }
 
   label(date: Date): string {
-    switch (this.timeScale()) {
+    switch (this.timescale()) {
       case 'week': {
         const end = this.addDays(date, 6);
         return `${this.formatShort(date)} - ${this.formatShort(end)}`;

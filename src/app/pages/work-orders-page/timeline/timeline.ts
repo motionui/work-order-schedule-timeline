@@ -25,15 +25,15 @@ export interface DateRange {
   end: Date;
 }
 
-export const TIMESCALE_UNIT_DAY_WIDTH_PX = 200;
+export const TIMESCALE_UNIT_DAY_WIDTH_PX = 150;
 export const TIMESCALE_UNIT_WEEK_WIDTH_PX = 80;
 export const TIMESCALE_UNIT_MONTH_WIDTH_PX = 40;
 
 // must match $timescale-unit-width-day, $timescale-unit-width-week, $timescale-unit-width-month in _variables.scss
 export const TIMESCALE_UNIT_WIDTH_LOOKUP: Record<Timescale, number> = {
-  day: 150,
-  week: 80,
-  month: 40,
+  day: TIMESCALE_UNIT_DAY_WIDTH_PX,
+  week: TIMESCALE_UNIT_WEEK_WIDTH_PX,
+  month: TIMESCALE_UNIT_MONTH_WIDTH_PX,
 };
 
 export function getTimescaleUnitWidth(scale: Timescale): number {
@@ -63,12 +63,12 @@ export class Timeline implements OnInit, AfterViewInit {
   @ViewChild('scrollContainer', { static: false }) private scrollContainer!: ElementRef<HTMLDivElement>;
 
   // timescale select on work order page
-  zoomLevel = signal<Timescale>('day');
+  timescale = signal<Timescale>('day');
 
   private readonly today = this.startOfDay(new Date());
 
   visibleStartDate = computed(() => {
-    const scale = this.zoomLevel();
+    const scale = this.timescale();
     if (scale === 'week') {
       // Start at the first week of the month, 2 months before today
       const startMonth = this.startOfMonth(this.today, -VISIBLE_MONTHS_WEEK_VIEW);
@@ -81,7 +81,7 @@ export class Timeline implements OnInit, AfterViewInit {
   });
 
   visibleEndDate = computed(() => {
-    const scale = this.zoomLevel();
+    const scale = this.timescale();
     if (scale === 'week') {
       // End at the last week of the month, 2 months after today
       const endMonth = this.startOfMonth(this.today, VISIBLE_MONTHS_WEEK_VIEW + 1); // +1 to include the last month
@@ -96,7 +96,7 @@ export class Timeline implements OnInit, AfterViewInit {
 
   totalWidth = computed(() => {
     const { start, end } = this.visibleDateRange();
-    const scale = this.zoomLevel();
+    const scale = this.timescale();
     let units = 0;
     if (scale === 'week') {
       units = this.weeksBetween(start, end) + 1;
@@ -105,7 +105,7 @@ export class Timeline implements OnInit, AfterViewInit {
     } else {
       units = Math.floor((end.getTime() - start.getTime()) / MILLI_SECONDS_IN_A_DAY) + 1;
     }
-    return units * getTimescaleUnitWidth(this.zoomLevel());
+    return units * getTimescaleUnitWidth(this.timescale());
   });
 
   visibleDateRange = computed<DateRange>(() => ({
@@ -115,7 +115,7 @@ export class Timeline implements OnInit, AfterViewInit {
 
   readonly todayIndex = computed(() => {
     const { start, end } = this.visibleDateRange();
-    const scale = this.zoomLevel();
+    const scale = this.timescale();
     if (this.today < start || this.today > end) {
       return -1; // today not visible
     }
@@ -130,7 +130,7 @@ export class Timeline implements OnInit, AfterViewInit {
   readonly todayLeft = computed(() => {
     const index = this.todayIndex();
     if (index < 0) return -1;
-    return index * getTimescaleUnitWidth(this.zoomLevel());
+    return index * getTimescaleUnitWidth(this.timescale());
   });
 
   // -----------------------------
@@ -186,11 +186,11 @@ export class Timeline implements OnInit, AfterViewInit {
 
     const daysFromStart = Math.floor((today.getTime() - range.start.getTime()) / MILLI_SECONDS_IN_A_DAY);
 
-    const todayPixel = daysFromStart * getTimescaleUnitWidth(this.zoomLevel());
+    const todayPixel = daysFromStart * getTimescaleUnitWidth(this.timescale());
 
     const centerOffset = container.clientWidth / 2;
 
-    container.scrollLeft = todayPixel - centerOffset + getTimescaleUnitWidth(this.zoomLevel()) / 2;
+    container.scrollLeft = todayPixel - centerOffset + getTimescaleUnitWidth(this.timescale()) / 2;
   }
 
   // -----------------------------

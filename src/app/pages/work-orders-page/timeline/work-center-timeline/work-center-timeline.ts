@@ -23,7 +23,7 @@ export class WorkCenterTimeline {
   private workOrderDrawerService = inject(WorkOrderDrawerService);
   private workOrderStore = inject(WorkOrderStore);
 
-  timeScale = input<Timescale>('day');
+  timescale = input<Timescale>('day');
   dateRange = input.required<DateRange>();
   workCenter = input.required<WorkCenterDocument>();
   workOrders = input.required<WorkOrderDocument[]>();
@@ -45,14 +45,14 @@ export class WorkCenterTimeline {
     if (isOccupied) return null;
 
     return {
-      left: index * getTimescaleUnitWidth(this.timeScale()) + GUTTER_WIDTH_PX / 2,
-      width: getTimescaleUnitWidth(this.timeScale()) - GUTTER_WIDTH_PX,
+      left: index * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2,
+      width: getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX,
     };
   });
 
   visibleOrders = computed(() => {
     const { start, end } = this.dateRange();
-    const scale = this.timeScale();
+    const scale = this.timescale();
     return this.workOrders().filter((order) => {
       const s = new Date(order.data.startDate);
       const e = new Date(order.data.endDate);
@@ -63,7 +63,7 @@ export class WorkCenterTimeline {
 
   positionedOrders = computed(() => {
     const range = this.dateRange();
-    const scale = this.timeScale();
+    const scale = this.timescale();
 
     return this.visibleOrders().map((order) => {
       const orderStart = this.toLocalDate(order.data.startDate);
@@ -78,16 +78,16 @@ export class WorkCenterTimeline {
       if (scale === 'week') {
         // Align clampedStart to the start of its week (Monday)
         const weekStart = this.startOfWeek(clampedStart, 1);
-        left = this.weeksBetween(range.start, weekStart) * getTimescaleUnitWidth(this.timeScale()) + GUTTER_WIDTH_PX / 2;
-        width = (this.weeksBetween(weekStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timeScale()) - GUTTER_WIDTH_PX - 1;
+        left = this.weeksBetween(range.start, weekStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
+        width = (this.weeksBetween(weekStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
       } else if (scale === 'month') {
-        left = this.monthsBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timeScale()) + GUTTER_WIDTH_PX / 2;
+        left = this.monthsBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
         width =
-          (this.monthsBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timeScale()) - GUTTER_WIDTH_PX - 1;
+          (this.monthsBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
       } else {
-        left = this.daysBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timeScale()) + GUTTER_WIDTH_PX / 2;
+        left = this.daysBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
         width =
-          (this.daysBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timeScale()) - GUTTER_WIDTH_PX - 1;
+          (this.daysBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
       }
 
       return { order, left, width };
@@ -124,7 +124,7 @@ export class WorkCenterTimeline {
     const x = event.clientX - rect.left;
 
     const adjustedX = x - GUTTER_WIDTH_PX / 2;
-    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timeScale()));
+    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timescale()));
     if (dayIndex < 0) return;
     const clickedDate = this.addDays(this.dateRange().start, dayIndex);
     const endDate = this.addDays(clickedDate, 7);
@@ -184,7 +184,7 @@ export class WorkCenterTimeline {
     const x = event.clientX - rect.left;
 
     const adjustedX = x - GUTTER_WIDTH_PX / 2;
-    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timeScale()));
+    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timescale()));
     if (dayIndex < 0) {
       this.hoveredDayIndex.set(null);
       return;
