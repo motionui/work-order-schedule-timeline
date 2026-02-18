@@ -1,9 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @use 'bootstrap/scss/bootstrap';
 
-@use 'third-party/ng-select';
-@use 'third-party/ngb-tooltip';
-@use 'third-party/ngb-offcanvas';
+@use 'libs/ng-select';
+@use 'libs/ngb-tooltip';
+@use 'libs/ngb-dropdown';
+@use 'libs/ngb-offcanvas';
 
 @use 'reset';
 @use 'colors' as colors;
