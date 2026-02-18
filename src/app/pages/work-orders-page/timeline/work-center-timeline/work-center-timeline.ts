@@ -180,7 +180,7 @@ export class WorkCenterTimeline {
           const slotCount = endDayOfMonth - startDayOfMonth + 1;
           const gap = 2;
           const left = monthCellLeft + slotWidth * startDayOfMonth;
-          const width = slotWidth * slotCount - gap * (slotCount - 1);
+          const width = slotCount === 1 ? slotWidth : slotWidth * slotCount - gap * (slotCount - 1);
           result.push({ order, left, width });
         }
       }
