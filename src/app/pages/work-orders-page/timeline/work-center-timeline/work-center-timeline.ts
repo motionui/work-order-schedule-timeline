@@ -34,7 +34,27 @@ export class WorkCenterTimeline {
     const index = this.hoveredDayIndex();
     if (index === null) return null;
 
-    const clickedDate = this.addDays(this.dateRange().start, index);
+    const scale = this.timescale();
+    const rangeStart = this.dateRange().start;
+    let clickedDate: Date;
+    let left = 0;
+    let width = 0;
+
+    if (scale === 'week') {
+      // index is week index from start
+      clickedDate = this.addDays(rangeStart, index * 7);
+      left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
+      width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+    } else if (scale === 'month') {
+      clickedDate = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + index, 1);
+      left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
+      width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+    } else {
+      // day
+      clickedDate = this.addDays(rangeStart, index);
+      left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
+      width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+    }
 
     const isOccupied = this.visibleOrders().some((order) => {
       const start = this.toLocalDate(order.data.startDate);
@@ -45,8 +65,8 @@ export class WorkCenterTimeline {
     if (isOccupied) return null;
 
     return {
-      left: index * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2,
-      width: getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX,
+      left,
+      width,
     };
   });
 
