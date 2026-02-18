@@ -63,7 +63,7 @@
         <label for="endDate">End Date</label>
         <input
           id="endDate"
-          placeholder="mm.dd.yyyy"
+          placeholder="MM.DD.YYYY"
           formControlName="endDate"
           ngbDatepicker
           #endDateDatePicker="ngbDatepicker"
@@ -71,6 +71,9 @@
           (click)="endDateDatePicker.toggle()"
         />
         <span class="validation-error">
+          @if (endDate.touched && endDate.errors?.['required']) {
+            End date is required.
+          }
           @if (endDate.touched && formGroup.hasError('overlappingRange')) {
             The selected end date overlaps with the next scheduled work order.
           }
@@ -82,7 +85,7 @@
         <label for="startDate">Start Date</label>
         <input
           id="startDate"
-          placeholder="mm.dd.yyyy"
+          placeholder="MM.DD.YYYY"
           formControlName="startDate"
           ngbDatepicker
           #startDateDatePicker="ngbDatepicker"
@@ -90,6 +93,9 @@
           (click)="startDateDatePicker.toggle()"
         />
         <span class="validation-error">
+          @if (startDate.touched && startDate.errors?.['required']) {
+            Start date is required.
+          }
           @if (startDate.touched && formGroup.hasError('overlappingRange')) {
             The selected start date overlaps with the previous scheduled work order.
           }

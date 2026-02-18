@@ -115,6 +115,7 @@ export class WorkCenterTimeline {
     const dayIndex = Math.floor(adjustedX / TIMESCALE_UNIT_WIDTH_PX);
     if (dayIndex < 0) return;
     const clickedDate = this.addDays(this.dateRange().start, dayIndex);
+    const endDate = this.addDays(clickedDate, 7);
 
     // only create if no order occupies this day
     const isOccupied = this.visibleOrders().some((order) => {
@@ -135,7 +136,7 @@ export class WorkCenterTimeline {
           workCenterId: this.workCenter().docId,
           status: 'open',
           startDate: this.toIso(clickedDate),
-          endDate: this.toIso(clickedDate),
+          endDate: this.toIso(endDate),
         },
       },
       currentWorkOrders: this.workOrders(),
