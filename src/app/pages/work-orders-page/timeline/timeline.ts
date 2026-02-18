@@ -29,6 +29,7 @@ export const TIMESCALE_UNIT_WIDTH_PX = 150;
 // total horizontal gap between work orders
 export const GUTTER_WIDTH_PX = 8;
 
+const VISIBLE_DAYS = 14;
 const MILLI_SECONDS_IN_DAY = 1000 * 60 * 60 * 24;
 
 @Component({
@@ -59,8 +60,8 @@ export class Timeline implements OnInit, AfterViewInit {
   private readonly today = this.startOfDay(new Date());
 
   // Default 14-day window (±14 from today)
-  visibleStartDate = signal(this.addDays(this.today, -14));
-  visibleEndDate = signal(this.addDays(this.today, 14));
+  visibleStartDate = signal(this.addDays(this.today, -VISIBLE_DAYS));
+  visibleEndDate = signal(this.addDays(this.today, VISIBLE_DAYS));
 
   totalWidth = computed(() => {
     const { start, end } = this.visibleDateRange();
