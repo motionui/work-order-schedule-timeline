@@ -25,8 +25,23 @@
   align-items: center;
   justify-content: center;
 
-  flex: 0 0 variables.$timescale-unit-width-px;
-  width: 150px;
+  flex: 0 0 variables.$timescale-unit-day-width-px;
+  width: variables.$timescale-unit-day-width-px;
   box-sizing: border-box;
   text-align: center;
+
+  &.day {
+    flex: 0 0 variables.$timescale-unit-day-width-px;
+    width: variables.$timescale-unit-day-width-px;
+  }
+
+  &.week {
+    flex: 0 0 variables.$timescale-unit-week-width-px;
+    width: variables.$timescale-unit-week-width-px;
+  }
+
+  &.month {
+    flex: 0 0 variables.$timescale-unit-month-width-px;
+    width: variables.$timescale-unit-month-width-px;
+  }
 }

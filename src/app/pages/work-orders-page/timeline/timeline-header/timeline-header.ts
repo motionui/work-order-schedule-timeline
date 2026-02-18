@@ -1,7 +1,9 @@
+// @upgrade Add ARIA roles and labels to timeline header for screen reader support
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { Timescale } from '../timescale-select/timescale-select';
+
 import { DateRange } from '../timeline';
+import { Timescale } from '../timescale-select/timescale-select';
 
 @Component({
   selector: 'app-timeline-header',
@@ -12,16 +14,17 @@ import { DateRange } from '../timeline';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineHeader {
-  timeScale = input<Timescale>('day');
+  timescale = input<Timescale>('day');
   dateRange = input.required<DateRange>();
 
   columns = computed(() => {
     const { start, end } = this.dateRange();
-    const scale = this.timeScale();
+    const scale = this.timescale();
 
     const result: Date[] = [];
 
-    let cursor = this.startOfDay(start);
+    // For week view, always align cursor to the start of the week (Monday)
+    let cursor = scale === 'week' ? this.startOfWeek(this.startOfDay(start), 1) : this.startOfDay(start);
     const rangeEnd = this.startOfDay(end);
 
     while (cursor <= rangeEnd) {
@@ -46,8 +49,15 @@ export class TimelineHeader {
     return result;
   });
 
+  private startOfWeek(date: Date, weekStart: number = 1): Date {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day < weekStart ? -7 : 0) + weekStart;
+    return new Date(d.setDate(diff));
+  }
+
   label(date: Date): string {
-    switch (this.timeScale()) {
+    switch (this.timescale()) {
       case 'week': {
         const end = this.addDays(date, 6);
         return `${this.formatShort(date)} - ${this.formatShort(end)}`;

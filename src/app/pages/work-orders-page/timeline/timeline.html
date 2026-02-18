@@ -1,5 +1,5 @@
 <section class="timeline">
-  <app-timescale-select [(selected)]="zoomLevel"></app-timescale-select>
+  <app-timescale-select [(selected)]="timescale"></app-timescale-select>
 
   <section class="work-orders-timeline">
     <!-- TOP LEFT -->
@@ -12,7 +12,7 @@
       <!-- HEADER -->
       <div class="timeline-header">
         <div class="timeline-header-inner">
-          <app-timeline-header [timeScale]="zoomLevel()" [dateRange]="visibleDateRange()" />
+          <app-timeline-header [timescale]="timescale()" [dateRange]="visibleDateRange()" />
         </div>
       </div>
 
@@ -31,7 +31,7 @@
             (mouseleave)="hoveredWorkCenter.set(null)"
           >
             <app-work-center-timeline
-              [timeScale]="zoomLevel()"
+              [timescale]="timescale()"
               [dateRange]="visibleDateRange()"
               [workCenter]="group.workCenter"
               [workOrders]="group.workOrders"

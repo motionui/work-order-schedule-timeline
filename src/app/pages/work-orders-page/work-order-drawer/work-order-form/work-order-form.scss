@@ -91,3 +91,9 @@
     }
   }
 }
+
+.form-field input::placeholder,
+:host ::ng-deep .form-field input.form-control::placeholder {
+  color: #a4aac0;
+  opacity: 1;
+}

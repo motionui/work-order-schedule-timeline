@@ -1,3 +1,5 @@
+// @upgrade Add ARIA roles and labels to timeline and timeline cells for accessibility compliance
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -6,31 +8,46 @@ import {
   ElementRef,
   inject,
   OnInit,
-  output,
   signal,
   ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Timescale, TimescaleSelect } from './timescale-select/timescale-select';
-import { WorkCenter } from './work-center/work-center';
+
 import { WorkCenterDocument } from '../../../core/models/work-center.model';
-import { WorkOrderStore } from '../../../core/services/work-order.store';
-import { WorkCenterTimeline } from './work-center-timeline/work-center-timeline';
 import { WorkOrderDocument } from '../../../core/models/work-order.model';
+import { WorkOrderStore } from '../../../core/services/work-order.store';
 import { TimelineHeader } from './timeline-header/timeline-header';
+import { Timescale, TimescaleSelect } from './timescale-select/timescale-select';
+import { WorkCenterTimeline } from './work-center-timeline/work-center-timeline';
+import { WorkCenter } from './work-center/work-center';
 
 export interface DateRange {
   start: Date;
   end: Date;
 }
 
-// must match $work-order-timeline-cell-width in _variables.scss
-export const TIMESCALE_UNIT_WIDTH_PX = 150;
+export const TIMESCALE_UNIT_DAY_WIDTH_PX = 200;
+export const TIMESCALE_UNIT_WEEK_WIDTH_PX = 80;
+export const TIMESCALE_UNIT_MONTH_WIDTH_PX = 40;
+
+// must match $timescale-unit-width-day, $timescale-unit-width-week, $timescale-unit-width-month in _variables.scss
+export const TIMESCALE_UNIT_WIDTH_LOOKUP: Record<Timescale, number> = {
+  day: TIMESCALE_UNIT_DAY_WIDTH_PX,
+  week: TIMESCALE_UNIT_WEEK_WIDTH_PX,
+  month: TIMESCALE_UNIT_MONTH_WIDTH_PX,
+};
+
+export function getTimescaleUnitWidth(scale: Timescale): number {
+  return TIMESCALE_UNIT_WIDTH_LOOKUP[scale];
+}
+
 // total horizontal gap between work orders
 export const GUTTER_WIDTH_PX = 8;
 
 const VISIBLE_DAYS = 14;
-const MILLI_SECONDS_IN_DAY = 1000 * 60 * 60 * 24;
+const VISIBLE_WEEKS = 0; // not used, replaced by months for week view
+const VISIBLE_MONTHS_WEEK_VIEW = 2; // ±2 months for week view
+const VISIBLE_MONTHS_MONTH_VIEW = 6; // ±6 months for month view
+const MILLI_SECONDS_IN_A_DAY = 1000 * 60 * 60 * 24;
 
 @Component({
   selector: 'app-timeline',
@@ -45,29 +62,50 @@ export class Timeline implements OnInit, AfterViewInit {
 
   @ViewChild('scrollContainer', { static: false }) private scrollContainer!: ElementRef<HTMLDivElement>;
 
-  // edit = output<WorkOrderDocument>();
-  // delete = output<WorkOrderDocument>();
-
-  // -----------------------------
-  // ZOOM
-  // -----------------------------
-  zoomLevel = signal<Timescale>('day');
-
-  // -----------------------------
-  // DATE RANGE (Single Source of Truth)
-  // -----------------------------
+  // timescale select on work order page
+  timescale = signal<Timescale>('day');
 
   private readonly today = this.startOfDay(new Date());
 
-  // Default 14-day window (±14 from today)
-  visibleStartDate = signal(this.addDays(this.today, -VISIBLE_DAYS));
-  visibleEndDate = signal(this.addDays(this.today, VISIBLE_DAYS));
+  visibleStartDate = computed(() => {
+    const scale = this.timescale();
+    if (scale === 'week') {
+      // Start at the first week of the month, 2 months before today
+      const startMonth = this.startOfMonth(this.today, -VISIBLE_MONTHS_WEEK_VIEW);
+      // Always align to Monday
+      return this.startOfWeek(startMonth, 1);
+    } else if (scale === 'month') {
+      return this.startOfMonth(this.today, -VISIBLE_MONTHS_MONTH_VIEW);
+    }
+    return this.addDays(this.today, -VISIBLE_DAYS);
+  });
+
+  visibleEndDate = computed(() => {
+    const scale = this.timescale();
+    if (scale === 'week') {
+      // End at the last week of the month, 2 months after today
+      const endMonth = this.startOfMonth(this.today, VISIBLE_MONTHS_WEEK_VIEW + 1); // +1 to include the last month
+      // Go to the last day of the previous month, then get the week start
+      const lastDayPrevMonth = new Date(endMonth.getFullYear(), endMonth.getMonth(), 0);
+      return this.startOfWeek(lastDayPrevMonth, 1, 0); // Monday
+    } else if (scale === 'month') {
+      return this.startOfMonth(this.today, VISIBLE_MONTHS_MONTH_VIEW);
+    }
+    return this.addDays(this.today, VISIBLE_DAYS);
+  });
 
   totalWidth = computed(() => {
     const { start, end } = this.visibleDateRange();
-    const days = Math.floor((end.getTime() - start.getTime()) / 86400000) + 1;
-
-    return days * TIMESCALE_UNIT_WIDTH_PX;
+    const scale = this.timescale();
+    let units = 0;
+    if (scale === 'week') {
+      units = this.weeksBetween(start, end) + 1;
+    } else if (scale === 'month') {
+      units = this.monthsBetween(start, end) + 1;
+    } else {
+      units = Math.floor((end.getTime() - start.getTime()) / MILLI_SECONDS_IN_A_DAY) + 1;
+    }
+    return units * getTimescaleUnitWidth(this.timescale());
   });
 
   visibleDateRange = computed<DateRange>(() => ({
@@ -77,21 +115,22 @@ export class Timeline implements OnInit, AfterViewInit {
 
   readonly todayIndex = computed(() => {
     const { start, end } = this.visibleDateRange();
-
+    const scale = this.timescale();
     if (this.today < start || this.today > end) {
       return -1; // today not visible
     }
-
-    const diff = Math.floor((this.today.getTime() - start.getTime()) / 86400000);
-
-    return diff;
+    if (scale === 'week') {
+      return this.weeksBetween(start, this.today);
+    } else if (scale === 'month') {
+      return this.monthsBetween(start, this.today);
+    }
+    return Math.floor((this.today.getTime() - start.getTime()) / MILLI_SECONDS_IN_A_DAY);
   });
 
   readonly todayLeft = computed(() => {
     const index = this.todayIndex();
     if (index < 0) return -1;
-
-    return index * TIMESCALE_UNIT_WIDTH_PX;
+    return index * getTimescaleUnitWidth(this.timescale());
   });
 
   // -----------------------------
@@ -145,13 +184,13 @@ export class Timeline implements OnInit, AfterViewInit {
     const range = this.visibleDateRange();
     const today = this.today;
 
-    const daysFromStart = Math.floor((today.getTime() - range.start.getTime()) / MILLI_SECONDS_IN_DAY);
+    const daysFromStart = Math.floor((today.getTime() - range.start.getTime()) / MILLI_SECONDS_IN_A_DAY);
 
-    const todayPixel = daysFromStart * TIMESCALE_UNIT_WIDTH_PX;
+    const todayPixel = daysFromStart * getTimescaleUnitWidth(this.timescale());
 
     const centerOffset = container.clientWidth / 2;
 
-    container.scrollLeft = todayPixel - centerOffset + TIMESCALE_UNIT_WIDTH_PX / 2;
+    container.scrollLeft = todayPixel - centerOffset + getTimescaleUnitWidth(this.timescale()) / 2;
   }
 
   // -----------------------------
@@ -168,11 +207,24 @@ export class Timeline implements OnInit, AfterViewInit {
     return this.startOfDay(d);
   }
 
-  // onEdit(order: WorkOrderDocument) {
-  //   this.edit.emit(order);
-  // }
+  private startOfWeek(date: Date, weekStart: number = 1, offset: number = 0): Date {
+    // weekStart: 0=Sunday, 1=Monday
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day < weekStart ? -7 : 0) + weekStart + offset * 7;
+    return this.startOfDay(new Date(d.setDate(diff)));
+  }
 
-  // onDelete(order: WorkOrderDocument) {
-  //   this.delete.emit(order);
-  // }
+  private startOfMonth(date: Date, offset: number = 0): Date {
+    return new Date(date.getFullYear(), date.getMonth() + offset, 1);
+  }
+
+  private weeksBetween(start: Date, end: Date): number {
+    const msPerWeek = MILLI_SECONDS_IN_A_DAY * 7;
+    return Math.floor((this.startOfDay(end).getTime() - this.startOfDay(start).getTime()) / msPerWeek);
+  }
+
+  private monthsBetween(start: Date, end: Date): number {
+    return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+  }
 }

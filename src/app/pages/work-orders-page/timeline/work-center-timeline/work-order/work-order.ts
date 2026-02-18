@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+
 import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
-import { StatusBadge } from '../../../components/status-badge/status-badge';
 import { WorkOrderDocument } from '../../../../../core/models/work-order.model';
+import { StatusBadge } from '../../../components/status-badge/status-badge';
 
 @Component({
   selector: 'app-work-order',
@@ -17,6 +18,19 @@ export class WorkOrder {
 
   edit = output<WorkOrderDocument>();
   delete = output<WorkOrderDocument>();
+
+  tooltipText = computed(() => {
+    const wo = this.workOrder();
+    if (!wo?.data) {
+      return '';
+    }
+    return `${wo.data.name} (${wo.data.status}) ${this.isoToDisplay(wo.data.startDate)} – ${this.isoToDisplay(wo.data.endDate)}`;
+  });
+
+  isoToDisplay(iso: string): string {
+    const [year, month, day] = iso.split('-');
+    return `${month}.${day}.${year}`;
+  }
 
   onClickEdit() {
     const workOrder = this.workOrder();

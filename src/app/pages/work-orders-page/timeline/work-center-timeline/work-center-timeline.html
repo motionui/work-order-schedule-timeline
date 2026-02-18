@@ -6,7 +6,16 @@
 >
   <!-- Hover preview -->
   @if (hoverPreview(); as preview) {
-    <div class="hover-preview custom-hand-cursor" [style.left.px]="preview.left" [style.width.px]="preview.width"></div>
+    <div
+      class="hover-preview custom-hand-cursor"
+      ngbTooltip="Click to add dates"
+      placement="top"
+      [openDelay]="100"
+      [closeDelay]="0"
+      container="body"
+      [style.left.px]="preview.left"
+      [style.width.px]="preview.width"
+    ></div>
   }
 
   <!-- Existing work orders -->

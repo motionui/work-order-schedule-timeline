@@ -1,3 +1,4 @@
+<!-- @upgrade Add ARIA attributes and roles to all form fields and groups for accessibility compliance -->
 <section class="work-order-form">
   <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()">
     <header class="header">
@@ -10,7 +11,7 @@
         <button type="button" class="secondary-button" aria-label="Cancel button" (click)="onClickCancel()">Cancel</button>
 
         <button type="submit" class="primary-button" aria-label="Submit button" [disabled]="formGroup.invalid">
-          {{ formData()?.mode === 'create' ? 'Create' : 'Edit' }}
+          {{ formData()?.mode === 'create' ? 'Create' : 'Save' }}
         </button>
       </div>
     </header>
@@ -21,7 +22,7 @@
       <!-- Name -->
       <div class="form-field">
         <label for="name">Work Order Name</label>
-        <input id="name" type="text" formControlName="name" />
+        <input id="name" type="text" placeholder="Work Order Name" formControlName="name" />
         <span class="validation-error">
           @if (name.touched && name.errors?.['required']) {
             Work order name is required.
@@ -62,7 +63,7 @@
         <label for="endDate">End Date</label>
         <input
           id="endDate"
-          placeholder="mm.dd.yyyy"
+          placeholder="MM.DD.YYYY"
           formControlName="endDate"
           ngbDatepicker
           #endDateDatePicker="ngbDatepicker"
@@ -70,6 +71,9 @@
           (click)="endDateDatePicker.toggle()"
         />
         <span class="validation-error">
+          @if (endDate.touched && endDate.errors?.['required']) {
+            End date is required.
+          }
           @if (endDate.touched && formGroup.hasError('overlappingRange')) {
             The selected end date overlaps with the next scheduled work order.
           }
@@ -81,7 +85,7 @@
         <label for="startDate">Start Date</label>
         <input
           id="startDate"
-          placeholder="mm.dd.yyyy"
+          placeholder="MM.DD.YYYY"
           formControlName="startDate"
           ngbDatepicker
           #startDateDatePicker="ngbDatepicker"
@@ -89,6 +93,9 @@
           (click)="startDateDatePicker.toggle()"
         />
         <span class="validation-error">
+          @if (startDate.touched && startDate.errors?.['required']) {
+            Start date is required.
+          }
           @if (startDate.touched && formGroup.hasError('overlappingRange')) {
             The selected start date overlaps with the previous scheduled work order.
           }

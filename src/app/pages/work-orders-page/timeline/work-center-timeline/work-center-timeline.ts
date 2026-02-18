@@ -1,17 +1,20 @@
+// @upgrade Add ARIA roles and labels to work center timeline and work order bars for accessibility
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { WorkCenterDocument } from '../../../../core/models/work-center.model';
 import { WorkOrderDocument } from '../../../../core/models/work-order.model';
-import { DateRange, GUTTER_WIDTH_PX, TIMESCALE_UNIT_WIDTH_PX } from '../timeline';
-import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
 import { WorkOrderStore } from '../../../../core/services/work-order.store';
+import { DateRange, getTimescaleUnitWidth, GUTTER_WIDTH_PX } from '../timeline';
+import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrder } from './work-order/work-order';
-import { WorkCenterDocument } from '../../../../core/models/work-center.model';
 
 @Component({
   selector: 'app-work-center-timeline',
   standalone: true,
-  imports: [CommonModule, WorkOrder],
+  imports: [CommonModule, WorkOrder, NgbTooltipModule],
   templateUrl: './work-center-timeline.html',
   styleUrl: './work-center-timeline.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,7 +23,7 @@ export class WorkCenterTimeline {
   private workOrderDrawerService = inject(WorkOrderDrawerService);
   private workOrderStore = inject(WorkOrderStore);
 
-  timeScale = input<Timescale>('day');
+  timescale = input<Timescale>('day');
   dateRange = input.required<DateRange>();
   workCenter = input.required<WorkCenterDocument>();
   workOrders = input.required<WorkOrderDocument[]>();
@@ -42,36 +45,75 @@ export class WorkCenterTimeline {
     if (isOccupied) return null;
 
     return {
-      left: index * TIMESCALE_UNIT_WIDTH_PX + GUTTER_WIDTH_PX / 2,
-      width: TIMESCALE_UNIT_WIDTH_PX - GUTTER_WIDTH_PX,
+      left: index * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2,
+      width: getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX,
     };
   });
 
   visibleOrders = computed(() => {
     const { start, end } = this.dateRange();
+    const scale = this.timescale();
     return this.workOrders().filter((order) => {
       const s = new Date(order.data.startDate);
       const e = new Date(order.data.endDate);
+      // For week/month, show if any overlap with the interval
       return e >= start && s <= end;
     });
   });
 
   positionedOrders = computed(() => {
     const range = this.dateRange();
+    const scale = this.timescale();
 
     return this.visibleOrders().map((order) => {
       const orderStart = this.toLocalDate(order.data.startDate);
       const orderEnd = this.toLocalDate(order.data.endDate);
 
-      const clampedStart = orderStart < range.start ? range.start : orderStart;
-      const clampedEnd = orderEnd > range.end ? range.end : orderEnd;
+      let clampedStart = orderStart < range.start ? range.start : orderStart;
+      let clampedEnd = orderEnd > range.end ? range.end : orderEnd;
 
-      const left = this.daysBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH_PX + GUTTER_WIDTH_PX / 2;
-      const width = (this.daysBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH_PX - GUTTER_WIDTH_PX - 1;
+      let left = 0;
+      let width = 0;
+
+      if (scale === 'week') {
+        // Align clampedStart to the start of its week (Monday)
+        const weekStart = this.startOfWeek(clampedStart, 1);
+        left = this.weeksBetween(range.start, weekStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
+        width = (this.weeksBetween(weekStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
+      } else if (scale === 'month') {
+        left = this.monthsBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
+        width =
+          (this.monthsBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
+      } else {
+        left = this.daysBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
+        width =
+          (this.daysBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
+      }
 
       return { order, left, width };
     });
   });
+
+  // Helper to get the start of the week (Monday by default)
+  private startOfWeek(date: Date, weekStart: number = 1): Date {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day < weekStart ? -7 : 0) + weekStart;
+    return new Date(d.setDate(diff));
+  }
+
+  private weeksBetween(start: Date, end: Date): number {
+    const msPerWeek = 1000 * 60 * 60 * 24 * 7;
+    return Math.floor((this.startOfDay(end).getTime() - this.startOfDay(start).getTime()) / msPerWeek);
+  }
+
+  private monthsBetween(start: Date, end: Date): number {
+    return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+  }
+
+  private startOfDay(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
 
   onTimelineClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
@@ -82,9 +124,10 @@ export class WorkCenterTimeline {
     const x = event.clientX - rect.left;
 
     const adjustedX = x - GUTTER_WIDTH_PX / 2;
-    const dayIndex = Math.floor(adjustedX / TIMESCALE_UNIT_WIDTH_PX);
+    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timescale()));
     if (dayIndex < 0) return;
     const clickedDate = this.addDays(this.dateRange().start, dayIndex);
+    const endDate = this.addDays(clickedDate, 7);
 
     // only create if no order occupies this day
     const isOccupied = this.visibleOrders().some((order) => {
@@ -105,7 +148,7 @@ export class WorkCenterTimeline {
           workCenterId: this.workCenter().docId,
           status: 'open',
           startDate: this.toIso(clickedDate),
-          endDate: this.toIso(clickedDate),
+          endDate: this.toIso(endDate),
         },
       },
       currentWorkOrders: this.workOrders(),
@@ -141,7 +184,7 @@ export class WorkCenterTimeline {
     const x = event.clientX - rect.left;
 
     const adjustedX = x - GUTTER_WIDTH_PX / 2;
-    const dayIndex = Math.floor(adjustedX / TIMESCALE_UNIT_WIDTH_PX);
+    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timescale()));
     if (dayIndex < 0) {
       this.hoveredDayIndex.set(null);
       return;

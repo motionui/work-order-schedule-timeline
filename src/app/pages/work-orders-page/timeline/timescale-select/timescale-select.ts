@@ -1,6 +1,8 @@
+// @upgrade Add ARIA roles and labels to timescale select dropdown for accessibility
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, model, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
 import { NgSelectModule } from '@ng-select/ng-select';
 
 export type Timescale = 'day' | 'week' | 'month';

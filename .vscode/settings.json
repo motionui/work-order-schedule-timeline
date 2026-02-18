@@ -1,0 +1,25 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "prettier.configPath": ".prettierrc",
+  "editor.formatOnSave": true,
+  "files.autoSave": "onFocusChange",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "importSorter.generalConfiguration.sortOnBeforeSave": true,
+  "importSorter.importStringConfiguration.tabSize": 2,
+  "importSorter.sortConfiguration.customOrderingRules.rules": [
+    {
+      "regex": "^@angular",
+      "orderLevel": 1,
+      "disableSort": false,
+      "type": "path"
+    },
+    {
+      "regex": "^(?!@angular).*",
+      "orderLevel": 2,
+      "disableSort": false,
+      "type": "path"
+    }
+  ],
+  "importSorter.sortConfiguration.removeUnusedDefaultImports": true,
+  "importSorter.sortConfiguration.removeUnusedImports": true
+}
