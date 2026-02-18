@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, output, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  OnInit,
+  output,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Timescale, TimescaleSelect } from './timescale-select/timescale-select';
 import { WorkCenter } from './work-center/work-center';
@@ -18,6 +29,8 @@ export const TIMESCALE_UNIT_WIDTH_PX = 150;
 // total horizontal gap between work orders
 export const GUTTER_WIDTH_PX = 8;
 
+const MILLI_SECONDS_IN_DAY = 1000 * 60 * 60 * 24;
+
 @Component({
   selector: 'app-timeline',
   standalone: true,
@@ -26,8 +39,10 @@ export const GUTTER_WIDTH_PX = 8;
   styleUrl: './timeline.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Timeline implements OnInit {
+export class Timeline implements OnInit, AfterViewInit {
   private readonly store = inject(WorkOrderStore);
+
+  @ViewChild('scrollContainer', { static: false }) private scrollContainer!: ElementRef<HTMLDivElement>;
 
   // edit = output<WorkOrderDocument>();
   // delete = output<WorkOrderDocument>();
@@ -114,6 +129,28 @@ export class Timeline implements OnInit {
 
   ngOnInit(): void {
     this.store.loadSampleData();
+  }
+
+  ngAfterViewInit(): void {
+    requestAnimationFrame(() => {
+      this.centerToday();
+    });
+  }
+
+  private centerToday(): void {
+    const container = this.scrollContainer?.nativeElement;
+    if (!container) return;
+
+    const range = this.visibleDateRange();
+    const today = this.today;
+
+    const daysFromStart = Math.floor((today.getTime() - range.start.getTime()) / MILLI_SECONDS_IN_DAY);
+
+    const todayPixel = daysFromStart * TIMESCALE_UNIT_WIDTH_PX;
+
+    const centerOffset = container.clientWidth / 2;
+
+    container.scrollLeft = todayPixel - centerOffset + TIMESCALE_UNIT_WIDTH_PX / 2;
   }
 
   // -----------------------------
