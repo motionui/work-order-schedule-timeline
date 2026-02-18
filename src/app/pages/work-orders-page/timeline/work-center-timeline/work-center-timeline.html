@@ -1,12 +1,18 @@
-<div class="work-center-timeline" (click)="onTimelineClick($event)">
+<div
+  class="work-center-timeline"
+  (mousemove)="onMouseMove($event)"
+  (mouseleave)="onMouseLeave()"
+  (click)="onTimelineClick($event)"
+>
+  <!-- Hover preview -->
+  @if (hoverPreview(); as preview) {
+    <div class="hover-preview custom-hand-cursor" [style.left.px]="preview.left" [style.width.px]="preview.width"></div>
+  }
+
+  <!-- Existing work orders -->
   @for (item of positionedOrders(); track item.order.docId) {
-    <div
-      class="work-order-wrapper"
-      [style.left.px]="item.left"
-      [style.width.px]="item.width"
-      (click)="$event.stopPropagation()"
-    >
-      <app-work-order [workOrder]="item.order" (edit)="onEdit($event)" (delete)="onDelete($event)" />
+    <div class="work-order-wrapper" [style.left.px]="item.left" [style.width.px]="item.width">
+      <app-work-order [workOrder]="item.order" (edit)="onEdit(item.order)" (delete)="onDelete(item.order)" />
     </div>
   }
 </div>

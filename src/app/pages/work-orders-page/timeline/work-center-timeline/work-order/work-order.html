@@ -1,4 +1,4 @@
-<div class="work-order" [ngClass]="workOrder()?.data?.status">
+<div class="work-order custom-hand-cursor" [ngClass]="workOrder()?.data?.status">
   <span
     class="name truncate"
     [ngbTooltip]="workOrder()?.data?.name"
@@ -12,9 +12,9 @@
 
   <div class="status">
     <app-status-badge [status]="workOrder()?.data?.status || ''" />
-    <div ngbDropdown container="body">
+    <div class="custom-hand-cursor" ngbDropdown container="body">
       <button class="three-dots-button" ngbDropdownToggle>
-        <img src="images/three-dots.svg" class="icon" />
+        <img src="images/three-dots.svg" class="icon custom-hand-cursor" />
       </button>
       <div ngbDropdownMenu class="work-order-menu">
         <button ngbDropdownItem (click)="onClickEdit()">Edit</button>

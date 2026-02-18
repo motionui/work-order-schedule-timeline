@@ -34,7 +34,7 @@ body {
   font-weight: 400;
   outline: none;
   border: none;
-  min-width: 60px;
+  min-width: 70px;
 
   transition:
     background-color 0.15s ease,
@@ -139,4 +139,15 @@ input:-webkit-autofill:focus {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+// custom hand cursor
+.custom-hand-cursor {
+  cursor:
+    url('/images/custom-hand-cursor.png') 16 16,
+    auto;
+}
+
+button.three-dots-button {
+  @extend .custom-hand-cursor;
 }
