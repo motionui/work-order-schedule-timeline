@@ -1,9 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @use 'bootstrap/scss/bootstrap';
 
-@use 'third-party/ng-select';
-@use 'third-party/ngb-tooltip';
-@use 'third-party/ngb-offcanvas';
+@use 'libs/ng-select';
+@use 'libs/ngb-tooltip';
+@use 'libs/ngb-dropdown';
+@use 'libs/ngb-offcanvas';
 
 @use 'reset';
 @use 'colors' as colors;
@@ -33,7 +34,7 @@ body {
   font-weight: 400;
   outline: none;
   border: none;
-  min-width: 60px;
+  min-width: 70px;
 
   transition:
     background-color 0.15s ease,
@@ -138,4 +139,15 @@ input:-webkit-autofill:focus {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+// custom hand cursor
+.custom-hand-cursor {
+  cursor:
+    url('/images/custom-hand-cursor.png') 16 16,
+    auto;
+}
+
+button.three-dots-button {
+  @extend .custom-hand-cursor;
 }

@@ -21,4 +21,7 @@ Timescale dropdown
 Work order drawer
 - form field labels (sentense case or capitalized)
 - status dropdown seems to have a different chevron icon
+
+Work center work order
+- minimum duration = 1 day
 ```

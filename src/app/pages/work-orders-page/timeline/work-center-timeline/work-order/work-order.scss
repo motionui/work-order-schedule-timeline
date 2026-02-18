@@ -28,6 +28,7 @@
   border-radius: 5px;
   background-color: #f1f3f8;
   border: none;
+  padding: 0;
 
   &:hover {
     background-color: #d8dceb;
@@ -66,4 +67,28 @@
 .blocked {
   box-shadow: 0 0 0 1px colors.$status-blocked-parent-border-color;
   background-color: colors.$status-blocked-parent-background-color;
+}
+
+.work-order-menu {
+  box-shadow:
+    0 0 0 1px rgba(104, 113, 150, 0.1),
+    0 2.5px 3px -1.5px rgba(200, 207, 233, 1),
+    0 4.5px 5px -1px rgba(216, 220, 235, 1);
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 1);
+  border: none;
+}
+
+.work-order-menu .dropdown-item {
+  height: 28px;
+  padding: 5px 12px;
+  color: colors.$text-2;
+  font-size: 14px;
+  font-weight: 400;
+
+  &:hover,
+  &:focus {
+    background-color: transparent !important;
+    color: #3e40db;
+  }
 }

@@ -152,6 +152,10 @@
   border-bottom: 1px solid transparent;
 }
 
+.timeline-row > * {
+  flex: 1;
+}
+
 // hover state - work center row
 .work-center-row.hovered {
   background-color: #f5f7ff;
