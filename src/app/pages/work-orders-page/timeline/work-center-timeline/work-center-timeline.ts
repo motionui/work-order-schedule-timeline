@@ -76,9 +76,10 @@ export class WorkCenterTimeline {
       let width = 0;
 
       if (scale === 'week') {
-        left = this.weeksBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timeScale()) + GUTTER_WIDTH_PX / 2;
-        width =
-          (this.weeksBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timeScale()) - GUTTER_WIDTH_PX - 1;
+        // Align clampedStart to the start of its week (Monday)
+        const weekStart = this.startOfWeek(clampedStart, 1);
+        left = this.weeksBetween(range.start, weekStart) * getTimescaleUnitWidth(this.timeScale()) + GUTTER_WIDTH_PX / 2;
+        width = (this.weeksBetween(weekStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timeScale()) - GUTTER_WIDTH_PX - 1;
       } else if (scale === 'month') {
         left = this.monthsBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timeScale()) + GUTTER_WIDTH_PX / 2;
         width =
@@ -92,6 +93,14 @@ export class WorkCenterTimeline {
       return { order, left, width };
     });
   });
+
+  // Helper to get the start of the week (Monday by default)
+  private startOfWeek(date: Date, weekStart: number = 1): Date {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day < weekStart ? -7 : 0) + weekStart;
+    return new Date(d.setDate(diff));
+  }
 
   private weeksBetween(start: Date, end: Date): number {
     const msPerWeek = 1000 * 60 * 60 * 24 * 7;

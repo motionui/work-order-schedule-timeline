@@ -72,7 +72,8 @@ export class Timeline implements OnInit, AfterViewInit {
     if (scale === 'week') {
       // Start at the first week of the month, 2 months before today
       const startMonth = this.startOfMonth(this.today, -VISIBLE_MONTHS_WEEK_VIEW);
-      return this.startOfWeek(startMonth, 1, 0); // Monday
+      // Always align to Monday
+      return this.startOfWeek(startMonth, 1);
     } else if (scale === 'month') {
       return this.startOfMonth(this.today, -VISIBLE_MONTHS_MONTH_VIEW);
     }

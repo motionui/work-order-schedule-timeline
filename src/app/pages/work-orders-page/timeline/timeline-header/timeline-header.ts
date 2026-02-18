@@ -23,7 +23,8 @@ export class TimelineHeader {
 
     const result: Date[] = [];
 
-    let cursor = this.startOfDay(start);
+    // For week view, always align cursor to the start of the week (Monday)
+    let cursor = scale === 'week' ? this.startOfWeek(this.startOfDay(start), 1) : this.startOfDay(start);
     const rangeEnd = this.startOfDay(end);
 
     while (cursor <= rangeEnd) {
@@ -47,6 +48,13 @@ export class TimelineHeader {
 
     return result;
   });
+
+  private startOfWeek(date: Date, weekStart: number = 1): Date {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day < weekStart ? -7 : 0) + weekStart;
+    return new Date(d.setDate(diff));
+  }
 
   label(date: Date): string {
     switch (this.timeScale()) {
