@@ -31,8 +31,9 @@ export const TIMESCALE_UNIT_WIDTH_PX = 150;
 export const GUTTER_WIDTH_PX = 8;
 
 const VISIBLE_DAYS = 14;
-const VISIBLE_WEEKS = 8;
-const VISIBLE_MONTHS = 6;
+const VISIBLE_WEEKS = 0; // not used, replaced by months for week view
+const VISIBLE_MONTHS_WEEK_VIEW = 2; // ±2 months for week view
+const VISIBLE_MONTHS_MONTH_VIEW = 6; // ±6 months for month view
 const MILLI_SECONDS_IN_A_DAY = 1000 * 60 * 60 * 24;
 
 @Component({
@@ -56,9 +57,11 @@ export class Timeline implements OnInit, AfterViewInit {
   visibleStartDate = computed(() => {
     const scale = this.zoomLevel();
     if (scale === 'week') {
-      return this.startOfWeek(this.today, 1, -VISIBLE_WEEKS); // Monday
+      // Start at the first week of the month, 2 months before today
+      const startMonth = this.startOfMonth(this.today, -VISIBLE_MONTHS_WEEK_VIEW);
+      return this.startOfWeek(startMonth, 1, 0); // Monday
     } else if (scale === 'month') {
-      return this.startOfMonth(this.today, -VISIBLE_MONTHS);
+      return this.startOfMonth(this.today, -VISIBLE_MONTHS_MONTH_VIEW);
     }
     return this.addDays(this.today, -VISIBLE_DAYS);
   });
@@ -66,9 +69,13 @@ export class Timeline implements OnInit, AfterViewInit {
   visibleEndDate = computed(() => {
     const scale = this.zoomLevel();
     if (scale === 'week') {
-      return this.startOfWeek(this.today, 1, VISIBLE_WEEKS);
+      // End at the last week of the month, 2 months after today
+      const endMonth = this.startOfMonth(this.today, VISIBLE_MONTHS_WEEK_VIEW + 1); // +1 to include the last month
+      // Go to the last day of the previous month, then get the week start
+      const lastDayPrevMonth = new Date(endMonth.getFullYear(), endMonth.getMonth(), 0);
+      return this.startOfWeek(lastDayPrevMonth, 1, 0); // Monday
     } else if (scale === 'month') {
-      return this.startOfMonth(this.today, VISIBLE_MONTHS);
+      return this.startOfMonth(this.today, VISIBLE_MONTHS_MONTH_VIEW);
     }
     return this.addDays(this.today, VISIBLE_DAYS);
   });
