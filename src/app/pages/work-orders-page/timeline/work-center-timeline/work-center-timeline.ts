@@ -85,6 +85,39 @@ export class WorkCenterTimeline {
     const range = this.dateRange();
     const scale = this.timescale();
 
+    // For week view, group orders by week start
+    if (scale === 'week') {
+      // Group orders by week start date string
+      const weekGroups = new Map<string, WorkOrderDocument[]>();
+      for (const order of this.visibleOrders()) {
+        const orderStart = this.toLocalDate(order.data.startDate);
+        const weekStart = this.startOfWeek(orderStart, 1);
+        const key = weekStart.toISOString();
+        if (!weekGroups.has(key)) weekGroups.set(key, []);
+        weekGroups.get(key)!.push(order);
+      }
+      // Flatten with position info
+      const result: { order: WorkOrderDocument; left: number; width: number }[] = [];
+      for (const [weekKey, orders] of weekGroups.entries()) {
+        const weekStart = new Date(weekKey);
+        const weekIndex = this.weeksBetween(range.start, weekStart);
+        const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
+        const weekCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+        const slotWidth = weekCellWidth / 7;
+        for (const order of orders) {
+          const orderStart = this.toLocalDate(order.data.startDate);
+          // Day of week: 0=Sunday, 1=Monday, ...
+          let dayOfWeek = orderStart.getDay();
+          // Adjust so Monday=0, Sunday=6
+          dayOfWeek = (dayOfWeek + 6) % 7;
+          const left = weekCellLeft + slotWidth * dayOfWeek;
+          const width = slotWidth - 2; // small gap between slots
+          result.push({ order, left, width });
+        }
+      }
+      return result;
+    }
+    // Month and day view: unchanged
     return this.visibleOrders().map((order) => {
       const orderStart = this.toLocalDate(order.data.startDate);
       const orderEnd = this.toLocalDate(order.data.endDate);
@@ -95,12 +128,7 @@ export class WorkCenterTimeline {
       let left = 0;
       let width = 0;
 
-      if (scale === 'week') {
-        // Align clampedStart to the start of its week (Monday)
-        const weekStart = this.startOfWeek(clampedStart, 1);
-        left = this.weeksBetween(range.start, weekStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
-        width = (this.weeksBetween(weekStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
-      } else if (scale === 'month') {
+      if (scale === 'month') {
         left = this.monthsBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
         width =
           (this.monthsBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
