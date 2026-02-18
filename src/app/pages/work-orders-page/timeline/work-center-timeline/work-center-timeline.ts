@@ -7,11 +7,12 @@ import { WorkOrderDrawerService } from '../../../../core/services/work-order-dra
 import { WorkOrderStore } from '../../../../core/services/work-order.store';
 import { WorkOrder } from './work-order/work-order';
 import { WorkCenterDocument } from '../../../../core/models/work-center.model';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-work-center-timeline',
   standalone: true,
-  imports: [CommonModule, WorkOrder],
+  imports: [CommonModule, WorkOrder, NgbTooltipModule],
   templateUrl: './work-center-timeline.html',
   styleUrl: './work-center-timeline.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,29 +50,56 @@ export class WorkCenterTimeline {
 
   visibleOrders = computed(() => {
     const { start, end } = this.dateRange();
+    const scale = this.timeScale();
     return this.workOrders().filter((order) => {
       const s = new Date(order.data.startDate);
       const e = new Date(order.data.endDate);
+      // For week/month, show if any overlap with the interval
       return e >= start && s <= end;
     });
   });
 
   positionedOrders = computed(() => {
     const range = this.dateRange();
+    const scale = this.timeScale();
 
     return this.visibleOrders().map((order) => {
       const orderStart = this.toLocalDate(order.data.startDate);
       const orderEnd = this.toLocalDate(order.data.endDate);
 
-      const clampedStart = orderStart < range.start ? range.start : orderStart;
-      const clampedEnd = orderEnd > range.end ? range.end : orderEnd;
+      let clampedStart = orderStart < range.start ? range.start : orderStart;
+      let clampedEnd = orderEnd > range.end ? range.end : orderEnd;
 
-      const left = this.daysBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH_PX + GUTTER_WIDTH_PX / 2;
-      const width = (this.daysBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH_PX - GUTTER_WIDTH_PX - 1;
+      let left = 0;
+      let width = 0;
+
+      if (scale === 'week') {
+        left = this.weeksBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH_PX + GUTTER_WIDTH_PX / 2;
+        width = (this.weeksBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH_PX - GUTTER_WIDTH_PX - 1;
+      } else if (scale === 'month') {
+        left = this.monthsBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH_PX + GUTTER_WIDTH_PX / 2;
+        width = (this.monthsBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH_PX - GUTTER_WIDTH_PX - 1;
+      } else {
+        left = this.daysBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH_PX + GUTTER_WIDTH_PX / 2;
+        width = (this.daysBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH_PX - GUTTER_WIDTH_PX - 1;
+      }
 
       return { order, left, width };
     });
   });
+
+  private weeksBetween(start: Date, end: Date): number {
+    const msPerWeek = 1000 * 60 * 60 * 24 * 7;
+    return Math.floor((this.startOfDay(end).getTime() - this.startOfDay(start).getTime()) / msPerWeek);
+  }
+
+  private monthsBetween(start: Date, end: Date): number {
+    return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+  }
+
+  private startOfDay(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
 
   onTimelineClick(event: MouseEvent) {
     const target = event.target as HTMLElement;

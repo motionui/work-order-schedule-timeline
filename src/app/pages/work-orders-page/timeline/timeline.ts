@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   ElementRef,
   inject,
   OnInit,
@@ -30,6 +31,8 @@ export const TIMESCALE_UNIT_WIDTH_PX = 150;
 export const GUTTER_WIDTH_PX = 8;
 
 const VISIBLE_DAYS = 14;
+const VISIBLE_WEEKS = 8;
+const VISIBLE_MONTHS = 6;
 const MILLI_SECONDS_IN_DAY = 1000 * 60 * 60 * 24;
 
 @Component({
@@ -40,18 +43,20 @@ const MILLI_SECONDS_IN_DAY = 1000 * 60 * 60 * 24;
   styleUrl: './timeline.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Timeline implements OnInit, AfterViewInit {
+export class Timeline implements OnInit {
   private readonly store = inject(WorkOrderStore);
 
   @ViewChild('scrollContainer', { static: false }) private scrollContainer!: ElementRef<HTMLDivElement>;
-
-  // edit = output<WorkOrderDocument>();
-  // delete = output<WorkOrderDocument>();
 
   // -----------------------------
   // ZOOM
   // -----------------------------
   zoomLevel = signal<Timescale>('day');
+
+  private readonly centerOnZoomLevel = effect(() => {
+    this.zoomLevel();
+    requestAnimationFrame(() => this.centerToday());
+  });
 
   // -----------------------------
   // DATE RANGE (Single Source of Truth)
@@ -59,15 +64,38 @@ export class Timeline implements OnInit, AfterViewInit {
 
   private readonly today = this.startOfDay(new Date());
 
-  // Default 14-day window (±14 from today)
-  visibleStartDate = signal(this.addDays(this.today, -VISIBLE_DAYS));
-  visibleEndDate = signal(this.addDays(this.today, VISIBLE_DAYS));
+  visibleStartDate = computed(() => {
+    const scale = this.zoomLevel();
+    if (scale === 'week') {
+      return this.startOfWeek(this.today, 1, -VISIBLE_WEEKS); // Monday
+    } else if (scale === 'month') {
+      return this.startOfMonth(this.today, -VISIBLE_MONTHS);
+    }
+    return this.addDays(this.today, -VISIBLE_DAYS);
+  });
+
+  visibleEndDate = computed(() => {
+    const scale = this.zoomLevel();
+    if (scale === 'week') {
+      return this.startOfWeek(this.today, 1, VISIBLE_WEEKS);
+    } else if (scale === 'month') {
+      return this.startOfMonth(this.today, VISIBLE_MONTHS);
+    }
+    return this.addDays(this.today, VISIBLE_DAYS);
+  });
 
   totalWidth = computed(() => {
     const { start, end } = this.visibleDateRange();
-    const days = Math.floor((end.getTime() - start.getTime()) / 86400000) + 1;
-
-    return days * TIMESCALE_UNIT_WIDTH_PX;
+    const scale = this.zoomLevel();
+    let units = 0;
+    if (scale === 'week') {
+      units = this.weeksBetween(start, end) + 1;
+    } else if (scale === 'month') {
+      units = this.monthsBetween(start, end) + 1;
+    } else {
+      units = Math.floor((end.getTime() - start.getTime()) / MILLI_SECONDS_IN_DAY) + 1;
+    }
+    return units * TIMESCALE_UNIT_WIDTH_PX;
   });
 
   visibleDateRange = computed<DateRange>(() => ({
@@ -77,20 +105,21 @@ export class Timeline implements OnInit, AfterViewInit {
 
   readonly todayIndex = computed(() => {
     const { start, end } = this.visibleDateRange();
-
+    const scale = this.zoomLevel();
     if (this.today < start || this.today > end) {
       return -1; // today not visible
     }
-
-    const diff = Math.floor((this.today.getTime() - start.getTime()) / 86400000);
-
-    return diff;
+    if (scale === 'week') {
+      return this.weeksBetween(start, this.today);
+    } else if (scale === 'month') {
+      return this.monthsBetween(start, this.today);
+    }
+    return Math.floor((this.today.getTime() - start.getTime()) / MILLI_SECONDS_IN_DAY);
   });
 
   readonly todayLeft = computed(() => {
     const index = this.todayIndex();
     if (index < 0) return -1;
-
     return index * TIMESCALE_UNIT_WIDTH_PX;
   });
 
@@ -132,11 +161,11 @@ export class Timeline implements OnInit, AfterViewInit {
     this.store.loadSampleData();
   }
 
-  ngAfterViewInit(): void {
-    requestAnimationFrame(() => {
-      this.centerToday();
-    });
-  }
+  // ngAfterViewInit(): void {
+  //   requestAnimationFrame(() => {
+  //     this.centerToday();
+  //   });
+  // }
 
   private centerToday(): void {
     const container = this.scrollContainer?.nativeElement;
@@ -166,6 +195,27 @@ export class Timeline implements OnInit, AfterViewInit {
     const d = new Date(date);
     d.setDate(d.getDate() + days);
     return this.startOfDay(d);
+  }
+
+  private startOfWeek(date: Date, weekStart: number = 1, offset: number = 0): Date {
+    // weekStart: 0=Sunday, 1=Monday
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day < weekStart ? -7 : 0) + weekStart + offset * 7;
+    return this.startOfDay(new Date(d.setDate(diff)));
+  }
+
+  private startOfMonth(date: Date, offset: number = 0): Date {
+    return new Date(date.getFullYear(), date.getMonth() + offset, 1);
+  }
+
+  private weeksBetween(start: Date, end: Date): number {
+    const msPerWeek = MILLI_SECONDS_IN_DAY * 7;
+    return Math.floor((this.startOfDay(end).getTime() - this.startOfDay(start).getTime()) / msPerWeek);
+  }
+
+  private monthsBetween(start: Date, end: Date): number {
+    return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
   }
 
   // onEdit(order: WorkOrderDocument) {

@@ -26,7 +26,7 @@
   justify-content: center;
 
   flex: 0 0 variables.$timescale-unit-width-px;
-  width: 150px;
+  width: variables.$timescale-unit-width-px;
   box-sizing: border-box;
   text-align: center;
 }
