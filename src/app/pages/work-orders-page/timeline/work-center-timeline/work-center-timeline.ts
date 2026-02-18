@@ -219,22 +219,57 @@ export class WorkCenterTimeline {
     }
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const x = event.clientX - rect.left;
-
-    const adjustedX = x - GUTTER_WIDTH_PX / 2;
-    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timescale()));
-    if (dayIndex < 0) return;
-    const clickedDate = this.addDays(this.dateRange().start, dayIndex);
-    const endDate = this.addDays(clickedDate, 7);
-
+    const scale = this.timescale();
+    let dayIndex = null;
+    if (scale === 'week') {
+      const weekCellWidth = getTimescaleUnitWidth(scale);
+      const weekIndex = Math.floor(x / weekCellWidth);
+      const weekCellLeft = weekIndex * weekCellWidth;
+      const slotWidth = (weekCellWidth - GUTTER_WIDTH_PX) / 7;
+      const dayOfWeek = Math.floor((x - weekCellLeft - GUTTER_WIDTH_PX / 2) / slotWidth);
+      if (dayOfWeek < 0 || dayOfWeek > 6) {
+        return;
+      }
+      dayIndex = weekIndex * 7 + dayOfWeek;
+    } else if (scale === 'month') {
+      const monthCellWidth = getTimescaleUnitWidth(scale);
+      const monthIndex = Math.floor(x / monthCellWidth);
+      const monthCellLeft = monthIndex * monthCellWidth;
+      const rangeStart = this.dateRange().start;
+      const refDate = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + monthIndex, 1);
+      const daysInMonth = new Date(refDate.getFullYear(), refDate.getMonth() + 1, 0).getDate();
+      const slotWidth = (monthCellWidth - GUTTER_WIDTH_PX) / daysInMonth;
+      const dayOfMonth = Math.floor((x - monthCellLeft - GUTTER_WIDTH_PX / 2) / slotWidth);
+      if (dayOfMonth < 0 || dayOfMonth >= daysInMonth) {
+        return;
+      }
+      dayIndex = 0;
+      for (let i = 0; i < monthIndex; i++) {
+        const d = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + i + 1, 0).getDate();
+        dayIndex += d;
+      }
+      dayIndex += dayOfMonth;
+    } else {
+      const adjustedX = x - GUTTER_WIDTH_PX / 2;
+      const idx = Math.floor(adjustedX / getTimescaleUnitWidth(scale));
+      if (idx < 0) {
+        return;
+      }
+      dayIndex = idx;
+    }
+    const rangeStart = this.dateRange().start;
+    const clickedDate = this.addDays(rangeStart, dayIndex);
+    // Only allow today or future
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (clickedDate < today) return;
     // only create if no order occupies this day
     const isOccupied = this.visibleOrders().some((order) => {
       const start = this.toLocalDate(order.data.startDate);
       const end = this.toLocalDate(order.data.endDate);
       return clickedDate >= start && clickedDate <= end;
     });
-
     if (isOccupied) return;
-
     this.workOrderDrawerService.openDrawer({
       mode: 'create',
       workOrder: {
@@ -245,7 +280,7 @@ export class WorkCenterTimeline {
           workCenterId: this.workCenter().docId,
           status: 'open',
           startDate: this.toIso(clickedDate),
-          endDate: this.toIso(endDate),
+          endDate: this.toIso(this.addDays(clickedDate, 7)),
         },
       },
       currentWorkOrders: this.workOrders(),
