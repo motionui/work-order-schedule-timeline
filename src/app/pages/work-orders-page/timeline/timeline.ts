@@ -1,3 +1,4 @@
+// @upgrade Add ARIA roles and labels to timeline and timeline cells for accessibility compliance
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,

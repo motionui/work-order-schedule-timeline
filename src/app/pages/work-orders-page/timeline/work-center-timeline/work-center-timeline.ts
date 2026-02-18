@@ -1,13 +1,15 @@
+// @upgrade Add ARIA roles and labels to work center timeline and work order bars for accessibility
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { WorkCenterDocument } from '../../../../core/models/work-center.model';
 import { WorkOrderDocument } from '../../../../core/models/work-order.model';
-import { DateRange, GUTTER_WIDTH_PX, TIMESCALE_UNIT_WIDTH_PX } from '../timeline';
-import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
 import { WorkOrderStore } from '../../../../core/services/work-order.store';
+import { DateRange, GUTTER_WIDTH_PX, TIMESCALE_UNIT_WIDTH_PX } from '../timeline';
+import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrder } from './work-order/work-order';
-import { WorkCenterDocument } from '../../../../core/models/work-center.model';
-import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-work-center-timeline',

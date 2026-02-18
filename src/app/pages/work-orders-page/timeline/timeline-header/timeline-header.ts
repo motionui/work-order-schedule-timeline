@@ -1,7 +1,9 @@
+// @upgrade Add ARIA roles and labels to timeline header for screen reader support
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { Timescale } from '../timescale-select/timescale-select';
+
 import { DateRange } from '../timeline';
+import { Timescale } from '../timescale-select/timescale-select';
 
 @Component({
   selector: 'app-timeline-header',
