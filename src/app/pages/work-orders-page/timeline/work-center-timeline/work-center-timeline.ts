@@ -1,15 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { WorkOrderDocument } from '../../../../core/models/work-order.model';
-import { DateRange } from '../timeline';
+import { DateRange, GUTTER_WIDTH_PX, TIMESCALE_UNIT_WIDTH_PX } from '../timeline';
 import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
 import { WorkOrderStore } from '../../../../core/services/work-order.store';
 import { WorkOrder } from './work-order/work-order';
-
-// must match $work-order-timeline-cell-width in _variables.scss
-const TIMESCALE_UNIT_WIDTH = 150;
-const GUTTER = 8;
 
 @Component({
   selector: 'app-work-center-timeline',
@@ -46,8 +42,8 @@ export class WorkCenterTimeline {
       const clampedStart = orderStart < range.start ? range.start : orderStart;
       const clampedEnd = orderEnd > range.end ? range.end : orderEnd;
 
-      const left = this.daysBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH + GUTTER / 2;
-      const width = (this.daysBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH - GUTTER;
+      const left = this.daysBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH_PX + GUTTER_WIDTH_PX / 2;
+      const width = (this.daysBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH_PX - GUTTER_WIDTH_PX - 1;
 
       return { order, left, width };
     });
@@ -58,7 +54,7 @@ export class WorkCenterTimeline {
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const x = event.clientX - rect.left;
 
-    const dayIndex = Math.floor(x / TIMESCALE_UNIT_WIDTH);
+    const dayIndex = Math.floor(x / TIMESCALE_UNIT_WIDTH_PX);
     const clickedDate = this.addDays(range.start, dayIndex);
 
     console.log('Create work order on:', clickedDate);

@@ -1,9 +1,11 @@
 @use 'variables' as variables;
+@use 'colors' as colors;
 
 .work-center-timeline {
   position: relative;
   width: 100%;
   height: variables.$grid-data-row-height;
+  box-sizing: border-box;
 }
 
 .work-order-wrapper {

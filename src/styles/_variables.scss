@@ -2,7 +2,7 @@ $grid-work-center-width: 382px;
 $grid-header-row-height: 33px;
 $grid-data-row-height: 48px;
 
-// must match const TIMESCALE_UNIT_WIDTH = 150; in work-center-timeline.ts
-$work-order-timeline-cell-width: 150px;
+// must match const TIMESCALE_UNIT_WIDTH_PX in timeline.ts
+$timescale-unit-width-px: 150px;
 
 $offcanvas-width: 591px;

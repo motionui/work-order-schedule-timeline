@@ -21,9 +21,12 @@
 }
 
 .timeline-header-cell {
-  min-width: variables.$work-order-timeline-cell-width;
-  padding: 0 spacing.$spacing-4;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  flex: 0 0 variables.$timescale-unit-width-px;
+  width: 150px;
+  box-sizing: border-box;
+  text-align: center;
 }
