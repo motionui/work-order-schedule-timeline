@@ -10,7 +10,7 @@
         <button type="button" class="secondary-button" aria-label="Cancel button" (click)="onClickCancel()">Cancel</button>
 
         <button type="submit" class="primary-button" aria-label="Submit button" [disabled]="formGroup.invalid">
-          {{ formData()?.mode === 'create' ? 'Create' : 'Edit' }}
+          {{ formData()?.mode === 'create' ? 'Create' : 'Save' }}
         </button>
       </div>
     </header>

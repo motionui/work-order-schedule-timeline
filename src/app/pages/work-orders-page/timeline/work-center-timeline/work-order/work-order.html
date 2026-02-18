@@ -12,14 +12,18 @@
 
   <div class="status">
     <app-status-badge [status]="workOrder()?.data?.status || ''" />
-    <div class="custom-hand-cursor" ngbDropdown container="body">
-      <button class="three-dots-button" ngbDropdownToggle>
-        <img src="images/three-dots.svg" class="icon custom-hand-cursor" />
-      </button>
-      <div ngbDropdownMenu class="work-order-menu">
-        <button ngbDropdownItem (click)="onClickEdit()">Edit</button>
-        <button ngbDropdownItem (click)="onClickDelete()">Delete</button>
-      </div>
+    <div class="dropdown-slot">
+      @if (workOrder()?.data?.status !== 'complete') {
+        <div ngbDropdown container="body">
+          <button class="three-dots-button" ngbDropdownToggle>
+            <img src="images/three-dots.svg" class="icon custom-hand-cursor" />
+          </button>
+          <div ngbDropdownMenu class="work-order-menu">
+            <button ngbDropdownItem (click)="onClickEdit()">Edit</button>
+            <button ngbDropdownItem (click)="onClickDelete()">Delete</button>
+          </div>
+        </div>
+      }
     </div>
   </div>
 </div>

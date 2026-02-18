@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+
 import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
-import { StatusBadge } from '../../../components/status-badge/status-badge';
 import { WorkOrderDocument } from '../../../../../core/models/work-order.model';
+import { StatusBadge } from '../../../components/status-badge/status-badge';
 
 @Component({
   selector: 'app-work-order',
