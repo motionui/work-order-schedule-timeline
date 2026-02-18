@@ -26,7 +26,7 @@ export interface DateRange {
 }
 
 export const TIMESCALE_UNIT_DAY_WIDTH_PX = 150;
-export const TIMESCALE_UNIT_WEEK_WIDTH_PX = 100;
+export const TIMESCALE_UNIT_WEEK_WIDTH_PX = 1000;
 export const TIMESCALE_UNIT_MONTH_WIDTH_PX = 80;
 
 // must match $timescale-unit-width-day, $timescale-unit-width-week, $timescale-unit-width-month in _variables.scss

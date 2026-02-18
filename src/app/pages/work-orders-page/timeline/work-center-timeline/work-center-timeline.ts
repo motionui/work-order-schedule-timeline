@@ -87,7 +87,7 @@ export class WorkCenterTimeline {
 
     // For week view, group orders by week start
     if (scale === 'week') {
-      // Group orders by week start date string
+      // ...existing code for week view...
       const weekGroups = new Map<string, WorkOrderDocument[]>();
       for (const order of this.visibleOrders()) {
         const orderStart = this.toLocalDate(order.data.startDate);
@@ -96,7 +96,6 @@ export class WorkCenterTimeline {
         if (!weekGroups.has(key)) weekGroups.set(key, []);
         weekGroups.get(key)!.push(order);
       }
-      // Flatten with position info
       const result: { order: WorkOrderDocument; left: number; width: number }[] = [];
       for (const [weekKey, orders] of weekGroups.entries()) {
         const weekStart = new Date(weekKey);
@@ -106,18 +105,46 @@ export class WorkCenterTimeline {
         const slotWidth = weekCellWidth / 7;
         for (const order of orders) {
           const orderStart = this.toLocalDate(order.data.startDate);
-          // Day of week: 0=Sunday, 1=Monday, ...
           let dayOfWeek = orderStart.getDay();
-          // Adjust so Monday=0, Sunday=6
           dayOfWeek = (dayOfWeek + 6) % 7;
           const left = weekCellLeft + slotWidth * dayOfWeek;
-          const width = slotWidth - 2; // small gap between slots
+          const width = slotWidth - 2;
           result.push({ order, left, width });
         }
       }
       return result;
     }
-    // Month and day view: unchanged
+    // For month view, group orders by month start
+    if (scale === 'month') {
+      // Group orders by month start date string
+      const monthGroups = new Map<string, WorkOrderDocument[]>();
+      for (const order of this.visibleOrders()) {
+        const orderStart = this.toLocalDate(order.data.startDate);
+        const monthStart = new Date(orderStart.getFullYear(), orderStart.getMonth(), 1);
+        const key = monthStart.toISOString();
+        if (!monthGroups.has(key)) monthGroups.set(key, []);
+        monthGroups.get(key)!.push(order);
+      }
+      const result: { order: WorkOrderDocument; left: number; width: number }[] = [];
+      for (const [monthKey, orders] of monthGroups.entries()) {
+        const monthStart = new Date(monthKey);
+        const monthIndex = this.monthsBetween(range.start, monthStart);
+        const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
+        const monthCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+        // Number of days in this month
+        const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
+        const slotWidth = monthCellWidth / daysInMonth;
+        for (const order of orders) {
+          const orderStart = this.toLocalDate(order.data.startDate);
+          const dayOfMonth = orderStart.getDate() - 1; // 0-based
+          const left = monthCellLeft + slotWidth * dayOfMonth;
+          const width = slotWidth - 2;
+          result.push({ order, left, width });
+        }
+      }
+      return result;
+    }
+    // Day view: unchanged
     return this.visibleOrders().map((order) => {
       const orderStart = this.toLocalDate(order.data.startDate);
       const orderEnd = this.toLocalDate(order.data.endDate);
@@ -128,15 +155,8 @@ export class WorkCenterTimeline {
       let left = 0;
       let width = 0;
 
-      if (scale === 'month') {
-        left = this.monthsBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
-        width =
-          (this.monthsBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
-      } else {
-        left = this.daysBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
-        width =
-          (this.daysBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
-      }
+      left = this.daysBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
+      width = (this.daysBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
 
       return { order, left, width };
     });
