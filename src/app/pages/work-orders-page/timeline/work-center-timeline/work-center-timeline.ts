@@ -105,10 +105,20 @@ export class WorkCenterTimeline {
         const slotWidth = weekCellWidth / 7;
         for (const order of orders) {
           const orderStart = this.toLocalDate(order.data.startDate);
-          let dayOfWeek = orderStart.getDay();
-          dayOfWeek = (dayOfWeek + 6) % 7;
-          const left = weekCellLeft + slotWidth * dayOfWeek;
-          const width = slotWidth - 2;
+          const orderEnd = this.toLocalDate(order.data.endDate);
+          // Clamp to this week
+          const weekStartDay = weekStart.getDate();
+          const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekStartDay + 6);
+          const clampedStart = orderStart < weekStart ? weekStart : orderStart;
+          const clampedEnd = orderEnd > weekEnd ? weekEnd : orderEnd;
+          // Day of week: 0=Monday, 6=Sunday
+          let startDayOfWeek = clampedStart.getDay();
+          let endDayOfWeek = clampedEnd.getDay();
+          startDayOfWeek = (startDayOfWeek + 6) % 7;
+          endDayOfWeek = (endDayOfWeek + 6) % 7;
+          const left = weekCellLeft + slotWidth * startDayOfWeek;
+          const width = slotWidth * (endDayOfWeek - startDayOfWeek + 1) - 2;
           result.push({ order, left, width });
         }
       }
@@ -136,9 +146,15 @@ export class WorkCenterTimeline {
         const slotWidth = monthCellWidth / daysInMonth;
         for (const order of orders) {
           const orderStart = this.toLocalDate(order.data.startDate);
-          const dayOfMonth = orderStart.getDate() - 1; // 0-based
-          const left = monthCellLeft + slotWidth * dayOfMonth;
-          const width = slotWidth - 2;
+          const orderEnd = this.toLocalDate(order.data.endDate);
+          // Clamp to this month
+          const clampedStart = orderStart < monthStart ? monthStart : orderStart;
+          const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0);
+          const clampedEnd = orderEnd > monthEnd ? monthEnd : orderEnd;
+          const startDayOfMonth = clampedStart.getDate() - 1; // 0-based
+          const endDayOfMonth = clampedEnd.getDate() - 1; // 0-based
+          const left = monthCellLeft + slotWidth * startDayOfMonth;
+          const width = slotWidth * (endDayOfMonth - startDayOfMonth + 1) - 2;
           result.push({ order, left, width });
         }
       }
