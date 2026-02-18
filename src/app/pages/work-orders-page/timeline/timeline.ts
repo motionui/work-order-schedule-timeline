@@ -1,24 +1,23 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   ElementRef,
   inject,
   OnInit,
-  output,
   signal,
   ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Timescale, TimescaleSelect } from './timescale-select/timescale-select';
-import { WorkCenter } from './work-center/work-center';
+
 import { WorkCenterDocument } from '../../../core/models/work-center.model';
-import { WorkOrderStore } from '../../../core/services/work-order.store';
-import { WorkCenterTimeline } from './work-center-timeline/work-center-timeline';
 import { WorkOrderDocument } from '../../../core/models/work-order.model';
+import { WorkOrderStore } from '../../../core/services/work-order.store';
 import { TimelineHeader } from './timeline-header/timeline-header';
+import { Timescale, TimescaleSelect } from './timescale-select/timescale-select';
+import { WorkCenterTimeline } from './work-center-timeline/work-center-timeline';
+import { WorkCenter } from './work-center/work-center';
 
 export interface DateRange {
   start: Date;
@@ -33,7 +32,7 @@ export const GUTTER_WIDTH_PX = 8;
 const VISIBLE_DAYS = 14;
 const VISIBLE_WEEKS = 8;
 const VISIBLE_MONTHS = 6;
-const MILLI_SECONDS_IN_DAY = 1000 * 60 * 60 * 24;
+const MILLI_SECONDS_IN_A_DAY = 1000 * 60 * 60 * 24;
 
 @Component({
   selector: 'app-timeline',
@@ -43,24 +42,13 @@ const MILLI_SECONDS_IN_DAY = 1000 * 60 * 60 * 24;
   styleUrl: './timeline.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Timeline implements OnInit {
+export class Timeline implements OnInit, AfterViewInit {
   private readonly store = inject(WorkOrderStore);
 
   @ViewChild('scrollContainer', { static: false }) private scrollContainer!: ElementRef<HTMLDivElement>;
 
-  // -----------------------------
-  // ZOOM
-  // -----------------------------
+  // timescale select on work order page
   zoomLevel = signal<Timescale>('day');
-
-  private readonly centerOnZoomLevel = effect(() => {
-    this.zoomLevel();
-    requestAnimationFrame(() => this.centerToday());
-  });
-
-  // -----------------------------
-  // DATE RANGE (Single Source of Truth)
-  // -----------------------------
 
   private readonly today = this.startOfDay(new Date());
 
@@ -93,7 +81,7 @@ export class Timeline implements OnInit {
     } else if (scale === 'month') {
       units = this.monthsBetween(start, end) + 1;
     } else {
-      units = Math.floor((end.getTime() - start.getTime()) / MILLI_SECONDS_IN_DAY) + 1;
+      units = Math.floor((end.getTime() - start.getTime()) / MILLI_SECONDS_IN_A_DAY) + 1;
     }
     return units * TIMESCALE_UNIT_WIDTH_PX;
   });
@@ -114,7 +102,7 @@ export class Timeline implements OnInit {
     } else if (scale === 'month') {
       return this.monthsBetween(start, this.today);
     }
-    return Math.floor((this.today.getTime() - start.getTime()) / MILLI_SECONDS_IN_DAY);
+    return Math.floor((this.today.getTime() - start.getTime()) / MILLI_SECONDS_IN_A_DAY);
   });
 
   readonly todayLeft = computed(() => {
@@ -161,11 +149,11 @@ export class Timeline implements OnInit {
     this.store.loadSampleData();
   }
 
-  // ngAfterViewInit(): void {
-  //   requestAnimationFrame(() => {
-  //     this.centerToday();
-  //   });
-  // }
+  ngAfterViewInit(): void {
+    requestAnimationFrame(() => {
+      this.centerToday();
+    });
+  }
 
   private centerToday(): void {
     const container = this.scrollContainer?.nativeElement;
@@ -174,7 +162,7 @@ export class Timeline implements OnInit {
     const range = this.visibleDateRange();
     const today = this.today;
 
-    const daysFromStart = Math.floor((today.getTime() - range.start.getTime()) / MILLI_SECONDS_IN_DAY);
+    const daysFromStart = Math.floor((today.getTime() - range.start.getTime()) / MILLI_SECONDS_IN_A_DAY);
 
     const todayPixel = daysFromStart * TIMESCALE_UNIT_WIDTH_PX;
 
@@ -210,19 +198,11 @@ export class Timeline implements OnInit {
   }
 
   private weeksBetween(start: Date, end: Date): number {
-    const msPerWeek = MILLI_SECONDS_IN_DAY * 7;
+    const msPerWeek = MILLI_SECONDS_IN_A_DAY * 7;
     return Math.floor((this.startOfDay(end).getTime() - this.startOfDay(start).getTime()) / msPerWeek);
   }
 
   private monthsBetween(start: Date, end: Date): number {
     return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
   }
-
-  // onEdit(order: WorkOrderDocument) {
-  //   this.edit.emit(order);
-  // }
-
-  // onDelete(order: WorkOrderDocument) {
-  //   this.delete.emit(order);
-  // }
 }
