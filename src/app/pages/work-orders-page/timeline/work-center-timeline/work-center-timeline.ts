@@ -47,8 +47,9 @@ export class WorkCenterTimeline {
       const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
       const weekCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
       const slotWidth = weekCellWidth / 7;
-      left = weekCellLeft + slotWidth * dayOfWeek;
-      width = slotWidth;
+      // Move 2px left, extend width by 2px
+      left = weekCellLeft + slotWidth * dayOfWeek + 3;
+      width = slotWidth - 6;
     } else if (scale === 'month') {
       clickedDate = this.addDays(rangeStart, index);
       const monthIndex =
@@ -58,13 +59,14 @@ export class WorkCenterTimeline {
       const daysInMonth = new Date(clickedDate.getFullYear(), clickedDate.getMonth() + 1, 0).getDate();
       const dayOfMonth = clickedDate.getDate() - 1;
       const slotWidth = monthCellWidth / daysInMonth;
-      left = monthCellLeft + slotWidth * dayOfMonth;
-      width = slotWidth;
+      // Account for 4px right padding and 6px left offset for better alignment
+      left = monthCellLeft + slotWidth * dayOfMonth + 6;
+      width = slotWidth - 8;
     } else {
       // day
       clickedDate = this.addDays(rangeStart, index);
-      left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
-      width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+      left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2 + 4;
+      width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX - 8;
     }
 
     // Only allow today or future
