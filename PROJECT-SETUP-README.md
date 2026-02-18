@@ -27,4 +27,7 @@ Work center work order
 
 Add project setup approach
 Libraries used and why
+
+Assuming you cannot creat work order prior to today's day
+you cannot edit or delete work orders that are completed
 ```

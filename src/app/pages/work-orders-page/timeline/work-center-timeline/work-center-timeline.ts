@@ -41,14 +41,27 @@ export class WorkCenterTimeline {
     let width = 0;
 
     if (scale === 'week') {
-      // index is week index from start
-      clickedDate = this.addDays(rangeStart, index * 7);
-      left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
-      width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+      // index is day index from start of visible range
+      clickedDate = this.addDays(rangeStart, index);
+      const weekIndex = Math.floor(index / 7);
+      const dayOfWeek = index % 7;
+      const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
+      const weekCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+      const slotWidth = weekCellWidth / 7;
+      left = weekCellLeft + slotWidth * dayOfWeek;
+      width = slotWidth;
     } else if (scale === 'month') {
-      clickedDate = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + index, 1);
-      left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
-      width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+      clickedDate = this.addDays(rangeStart, index);
+      // Find month cell and day in month
+      const monthIndex =
+        clickedDate.getFullYear() * 12 + clickedDate.getMonth() - (rangeStart.getFullYear() * 12 + rangeStart.getMonth());
+      const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
+      const monthCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+      const daysInMonth = new Date(clickedDate.getFullYear(), clickedDate.getMonth() + 1, 0).getDate();
+      const dayOfMonth = clickedDate.getDate() - 1;
+      const slotWidth = monthCellWidth / daysInMonth;
+      left = monthCellLeft + slotWidth * dayOfMonth;
+      width = slotWidth;
     } else {
       // day
       clickedDate = this.addDays(rangeStart, index);
@@ -266,12 +279,52 @@ export class WorkCenterTimeline {
   onMouseMove(event: MouseEvent) {
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const x = event.clientX - rect.left;
-
-    const adjustedX = x - GUTTER_WIDTH_PX / 2;
-    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timescale()));
-    if (dayIndex < 0) {
-      this.hoveredDayIndex.set(null);
-      return;
+    const scale = this.timescale();
+    let dayIndex = null;
+    if (scale === 'week') {
+      // Find which week cell
+      const weekCellWidth = getTimescaleUnitWidth(scale);
+      const weekIndex = Math.floor(x / weekCellWidth);
+      const weekCellLeft = weekIndex * weekCellWidth;
+      const slotWidth = (weekCellWidth - GUTTER_WIDTH_PX) / 7;
+      const dayOfWeek = Math.floor((x - weekCellLeft - GUTTER_WIDTH_PX / 2) / slotWidth);
+      if (dayOfWeek < 0 || dayOfWeek > 6) {
+        this.hoveredDayIndex.set(null);
+        return;
+      }
+      // Calculate global day index from visible range start
+      dayIndex = weekIndex * 7 + dayOfWeek;
+    } else if (scale === 'month') {
+      // Find which month cell
+      const monthCellWidth = getTimescaleUnitWidth(scale);
+      const monthIndex = Math.floor(x / monthCellWidth);
+      const monthCellLeft = monthIndex * monthCellWidth;
+      const rangeStart = this.dateRange().start;
+      // Get days in this month
+      const refDate = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + monthIndex, 1);
+      const daysInMonth = new Date(refDate.getFullYear(), refDate.getMonth() + 1, 0).getDate();
+      const slotWidth = (monthCellWidth - GUTTER_WIDTH_PX) / daysInMonth;
+      const dayOfMonth = Math.floor((x - monthCellLeft - GUTTER_WIDTH_PX / 2) / slotWidth);
+      if (dayOfMonth < 0 || dayOfMonth >= daysInMonth) {
+        this.hoveredDayIndex.set(null);
+        return;
+      }
+      // Calculate global day index from visible range start
+      dayIndex = 0;
+      for (let i = 0; i < monthIndex; i++) {
+        const d = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + i + 1, 0).getDate();
+        dayIndex += d;
+      }
+      dayIndex += dayOfMonth;
+    } else {
+      // day view
+      const adjustedX = x - GUTTER_WIDTH_PX / 2;
+      const idx = Math.floor(adjustedX / getTimescaleUnitWidth(scale));
+      if (idx < 0) {
+        this.hoveredDayIndex.set(null);
+        return;
+      }
+      dayIndex = idx;
     }
     this.hoveredDayIndex.set(dayIndex);
   }
