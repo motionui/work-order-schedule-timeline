@@ -22,7 +22,7 @@
       }
 
       <!-- BODY -->
-      <div class="timeline-rows" [style.width.px]="totalWidth()">
+      <div class="timeline-rows" [ngClass]="timescale()" [style.width.px]="totalWidth()">
         @for (group of workOrdersGroupByWorkCenters(); track group.workCenter.docId) {
           <div
             class="timeline-row"
