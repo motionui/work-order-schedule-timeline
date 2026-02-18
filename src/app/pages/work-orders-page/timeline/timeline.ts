@@ -25,8 +25,21 @@ export interface DateRange {
   end: Date;
 }
 
-// must match $work-order-timeline-cell-width in _variables.scss
-export const TIMESCALE_UNIT_WIDTH_PX = 150;
+export const TIMESCALE_UNIT_DAY_WIDTH_PX = 200;
+export const TIMESCALE_UNIT_WEEK_WIDTH_PX = 80;
+export const TIMESCALE_UNIT_MONTH_WIDTH_PX = 40;
+
+// must match $timescale-unit-width-day, $timescale-unit-width-week, $timescale-unit-width-month in _variables.scss
+export const TIMESCALE_UNIT_WIDTH_LOOKUP: Record<Timescale, number> = {
+  day: 150,
+  week: 80,
+  month: 40,
+};
+
+export function getTimescaleUnitWidth(scale: Timescale): number {
+  return TIMESCALE_UNIT_WIDTH_LOOKUP[scale];
+}
+
 // total horizontal gap between work orders
 export const GUTTER_WIDTH_PX = 8;
 
@@ -91,7 +104,7 @@ export class Timeline implements OnInit, AfterViewInit {
     } else {
       units = Math.floor((end.getTime() - start.getTime()) / MILLI_SECONDS_IN_A_DAY) + 1;
     }
-    return units * TIMESCALE_UNIT_WIDTH_PX;
+    return units * getTimescaleUnitWidth(this.zoomLevel());
   });
 
   visibleDateRange = computed<DateRange>(() => ({
@@ -116,7 +129,7 @@ export class Timeline implements OnInit, AfterViewInit {
   readonly todayLeft = computed(() => {
     const index = this.todayIndex();
     if (index < 0) return -1;
-    return index * TIMESCALE_UNIT_WIDTH_PX;
+    return index * getTimescaleUnitWidth(this.zoomLevel());
   });
 
   // -----------------------------
@@ -172,11 +185,11 @@ export class Timeline implements OnInit, AfterViewInit {
 
     const daysFromStart = Math.floor((today.getTime() - range.start.getTime()) / MILLI_SECONDS_IN_A_DAY);
 
-    const todayPixel = daysFromStart * TIMESCALE_UNIT_WIDTH_PX;
+    const todayPixel = daysFromStart * getTimescaleUnitWidth(this.zoomLevel());
 
     const centerOffset = container.clientWidth / 2;
 
-    container.scrollLeft = todayPixel - centerOffset + TIMESCALE_UNIT_WIDTH_PX / 2;
+    container.scrollLeft = todayPixel - centerOffset + getTimescaleUnitWidth(this.zoomLevel()) / 2;
   }
 
   // -----------------------------

@@ -1,7 +1,7 @@
 <div class="timeline-header">
   <div class="timeline-header-inner">
     @for (col of columns(); track col.getTime()) {
-      <div class="timeline-header-cell">
+      <div class="timeline-header-cell" [ngClass]="timeScale()">
         {{ label(col) }}
       </div>
     }

@@ -7,7 +7,7 @@ import { WorkCenterDocument } from '../../../../core/models/work-center.model';
 import { WorkOrderDocument } from '../../../../core/models/work-order.model';
 import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
 import { WorkOrderStore } from '../../../../core/services/work-order.store';
-import { DateRange, GUTTER_WIDTH_PX, TIMESCALE_UNIT_WIDTH_PX } from '../timeline';
+import { DateRange, getTimescaleUnitWidth, GUTTER_WIDTH_PX } from '../timeline';
 import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrder } from './work-order/work-order';
 
@@ -45,8 +45,8 @@ export class WorkCenterTimeline {
     if (isOccupied) return null;
 
     return {
-      left: index * TIMESCALE_UNIT_WIDTH_PX + GUTTER_WIDTH_PX / 2,
-      width: TIMESCALE_UNIT_WIDTH_PX - GUTTER_WIDTH_PX,
+      left: index * getTimescaleUnitWidth(this.timeScale()) + GUTTER_WIDTH_PX / 2,
+      width: getTimescaleUnitWidth(this.timeScale()) - GUTTER_WIDTH_PX,
     };
   });
 
@@ -76,14 +76,17 @@ export class WorkCenterTimeline {
       let width = 0;
 
       if (scale === 'week') {
-        left = this.weeksBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH_PX + GUTTER_WIDTH_PX / 2;
-        width = (this.weeksBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH_PX - GUTTER_WIDTH_PX - 1;
+        left = this.weeksBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timeScale()) + GUTTER_WIDTH_PX / 2;
+        width =
+          (this.weeksBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timeScale()) - GUTTER_WIDTH_PX - 1;
       } else if (scale === 'month') {
-        left = this.monthsBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH_PX + GUTTER_WIDTH_PX / 2;
-        width = (this.monthsBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH_PX - GUTTER_WIDTH_PX - 1;
+        left = this.monthsBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timeScale()) + GUTTER_WIDTH_PX / 2;
+        width =
+          (this.monthsBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timeScale()) - GUTTER_WIDTH_PX - 1;
       } else {
-        left = this.daysBetween(range.start, clampedStart) * TIMESCALE_UNIT_WIDTH_PX + GUTTER_WIDTH_PX / 2;
-        width = (this.daysBetween(clampedStart, clampedEnd) + 1) * TIMESCALE_UNIT_WIDTH_PX - GUTTER_WIDTH_PX - 1;
+        left = this.daysBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timeScale()) + GUTTER_WIDTH_PX / 2;
+        width =
+          (this.daysBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timeScale()) - GUTTER_WIDTH_PX - 1;
       }
 
       return { order, left, width };
@@ -112,7 +115,7 @@ export class WorkCenterTimeline {
     const x = event.clientX - rect.left;
 
     const adjustedX = x - GUTTER_WIDTH_PX / 2;
-    const dayIndex = Math.floor(adjustedX / TIMESCALE_UNIT_WIDTH_PX);
+    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timeScale()));
     if (dayIndex < 0) return;
     const clickedDate = this.addDays(this.dateRange().start, dayIndex);
     const endDate = this.addDays(clickedDate, 7);
@@ -172,7 +175,7 @@ export class WorkCenterTimeline {
     const x = event.clientX - rect.left;
 
     const adjustedX = x - GUTTER_WIDTH_PX / 2;
-    const dayIndex = Math.floor(adjustedX / TIMESCALE_UNIT_WIDTH_PX);
+    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timeScale()));
     if (dayIndex < 0) {
       this.hoveredDayIndex.set(null);
       return;
