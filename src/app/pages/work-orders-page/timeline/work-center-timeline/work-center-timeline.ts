@@ -41,7 +41,6 @@ export class WorkCenterTimeline {
     let width = 0;
 
     if (scale === 'week') {
-      // index is day index from start of visible range
       clickedDate = this.addDays(rangeStart, index);
       const weekIndex = Math.floor(index / 7);
       const dayOfWeek = index % 7;
@@ -52,7 +51,6 @@ export class WorkCenterTimeline {
       width = slotWidth;
     } else if (scale === 'month') {
       clickedDate = this.addDays(rangeStart, index);
-      // Find month cell and day in month
       const monthIndex =
         clickedDate.getFullYear() * 12 + clickedDate.getMonth() - (rangeStart.getFullYear() * 12 + rangeStart.getMonth());
       const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
@@ -68,6 +66,13 @@ export class WorkCenterTimeline {
       left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
       width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
     }
+
+    // Only allow today or future
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const slotDate = new Date(clickedDate);
+    slotDate.setHours(0, 0, 0, 0);
+    if (slotDate < today) return null;
 
     const isOccupied = this.visibleOrders().some((order) => {
       const start = this.toLocalDate(order.data.startDate);
