@@ -24,8 +24,13 @@ export class WorkOrder {
     if (!wo?.data) {
       return '';
     }
-    return `${wo.data.name} - ${wo.data.status}`;
+    return `${wo.data.name} (${wo.data.status}) ${this.isoToDisplay(wo.data.startDate)} – ${this.isoToDisplay(wo.data.endDate)}`;
   });
+
+  isoToDisplay(iso: string): string {
+    const [year, month, day] = iso.split('-');
+    return `${month}.${day}.${year}`;
+  }
 
   onClickEdit() {
     const workOrder = this.workOrder();

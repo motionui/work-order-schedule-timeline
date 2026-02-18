@@ -142,8 +142,9 @@ input:-webkit-autofill:focus {
 }
 
 // custom hand cursor
+// defined hotspot to be x=5 and y=0
 .custom-hand-cursor {
   cursor:
-    url('/images/custom-hand-cursor.png') 24 22,
+    url('/images/custom-hand-cursor.png') 5 0,
     pointer;
 }

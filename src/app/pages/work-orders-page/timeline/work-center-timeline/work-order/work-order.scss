@@ -19,17 +19,20 @@
   line-height: 1.2;
 }
 
+// Ensure the three-dots menu button is fully clickable and cursor is visible
 .three-dots-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  padding: 8px;
+  background: transparent;
+  border: none;
   width: 24px;
   height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 5px;
   background-color: #f1f3f8;
-  border: none;
-  padding: 0;
+  // inherit custom cursor from parent if set
+  cursor: inherit;
 
   &:hover {
     background-color: #d8dceb;
