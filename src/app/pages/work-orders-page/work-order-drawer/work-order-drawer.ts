@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild, computed, effect, inject } from '@angular/core';
-import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap/offcanvas';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, TemplateRef, ViewChild } from '@angular/core';
 
+import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap/offcanvas';
 import { WorkOrderDrawerService } from '../../../core/services/work-order-drawer.service';
 import { WorkOrderForm, WorkOrderFormData } from './work-order-form/work-order-form';
 
@@ -50,6 +50,15 @@ export class WorkOrderDrawer {
       position: 'end',
       panelClass: 'work-order-drawer',
       backdropClass: 'work-order-backdrop',
+    });
+
+    this.offcanvasRef.shown.subscribe(() => {
+      // wait 1 frame so offcanvas layout is settled
+      requestAnimationFrame(() => {
+        const el = document.getElementById('name') as HTMLInputElement | null;
+        el?.focus();
+        el?.select();
+      });
     });
 
     this.offcanvasRef.result.finally(() => {

@@ -1,12 +1,13 @@
-<div class="work-order custom-hand-cursor" [ngClass]="workOrder()?.data?.status">
-  <span
-    class="name truncate"
-    [ngbTooltip]="workOrder()?.data?.name"
-    placement="top"
-    [openDelay]="650"
-    [closeDelay]="50"
-    container="body"
-  >
+<div
+  class="work-order custom-hand-cursor"
+  [ngClass]="workOrder()?.data?.status"
+  [ngbTooltip]="tooltipText()"
+  placement="top"
+  [openDelay]="200"
+  [closeDelay]="0"
+  container="body"
+>
+  <span class="name truncate">
     {{ workOrder()?.data?.name }}
   </span>
 
@@ -15,8 +16,8 @@
     <div class="dropdown-slot">
       @if (workOrder()?.data?.status !== 'complete') {
         <div ngbDropdown container="body">
-          <button class="three-dots-button" ngbDropdownToggle>
-            <img src="images/three-dots.svg" class="icon custom-hand-cursor" />
+          <button class="three-dots-button custom-hand-cursor" ngbDropdownToggle>
+            <img src="images/three-dots.svg" class="icon" />
           </button>
           <div ngbDropdownMenu class="work-order-menu">
             <button ngbDropdownItem (click)="onClickEdit()">Edit</button>

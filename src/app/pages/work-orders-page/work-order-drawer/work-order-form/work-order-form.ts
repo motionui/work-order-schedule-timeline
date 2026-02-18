@@ -1,22 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import {
-  FormGroup,
-  FormControl,
-  ReactiveFormsModule,
-  Validators,
   AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
   ValidationErrors,
   ValidatorFn,
+  Validators,
 } from '@angular/forms';
-import { NgSelectModule } from '@ng-select/ng-select';
-import { NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
-import { StatusBadge } from '../../components/status-badge/status-badge';
-import { DataPickerDateFormatService } from '../../../../core/services/data-picker-date-format.service';
+import { NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { WORK_ORDER_STATUS_OPTIONS, WorkOrderDocument, WorkOrderStatus } from '../../../../core/models/work-order.model';
+import { DataPickerDateFormatService } from '../../../../core/services/data-picker-date-format.service';
 import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
 import { WorkOrderStore } from '../../../../core/services/work-order.store';
+import { StatusBadge } from '../../components/status-badge/status-badge';
 
 export interface WorkOrderFormData {
   mode: 'create' | 'edit';

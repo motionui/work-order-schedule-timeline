@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { WorkOrderDocument } from '../../../../../core/models/work-order.model';
@@ -18,6 +18,14 @@ export class WorkOrder {
 
   edit = output<WorkOrderDocument>();
   delete = output<WorkOrderDocument>();
+
+  tooltipText = computed(() => {
+    const wo = this.workOrder();
+    if (!wo?.data) {
+      return '';
+    }
+    return `${wo.data.name} - ${wo.data.status}`;
+  });
 
   onClickEdit() {
     const workOrder = this.workOrder();
