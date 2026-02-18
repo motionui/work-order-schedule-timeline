@@ -128,9 +128,34 @@ export class Timeline implements OnInit, AfterViewInit {
   });
 
   readonly todayLeft = computed(() => {
-    const index = this.todayIndex();
-    if (index < 0) return -1;
-    return index * getTimescaleUnitWidth(this.timescale());
+    const scale = this.timescale();
+    const { start } = this.visibleDateRange();
+    if (this.today < start) return -1;
+    if (scale === 'week') {
+      // Find week index and offset within week
+      const weekIndex = this.weeksBetween(start, this.today);
+      const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale);
+      const weekCellWidth = getTimescaleUnitWidth(scale);
+      const slotWidth = weekCellWidth / 7;
+      // Day of week: 0=Monday, 6=Sunday
+      let dayOfWeek = this.today.getDay();
+      dayOfWeek = (dayOfWeek + 6) % 7;
+      return weekCellLeft + slotWidth * dayOfWeek;
+    } else if (scale === 'month') {
+      // Find month index and offset within month
+      const monthIndex = this.monthsBetween(start, this.today);
+      const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale);
+      const monthCellWidth = getTimescaleUnitWidth(scale);
+      const daysInMonth = new Date(this.today.getFullYear(), this.today.getMonth() + 1, 0).getDate();
+      const slotWidth = monthCellWidth / daysInMonth;
+      const dayOfMonth = this.today.getDate() - 1; // 0-based
+      return monthCellLeft + slotWidth * dayOfMonth;
+    } else {
+      // day mode
+      const index = this.todayIndex();
+      if (index < 0) return -1;
+      return index * getTimescaleUnitWidth(scale);
+    }
   });
 
   // -----------------------------
