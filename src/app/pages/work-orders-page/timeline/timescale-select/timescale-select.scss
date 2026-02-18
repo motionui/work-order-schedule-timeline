@@ -32,6 +32,14 @@
       background-size: 12px;
       transform-origin: center;
     }
+
+    .ng-dropdown-panel,
+    .ng-arrow-wrapper,
+    .ng-select-container {
+      cursor:
+        url('/images/custom-hand-cursor.png') 5 0,
+        pointer !important;
+    }
   }
 
   .ng-select-container {

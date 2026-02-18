@@ -25,7 +25,7 @@ export interface DateRange {
   end: Date;
 }
 
-export const TIMESCALE_UNIT_DAY_WIDTH_PX = 150;
+export const TIMESCALE_UNIT_DAY_WIDTH_PX = 200;
 export const TIMESCALE_UNIT_WEEK_WIDTH_PX = 80;
 export const TIMESCALE_UNIT_MONTH_WIDTH_PX = 40;
 

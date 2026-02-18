@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+
 import { WorkCenterDocument } from '../models/work-center.model';
 import { WorkOrderDocument } from '../models/work-order.model';
 
@@ -601,7 +602,11 @@ export class WorkOrderStore {
 
   update(updatedWorkOrder: WorkOrderDocument): void {
     this.workOrders.update((workOrders) =>
-      workOrders.map((workOrder) => (workOrder.docId === updatedWorkOrder.docId ? updatedWorkOrder : workOrder)),
+      workOrders.map((workOrder) =>
+        workOrder.docId === updatedWorkOrder.docId && workOrder.data.workCenterId === updatedWorkOrder.data.workCenterId
+          ? updatedWorkOrder
+          : workOrder,
+      ),
     );
   }
 

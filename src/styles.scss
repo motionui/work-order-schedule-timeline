@@ -143,8 +143,19 @@ input:-webkit-autofill:focus {
 
 // custom hand cursor
 // defined hotspot to be x=5 and y=0
-.custom-hand-cursor {
+.custom-hand-cursor,
+button,
+[type='button'],
+[type='reset'],
+[type='submit'],
+a,
+.ng-select,
+.ng-select-container,
+.ng-select-container *,
+[role='button'],
+[ngbdropdown],
+[ngbdropdowntoggle] {
   cursor:
     url('/images/custom-hand-cursor.png') 5 0,
-    pointer;
+    pointer !important;
 }

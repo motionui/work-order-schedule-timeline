@@ -125,9 +125,15 @@
   flex-direction: column;
 
   // background-image: repeating-linear-gradient(to right, #e5e7eb 0, #e5e7eb 1px, transparent 1px, transparent 150px);
-  background-image: repeating-linear-gradient(to right, transparent 0, transparent 149px, #e5e7eb 149px, #e5e7eb 150px);
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0,
+    transparent calc(#{variables.$timescale-unit-day-width-px} - 1px),
+    #e5e7eb calc(#{variables.$timescale-unit-day-width-px} - 1px),
+    #e5e7eb #{variables.$timescale-unit-day-width-px}
+  );
 
-  background-size: 150px 100%;
+  background-size: variables.$timescale-unit-day-width-px 100%;
   background-repeat: repeat-x;
 }
 
