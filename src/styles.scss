@@ -147,7 +147,3 @@ input:-webkit-autofill:focus {
     url('/images/custom-hand-cursor.png') 16 16,
     auto;
 }
-
-button.three-dots-button {
-  @extend .custom-hand-cursor;
-}

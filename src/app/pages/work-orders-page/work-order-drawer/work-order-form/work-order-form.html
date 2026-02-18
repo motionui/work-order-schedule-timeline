@@ -21,7 +21,7 @@
       <!-- Name -->
       <div class="form-field">
         <label for="name">Work Order Name</label>
-        <input id="name" type="text" formControlName="name" />
+        <input id="name" type="text" placeholder="Work Order Name" formControlName="name" />
         <span class="validation-error">
           @if (name.touched && name.errors?.['required']) {
             Work order name is required.

@@ -24,4 +24,7 @@ Work order drawer
 
 Work center work order
 - minimum duration = 1 day
+
+Add project setup approach
+Libraries used and why
 ```
