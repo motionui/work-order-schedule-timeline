@@ -152,11 +152,41 @@
   border-bottom: 1px solid transparent;
 }
 
-/* HOVER STATES */
+// hover state - work center row
 .work-center-row.hovered {
   background-color: #f5f7ff;
 }
 
+// hover state - work center timeline row
 .timeline-row.hovered {
   background-color: #eef0ff;
+}
+
+// today tag
+.today-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+
+  background-color: #d4d7ff;
+  pointer-events: none;
+}
+
+.today-tag {
+  position: absolute;
+  top: 33px;
+
+  padding: 2px 8px;
+  border-radius: 6px;
+
+  background: #6366f1;
+  color: white;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 25;
 }

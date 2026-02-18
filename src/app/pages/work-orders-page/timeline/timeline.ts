@@ -59,6 +59,25 @@ export class Timeline implements OnInit {
     end: this.visibleEndDate(),
   }));
 
+  readonly todayIndex = computed(() => {
+    const { start, end } = this.visibleDateRange();
+
+    if (this.today < start || this.today > end) {
+      return -1; // today not visible
+    }
+
+    const diff = Math.floor((this.today.getTime() - start.getTime()) / 86400000);
+
+    return diff;
+  });
+
+  readonly todayLeft = computed(() => {
+    const index = this.todayIndex();
+    if (index < 0) return -1;
+
+    return index * TIMESCALE_UNIT_WIDTH_PX;
+  });
+
   // -----------------------------
   // UI STATE
   // -----------------------------

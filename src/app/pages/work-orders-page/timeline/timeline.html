@@ -16,6 +16,11 @@
         </div>
       </div>
 
+      @if (todayLeft() >= 0) {
+        <div class="today-line" [style.left.px]="todayLeft()"></div>
+        <div class="today-tag" [style.left.px]="todayLeft()">Current day</div>
+      }
+
       <!-- BODY -->
       <div class="timeline-rows" [style.width.px]="totalWidth()">
         @for (group of workOrdersGroupByWorkCenters(); track group.workCenter.docId) {
