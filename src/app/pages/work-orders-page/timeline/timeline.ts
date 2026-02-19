@@ -65,7 +65,12 @@ export class Timeline implements OnInit, AfterViewInit {
   // timescale select on work order page
   timescale = signal<Timescale>('day');
 
-  private readonly today = this.startOfDay(new Date());
+  // private readonly today = this.startOfDay(new Date());
+  // Add 1 day for correct alignment
+  // If your timeline starts at 1/31 and you set today to 2/1, but the slot calculation uses (getDate() - 1),
+  // then day 1 of the month (2/1) will be at offset 0, which is the same as the first slot (1/31).
+  // This causes the today line to appear on the first visible day, not the actual 2/1 slot.
+  private readonly today = this.startOfDay(this.addDays(new Date('2026-02-09'), 1));
 
   visibleStartDate = computed(() => {
     const scale = this.timescale();

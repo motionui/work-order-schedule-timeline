@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { Timeline } from './pages/work-orders-page/timeline/timeline';
+
 import { WorkOrdersPage } from './pages/work-orders-page/work-orders-page';
 
 @Component({
