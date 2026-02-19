@@ -18,6 +18,16 @@ import {
   ViewChild,
 } from '@angular/core';
 
+import {
+  addDays,
+  MILLI_SECONDS_IN_A_DAY,
+  monthsBetween,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
+  weeksBetween,
+} from '../../../core/common/date-helpers';
+import { getTimescaleUnitWidth } from '../../../core/common/timescale-helpers';
 import { WorkCenterDocument } from '../../../core/models/work-center.model';
 import { WorkOrderDocument } from '../../../core/models/work-order.model';
 import { WorkOrderStore } from '../../../core/services/work-order.store';
@@ -31,28 +41,10 @@ export interface DateRange {
   end: Date;
 }
 
-export const TIMESCALE_UNIT_DAY_WIDTH_PX = 150;
-export const TIMESCALE_UNIT_WEEK_WIDTH_PX = 1000;
-export const TIMESCALE_UNIT_MONTH_WIDTH_PX = 3500;
-
-// must match $timescale-unit-width-day, $timescale-unit-width-week, $timescale-unit-width-month in _variables.scss
-export const TIMESCALE_UNIT_WIDTH_LOOKUP: Record<Timescale, number> = {
-  day: TIMESCALE_UNIT_DAY_WIDTH_PX,
-  week: TIMESCALE_UNIT_WEEK_WIDTH_PX,
-  month: TIMESCALE_UNIT_MONTH_WIDTH_PX,
-};
-
-export function getTimescaleUnitWidth(scale: Timescale): number {
-  return TIMESCALE_UNIT_WIDTH_LOOKUP[scale];
-}
-
 // total horizontal gap between work orders
-export const GUTTER_WIDTH_PX = 8;
-
 const VISIBLE_DAYS = 14;
 const VISIBLE_MONTHS_WEEK_VIEW = 2; // ±2 months for week view
 const VISIBLE_MONTHS_MONTH_VIEW = 6; // ±6 months for month view
-const MILLI_SECONDS_IN_A_DAY = 1000 * 60 * 60 * 24;
 
 @Component({
   selector: 'app-timeline',
@@ -76,7 +68,7 @@ export class Timeline implements OnInit {
   // If your timeline starts at 1/31 and you set today to 2/1, but the slot calculation uses (getDate() - 1),
   // then day 1 of the month (2/1) will be at offset 0, which is the same as the first slot (1/31).
   // This causes the today line to appear on the first visible day, not the actual 2/1 slot.
-  private readonly today = this.startOfDay(this.addDays(new Date('2026-02-09'), 1));
+  private readonly today = startOfDay(addDays(new Date('2026-02-09'), 1));
 
   // UI state for hover work center work orders timeline
   // This is needed to highlight the entire row of the work center
@@ -86,27 +78,27 @@ export class Timeline implements OnInit {
     const scale = this.timescale();
     if (scale === 'week') {
       // Start at the first week of the month, 2 months before today
-      const startMonth = this.startOfMonth(this.today, -VISIBLE_MONTHS_WEEK_VIEW);
+      const startMonth = startOfMonth(this.today, -VISIBLE_MONTHS_WEEK_VIEW);
       // Always align to Monday
-      return this.startOfWeek(startMonth, 1);
+      return startOfWeek(startMonth, 1);
     } else if (scale === 'month') {
-      return this.startOfMonth(this.today, -VISIBLE_MONTHS_MONTH_VIEW);
+      return startOfMonth(this.today, -VISIBLE_MONTHS_MONTH_VIEW);
     }
-    return this.addDays(this.today, -VISIBLE_DAYS);
+    return addDays(this.today, -VISIBLE_DAYS);
   });
 
   visibleEndDate = computed(() => {
     const scale = this.timescale();
     if (scale === 'week') {
       // End at the last week of the month, 2 months after today
-      const endMonth = this.startOfMonth(this.today, VISIBLE_MONTHS_WEEK_VIEW + 1); // +1 to include the last month
+      const endMonth = startOfMonth(this.today, VISIBLE_MONTHS_WEEK_VIEW + 1); // +1 to include the last month
       // Go to the last day of the previous month, then get the week start
       const lastDayPrevMonth = new Date(endMonth.getFullYear(), endMonth.getMonth(), 0);
-      return this.startOfWeek(lastDayPrevMonth, 1, 0); // Monday
+      return startOfWeek(lastDayPrevMonth, 1, 0); // Monday
     } else if (scale === 'month') {
-      return this.startOfMonth(this.today, VISIBLE_MONTHS_MONTH_VIEW);
+      return startOfMonth(this.today, VISIBLE_MONTHS_MONTH_VIEW);
     }
-    return this.addDays(this.today, VISIBLE_DAYS);
+    return addDays(this.today, VISIBLE_DAYS);
   });
 
   totalWidth = computed(() => {
@@ -114,9 +106,9 @@ export class Timeline implements OnInit {
     const scale = this.timescale();
     let units = 0;
     if (scale === 'week') {
-      units = this.weeksBetween(start, end) + 1;
+      units = weeksBetween(start, end) + 1;
     } else if (scale === 'month') {
-      units = this.monthsBetween(start, end) + 1;
+      units = monthsBetween(start, end) + 1;
     } else {
       units = Math.floor((end.getTime() - start.getTime()) / MILLI_SECONDS_IN_A_DAY) + 1;
     }
@@ -135,9 +127,9 @@ export class Timeline implements OnInit {
       return -1; // today not visible
     }
     if (scale === 'week') {
-      return this.weeksBetween(start, this.today);
+      return weeksBetween(start, this.today);
     } else if (scale === 'month') {
-      return this.monthsBetween(start, this.today);
+      return monthsBetween(start, this.today);
     }
     return Math.floor((this.today.getTime() - start.getTime()) / MILLI_SECONDS_IN_A_DAY);
   });
@@ -148,7 +140,7 @@ export class Timeline implements OnInit {
     if (this.today < start) return -1;
     if (scale === 'week') {
       // Find week index and offset within week
-      const weekIndex = this.weeksBetween(start, this.today);
+      const weekIndex = weeksBetween(start, this.today);
       const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale);
       const weekCellWidth = getTimescaleUnitWidth(scale);
       const slotWidth = weekCellWidth / 7;
@@ -157,7 +149,7 @@ export class Timeline implements OnInit {
       // Position at exact start of slot
       return weekCellLeft + slotWidth * dayOfWeek;
     } else if (scale === 'month') {
-      const monthIndex = this.monthsBetween(start, this.today);
+      const monthIndex = monthsBetween(start, this.today);
       const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale);
       const monthCellWidth = getTimescaleUnitWidth(scale);
       const daysInMonth = new Date(this.today.getFullYear(), this.today.getMonth() + 1, 0).getDate();
@@ -217,7 +209,7 @@ export class Timeline implements OnInit {
     let todayPixel = 0;
 
     if (scale === 'week') {
-      const weekIndex = this.weeksBetween(start, this.today);
+      const weekIndex = weeksBetween(start, this.today);
       const weekCellLeft = weekIndex * unitWidth;
 
       const slotWidth = unitWidth / 7;
@@ -227,7 +219,7 @@ export class Timeline implements OnInit {
 
       todayPixel = weekCellLeft + slotWidth * dayOfWeek + slotWidth / 2;
     } else if (scale === 'month') {
-      const monthIndex = this.monthsBetween(start, this.today);
+      const monthIndex = monthsBetween(start, this.today);
       const monthCellLeft = monthIndex * unitWidth;
 
       const daysInMonth = new Date(this.today.getFullYear(), this.today.getMonth() + 1, 0).getDate();
@@ -250,37 +242,5 @@ export class Timeline implements OnInit {
       left: Math.max(0, Math.min(target, max)),
       behavior: 'smooth',
     });
-  }
-
-  // date helpers
-  private startOfDay(date: Date): Date {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  }
-
-  private addDays(date: Date, days: number): Date {
-    const d = new Date(date);
-    d.setDate(d.getDate() + days);
-    return this.startOfDay(d);
-  }
-
-  private startOfWeek(date: Date, weekStart: number = 1, offset: number = 0): Date {
-    // weekStart: 0=Sunday, 1=Monday
-    const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day < weekStart ? -7 : 0) + weekStart + offset * 7;
-    return this.startOfDay(new Date(d.setDate(diff)));
-  }
-
-  private startOfMonth(date: Date, offset: number = 0): Date {
-    return new Date(date.getFullYear(), date.getMonth() + offset, 1);
-  }
-
-  private weeksBetween(start: Date, end: Date): number {
-    const msPerWeek = MILLI_SECONDS_IN_A_DAY * 7;
-    return Math.floor((this.startOfDay(end).getTime() - this.startOfDay(start).getTime()) / msPerWeek);
-  }
-
-  private monthsBetween(start: Date, end: Date): number {
-    return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
   }
 }

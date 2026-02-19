@@ -38,12 +38,12 @@ npm install --save-dev husky lint-staged
 
 # Assumptions & Implementation Notes
 
-While reviewing the BRD and reference video, several assumptions were made to resolve minor ambiguities and ensure a consistent implementation.
+While reviewing the requirements doc and reference video, several assumptions were made to resolve minor ambiguities and ensure a consistent implementation.
 
 ## Timescale Dropdown
 
 - The dropdown chevron icon points **up when opened** and **down when closed**, following common UI conventions.
-- Although the demo video shows **Month view**, the BRD (`FE-technical-test.md`) specifies **Day view as the default zoom level**. This implementation follows the BRD and defaults to **Day view**.
+- Although the demo video shows **Month view**, the requirement doc (`FE-technical-test.md`) specifies **Day view as the default zoom level**. This implementation follows the requirement doc and defaults to **Day view**.
 
 ## Work Order Drawer
 
@@ -59,7 +59,7 @@ While reviewing the BRD and reference video, several assumptions were made to re
 
 ## Date Picker
 
-- I do not see a design for the calendar dropdown in the Sketch file, so I am currently using the default style.
+- I wasn’t able to find a specific design for the calendar dropdown in the Sketch file, so I’m using the default style for now.
 
 # Upgrades / Recommendations
 

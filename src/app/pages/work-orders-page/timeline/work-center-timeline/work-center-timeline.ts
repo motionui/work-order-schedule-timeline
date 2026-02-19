@@ -10,11 +10,12 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { getTimescaleUnitWidth } from '../../../../core/common/timescale-helpers';
 import { WorkCenterDocument } from '../../../../core/models/work-center.model';
 import { WorkOrderDocument } from '../../../../core/models/work-order.model';
 import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
 import { WorkOrderStore } from '../../../../core/services/work-order.store';
-import { DateRange, getTimescaleUnitWidth, GUTTER_WIDTH_PX } from '../timeline';
+import { DateRange } from '../timeline';
 import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrder } from './work-order/work-order';
 
@@ -22,6 +23,7 @@ import { WorkOrder } from './work-order/work-order';
 const MONTH_LEFT_PADDING = 4;
 const MONTH_RIGHT_PADDING = 4;
 const MONTH_GAP = 2;
+const GUTTER_WIDTH_PX = 8;
 
 @Component({
   selector: 'app-work-center-timeline',
