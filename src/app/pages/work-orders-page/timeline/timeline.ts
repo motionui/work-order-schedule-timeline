@@ -1,13 +1,16 @@
 // @upgrade Add ARIA roles and labels to timeline and timeline cells for accessibility compliance
 import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   ElementRef,
   inject,
+  Injector,
   OnInit,
+  runInInjectionContext,
   signal,
   ViewChild,
 } from '@angular/core';
@@ -57,7 +60,8 @@ const MILLI_SECONDS_IN_A_DAY = 1000 * 60 * 60 * 24;
   styleUrl: './timeline.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Timeline implements OnInit, AfterViewInit {
+export class Timeline implements OnInit {
+  private injector = inject(Injector);
   private readonly store = inject(WorkOrderStore);
 
   @ViewChild('scrollContainer', { static: false }) private scrollContainer!: ElementRef<HTMLDivElement>;
@@ -71,6 +75,10 @@ export class Timeline implements OnInit, AfterViewInit {
   // then day 1 of the month (2/1) will be at offset 0, which is the same as the first slot (1/31).
   // This causes the today line to appear on the first visible day, not the actual 2/1 slot.
   private readonly today = this.startOfDay(this.addDays(new Date('2026-02-09'), 1));
+
+  // UI state for hover work center work orders timeline
+  // This is needed to highlight the entire row of the work center
+  hoveredWorkCenter = signal<WorkCenterDocument | null>(null);
 
   visibleStartDate = computed(() => {
     const scale = this.timescale();
@@ -161,16 +169,7 @@ export class Timeline implements OnInit, AfterViewInit {
     }
   });
 
-  // -----------------------------
-  // UI STATE
-  // -----------------------------
-
-  hoveredWorkCenter = signal<WorkCenterDocument | null>(null);
-
-  // -----------------------------
-  // GROUP WORK ORDERS BY CENTER
-  // -----------------------------
-
+  // group work orders by work center
   workOrdersGroupByWorkCenters = computed<{ workCenter: WorkCenterDocument; workOrders: WorkOrderDocument[] }[]>(() => {
     const centers = this.store.workCenters$();
     const orders = this.store.workOrders$();
@@ -191,40 +190,67 @@ export class Timeline implements OnInit, AfterViewInit {
     }));
   });
 
-  // -----------------------------
-  // LIFECYCLE
-  // -----------------------------
+  constructor() {
+    effect(() => {
+      this.timescale();
+      runInInjectionContext(this.injector, () => {
+        afterNextRender(() => this.centerToday());
+      });
+    });
+  }
 
+  // component lifecycle methods for loading data and centering today on init
   ngOnInit(): void {
     this.store.loadSampleData();
   }
 
-  ngAfterViewInit(): void {
-    requestAnimationFrame(() => {
-      this.centerToday();
-    });
-  }
-
-  private centerToday(): void {
+  protected centerToday(): void {
     const container = this.scrollContainer?.nativeElement;
     if (!container) return;
 
-    const range = this.visibleDateRange();
-    const today = this.today;
+    const scale = this.timescale();
+    const { start } = this.visibleDateRange();
+    const unitWidth = getTimescaleUnitWidth(scale);
 
-    const daysFromStart = Math.floor((today.getTime() - range.start.getTime()) / MILLI_SECONDS_IN_A_DAY);
+    let todayPixel = 0;
 
-    const todayPixel = daysFromStart * getTimescaleUnitWidth(this.timescale());
+    if (scale === 'week') {
+      const weekIndex = this.weeksBetween(start, this.today);
+      const weekCellLeft = weekIndex * unitWidth;
+
+      const slotWidth = unitWidth / 7;
+
+      let dayOfWeek = this.today.getDay();
+      dayOfWeek = (dayOfWeek + 6) % 7; // Monday start
+
+      todayPixel = weekCellLeft + slotWidth * dayOfWeek + slotWidth / 2;
+    } else if (scale === 'month') {
+      const monthIndex = this.monthsBetween(start, this.today);
+      const monthCellLeft = monthIndex * unitWidth;
+
+      const daysInMonth = new Date(this.today.getFullYear(), this.today.getMonth() + 1, 0).getDate();
+
+      const slotWidth = unitWidth / daysInMonth;
+      const dayOfMonth = this.today.getDate() - 1;
+
+      todayPixel = monthCellLeft + slotWidth * dayOfMonth + slotWidth / 2;
+    } else {
+      const daysFromStart = Math.floor((this.today.getTime() - start.getTime()) / MILLI_SECONDS_IN_A_DAY);
+
+      todayPixel = daysFromStart * unitWidth + unitWidth / 2;
+    }
 
     const centerOffset = container.clientWidth / 2;
+    const target = todayPixel - centerOffset;
+    const max = container.scrollWidth - container.clientWidth;
 
-    container.scrollLeft = todayPixel - centerOffset + getTimescaleUnitWidth(this.timescale()) / 2;
+    container.scrollTo({
+      left: Math.max(0, Math.min(target, max)),
+      behavior: 'smooth',
+    });
   }
 
-  // -----------------------------
-  // DATE HELPERS
-  // -----------------------------
-
+  // date helpers
   private startOfDay(date: Date): Date {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }

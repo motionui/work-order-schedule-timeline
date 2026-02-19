@@ -10,6 +10,28 @@
   gap: 24px;
 }
 
+.timeline-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.today-button {
+  width: auto;
+  min-width: unset;
+  height: 25px;
+  min-height: 25px;
+  border-radius: 5px;
+  box-shadow: 1px 2.5px 3px -1.5px rgba(200, 207, 233, 1);
+  padding: 5px 8px;
+  background: #6366f1;
+  color: white;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
 /* 2 × 2 GRID */
 .work-orders-timeline {
   display: grid;
@@ -31,7 +53,6 @@
 
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
-  // border-right: 1px solid colors.$border-default;
 
   height: variables.$grid-header-row-height;
 
@@ -46,16 +67,6 @@
     line-height: 1.2;
   }
 }
-
-/* RIGHT COLUMN (ONLY SCROLL CONTAINER) */
-// .right-column {
-//   grid-column: 2;
-//   grid-row: 1 / span 2;
-
-//   overflow-x: auto; /* SINGLE SCROLL CONTEXT */
-//   overflow-y: hidden;
-//   position: relative;
-// }
 
 /* HEADER */
 .timeline-header {

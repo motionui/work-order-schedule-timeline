@@ -1,5 +1,8 @@
 <section class="timeline">
-  <app-timescale-select [(selected)]="timescale"></app-timescale-select>
+  <div class="timeline-actions">
+    <app-timescale-select [(selected)]="timescale"></app-timescale-select>
+    <button class="primary-button today-button" (click)="centerToday()">Current day</button>
+  </div>
 
   <section class="work-orders-timeline">
     <!-- TOP LEFT -->
