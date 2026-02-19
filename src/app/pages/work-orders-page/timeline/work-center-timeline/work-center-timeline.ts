@@ -59,9 +59,11 @@ export class WorkCenterTimeline {
       const daysInMonth = new Date(clickedDate.getFullYear(), clickedDate.getMonth() + 1, 0).getDate();
       const dayOfMonth = clickedDate.getDate() - 1;
       const slotWidth = monthCellWidth / daysInMonth;
-      // Account for 4px right padding and 6px left offset for better alignment
-      left = monthCellLeft + slotWidth * dayOfMonth + 6;
-      width = slotWidth - 8;
+      const leftPadding = 4;
+      const rightPadding = 4;
+      // For hoverPreview, treat as single-day slot
+      left = monthCellLeft + slotWidth * dayOfMonth;
+      width = slotWidth - leftPadding - rightPadding;
     } else {
       // day
       clickedDate = this.addDays(rangeStart, index);
