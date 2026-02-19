@@ -5,6 +5,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
+import { startOfDay } from '../../../../core/common/date-helpers';
 import { DateRange } from '../timeline';
 import { Timescale } from '../timescale-select/timescale-select';
 
@@ -27,8 +28,8 @@ export class TimelineHeader {
     const result: Date[] = [];
 
     // For week view, always align cursor to the start of the week (Monday)
-    let cursor = scale === 'week' ? this.startOfWeek(this.startOfDay(start), 1) : this.startOfDay(start);
-    const rangeEnd = this.startOfDay(end);
+    let cursor = scale === 'week' ? this.startOfWeek(startOfDay(start), 1) : startOfDay(start);
+    const rangeEnd = startOfDay(end);
 
     while (cursor <= rangeEnd) {
       result.push(new Date(cursor));
@@ -78,15 +79,10 @@ export class TimelineHeader {
     }
   }
 
-  // Helper to format date as "MMM d" (e.g. "Jan 5") for consistent formatting in header and today tag
-  private startOfDay(date: Date): Date {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  }
-
   private addDays(date: Date, days: number): Date {
     const d = new Date(date);
     d.setDate(d.getDate() + days);
-    return this.startOfDay(d);
+    return startOfDay(d);
   }
 
   private formatShort(date: Date): string {

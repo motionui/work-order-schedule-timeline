@@ -38,12 +38,12 @@ npm install --save-dev husky lint-staged
 
 # Assumptions & Implementation Notes
 
-While reviewing the BRD and reference video, several assumptions were made to resolve minor ambiguities and ensure a consistent implementation.
+While reviewing the requirements doc and reference video, several assumptions were made to resolve minor ambiguities and ensure a consistent implementation.
 
 ## Timescale Dropdown
 
 - The dropdown chevron icon points **up when opened** and **down when closed**, following common UI conventions.
-- Although the demo video shows **Month view**, the BRD (`FE-technical-test.md`) specifies **Day view as the default zoom level**. This implementation follows the BRD and defaults to **Day view**.
+- Although the demo video shows **Month view**, the requirement doc (`FE-technical-test.md`) specifies **Day view as the default zoom level**. This implementation follows the requirement doc and defaults to **Day view**.
 
 ## Work Order Drawer
 
@@ -59,7 +59,7 @@ While reviewing the BRD and reference video, several assumptions were made to re
 
 ## Date Picker
 
-- I do not see a design for the calendar dropdown in the Sketch file, so I am currently using the default style.
+- I wasn’t able to find a specific design for the calendar dropdown in the Sketch file, so I’m using the default style for now.
 
 # Upgrades / Recommendations
 
@@ -68,3 +68,6 @@ While reviewing the BRD and reference video, several assumptions were made to re
 - **Optional:** Introducing a custom UI library that centralizes the design elements and style guidelines. By standardizing commonly used UI components, we can ensure a consistent user experience across all products. This approach also improves efficiency — any global design updates can be implemented once in the UI library and automatically applied throughout the application.
 
 - Setting up Angular with Vitest should be relatively straightforward. We should aim to create test cases that validate core functionality and ensure that critical features are not broken. Additionally, we can integrate Husky to run tests automatically before each commit, helping prevent regressions from being checked into the codebase.
+
+- Decide if addDays should always return midnight (startOfDay) or preserve the time.
+  Decide if startOfWeek should always return midnight and support offset.

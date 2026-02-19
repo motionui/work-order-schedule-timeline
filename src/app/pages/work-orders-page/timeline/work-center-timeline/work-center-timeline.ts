@@ -10,11 +10,13 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { monthsBetween, weeksBetween } from '../../../../core/common/date-helpers';
+import { getTimescaleUnitWidth } from '../../../../core/common/timescale-helpers';
 import { WorkCenterDocument } from '../../../../core/models/work-center.model';
 import { WorkOrderDocument } from '../../../../core/models/work-order.model';
 import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
 import { WorkOrderStore } from '../../../../core/services/work-order.store';
-import { DateRange, getTimescaleUnitWidth, GUTTER_WIDTH_PX } from '../timeline';
+import { DateRange } from '../timeline';
 import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrder } from './work-order/work-order';
 
@@ -22,6 +24,7 @@ import { WorkOrder } from './work-order/work-order';
 const MONTH_LEFT_PADDING = 4;
 const MONTH_RIGHT_PADDING = 4;
 const MONTH_GAP = 2;
+const GUTTER_WIDTH_PX = 8;
 
 @Component({
   selector: 'app-work-center-timeline',
@@ -135,7 +138,7 @@ export class WorkCenterTimeline {
       const result: { order: WorkOrderDocument; left: number; width: number }[] = [];
       for (const [weekKey, orders] of weekGroups.entries()) {
         const weekStart = new Date(weekKey);
-        const weekIndex = this.weeksBetween(range.start, weekStart);
+        const weekIndex = weeksBetween(range.start, weekStart);
         const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
         const weekCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
         const slotWidth = weekCellWidth / 7;
@@ -177,7 +180,7 @@ export class WorkCenterTimeline {
       const result: { order: WorkOrderDocument; left: number; width: number }[] = [];
       for (const [monthKey, orders] of monthGroups.entries()) {
         const monthStart = new Date(monthKey);
-        const monthIndex = this.monthsBetween(range.start, monthStart);
+        const monthIndex = monthsBetween(range.start, monthStart);
         const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
         const monthCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
         // Number of days in this month
@@ -228,15 +231,6 @@ export class WorkCenterTimeline {
     const day = d.getDay();
     const diff = d.getDate() - day + (day < weekStart ? -7 : 0) + weekStart;
     return new Date(d.setDate(diff));
-  }
-
-  private weeksBetween(start: Date, end: Date): number {
-    const msPerWeek = 1000 * 60 * 60 * 24 * 7;
-    return Math.floor((this.startOfDay(end).getTime() - this.startOfDay(start).getTime()) / msPerWeek);
-  }
-
-  private monthsBetween(start: Date, end: Date): number {
-    return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
   }
 
   private startOfDay(date: Date): Date {
