@@ -17,6 +17,15 @@
   align-items: center;
   border-radius: 8px;
   padding: 10px 8px;
+
+  .three-dots {
+    visibility: hidden;
+  }
+
+  &:hover .three-dots,
+  .three-dots.visible {
+    visibility: visible;
+  }
 }
 
 .name {
@@ -26,7 +35,6 @@
   line-height: 1.2;
 }
 
-// Ensure the three-dots menu button is fully clickable and cursor is visible
 .three-dots-button {
   padding: 8px;
   background: transparent;

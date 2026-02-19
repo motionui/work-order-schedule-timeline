@@ -54,7 +54,6 @@ While reviewing the requirements doc and reference video, several assumptions we
 
 - The **minimum work order duration is 1 day**.
 - Users **cannot create work orders prior to today’s date**.
-- Completed work orders **cannot be edited or deleted**.
 - Work orders must not overlap within the same work center (**FormGroup validation**).
 
 ## Date Picker
