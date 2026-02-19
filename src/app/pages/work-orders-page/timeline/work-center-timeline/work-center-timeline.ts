@@ -1,3 +1,7 @@
+// Constants for timeline layout
+const MONTH_LEFT_PADDING = 4;
+const MONTH_RIGHT_PADDING = 4;
+const MONTH_GAP = 2;
 // @upgrade Add ARIA roles and labels to work center timeline and work order bars for accessibility
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
@@ -41,20 +45,41 @@ export class WorkCenterTimeline {
     let width = 0;
 
     if (scale === 'week') {
-      // index is week index from start
-      clickedDate = this.addDays(rangeStart, index * 7);
-      left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
-      width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+      clickedDate = this.addDays(rangeStart, index);
+      const weekIndex = Math.floor(index / 7);
+      const dayOfWeek = index % 7;
+      const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
+      const weekCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+      const slotWidth = weekCellWidth / 7;
+      // @upgrade Find out exactly why we need to add hacky 6px to align the hover preview with the work order bars in week view, and remove this magic number if possible
+      left = weekCellLeft + slotWidth * dayOfWeek + 6;
+      width = slotWidth - 11;
     } else if (scale === 'month') {
-      clickedDate = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + index, 1);
-      left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
-      width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+      clickedDate = this.addDays(rangeStart, index);
+      const monthIndex =
+        clickedDate.getFullYear() * 12 + clickedDate.getMonth() - (rangeStart.getFullYear() * 12 + rangeStart.getMonth());
+      const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
+      const monthCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+      const daysInMonth = new Date(clickedDate.getFullYear(), clickedDate.getMonth() + 1, 0).getDate();
+      const dayOfMonth = clickedDate.getDate() - 1;
+      const slotWidth = monthCellWidth / daysInMonth;
+      // For hoverPreview, treat as single-day slot, match bar logic
+      // Add 2px extra spacing to separate preview from today's line
+      left = Math.round(monthCellLeft + slotWidth * dayOfMonth + MONTH_LEFT_PADDING + 6);
+      width = Math.round(slotWidth - MONTH_LEFT_PADDING - MONTH_RIGHT_PADDING - 10);
     } else {
       // day
       clickedDate = this.addDays(rangeStart, index);
-      left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
-      width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+      left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2 + 4;
+      width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX - 8;
     }
+
+    // Only allow today or future
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const slotDate = new Date(clickedDate);
+    slotDate.setHours(0, 0, 0, 0);
+    if (slotDate < today) return null;
 
     const isOccupied = this.visibleOrders().some((order) => {
       const start = this.toLocalDate(order.data.startDate);
@@ -85,6 +110,90 @@ export class WorkCenterTimeline {
     const range = this.dateRange();
     const scale = this.timescale();
 
+    // For week view, group orders by week start
+    if (scale === 'week') {
+      // ...existing code for week view...
+      const weekGroups = new Map<string, WorkOrderDocument[]>();
+      for (const order of this.visibleOrders()) {
+        const orderStart = this.toLocalDate(order.data.startDate);
+        const weekStart = this.startOfWeek(orderStart, 1);
+        const key = weekStart.toISOString();
+        if (!weekGroups.has(key)) weekGroups.set(key, []);
+        weekGroups.get(key)!.push(order);
+      }
+      const result: { order: WorkOrderDocument; left: number; width: number }[] = [];
+      for (const [weekKey, orders] of weekGroups.entries()) {
+        const weekStart = new Date(weekKey);
+        const weekIndex = this.weeksBetween(range.start, weekStart);
+        const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
+        const weekCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+        const slotWidth = weekCellWidth / 7;
+        for (const order of orders) {
+          const orderStart = this.toLocalDate(order.data.startDate);
+          const orderEnd = this.toLocalDate(order.data.endDate);
+          // Clamp to this week
+          const weekStartDay = weekStart.getDate();
+          const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekStartDay + 6);
+          const clampedStart = orderStart < weekStart ? weekStart : orderStart;
+          const clampedEnd = orderEnd > weekEnd ? weekEnd : orderEnd;
+          // Day of week: 0=Monday, 6=Sunday
+          let startDayOfWeek = clampedStart.getDay();
+          let endDayOfWeek = clampedEnd.getDay();
+          startDayOfWeek = (startDayOfWeek + 6) % 7;
+          endDayOfWeek = (endDayOfWeek + 6) % 7;
+          // Add spacing between adjacent work orders (2px gap between slots)
+          const slotCount = endDayOfWeek - startDayOfWeek + 1;
+          const gap = 2;
+          const left = weekCellLeft + slotWidth * startDayOfWeek;
+          const width = slotWidth * slotCount - gap * (slotCount - 1);
+          result.push({ order, left, width });
+        }
+      }
+      return result;
+    }
+    // For month view, group orders by month start
+    if (scale === 'month') {
+      // Group orders by month start date string
+      const monthGroups = new Map<string, WorkOrderDocument[]>();
+      for (const order of this.visibleOrders()) {
+        const orderStart = this.toLocalDate(order.data.startDate);
+        const monthStart = new Date(orderStart.getFullYear(), orderStart.getMonth(), 1);
+        const key = monthStart.toISOString();
+        if (!monthGroups.has(key)) monthGroups.set(key, []);
+        monthGroups.get(key)!.push(order);
+      }
+      const result: { order: WorkOrderDocument; left: number; width: number }[] = [];
+      for (const [monthKey, orders] of monthGroups.entries()) {
+        const monthStart = new Date(monthKey);
+        const monthIndex = this.monthsBetween(range.start, monthStart);
+        const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
+        const monthCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+        // Number of days in this month
+        const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
+        const slotWidth = monthCellWidth / daysInMonth;
+        for (const order of orders) {
+          const orderStart = this.toLocalDate(order.data.startDate);
+          const orderEnd = this.toLocalDate(order.data.endDate);
+          // Clamp to this month
+          const clampedStart = orderStart < monthStart ? monthStart : orderStart;
+          const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0);
+          const clampedEnd = orderEnd > monthEnd ? monthEnd : orderEnd;
+          const startDayOfMonth = clampedStart.getDate() - 1; // 0-based
+          const endDayOfMonth = clampedEnd.getDate() - 1; // 0-based
+          // Add spacing between adjacent work orders
+          const slotCount = endDayOfMonth - startDayOfMonth + 1;
+          const left = Math.round(monthCellLeft + slotWidth * startDayOfMonth + MONTH_LEFT_PADDING);
+          const width =
+            slotCount === 1
+              ? Math.round(slotWidth - MONTH_LEFT_PADDING - MONTH_RIGHT_PADDING)
+              : Math.round(slotWidth * slotCount - MONTH_GAP * (slotCount - 1) - MONTH_LEFT_PADDING - MONTH_RIGHT_PADDING);
+          result.push({ order, left, width });
+        }
+      }
+      return result;
+    }
+    // Day view: unchanged
     return this.visibleOrders().map((order) => {
       const orderStart = this.toLocalDate(order.data.startDate);
       const orderEnd = this.toLocalDate(order.data.endDate);
@@ -95,20 +204,8 @@ export class WorkCenterTimeline {
       let left = 0;
       let width = 0;
 
-      if (scale === 'week') {
-        // Align clampedStart to the start of its week (Monday)
-        const weekStart = this.startOfWeek(clampedStart, 1);
-        left = this.weeksBetween(range.start, weekStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
-        width = (this.weeksBetween(weekStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
-      } else if (scale === 'month') {
-        left = this.monthsBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
-        width =
-          (this.monthsBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
-      } else {
-        left = this.daysBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
-        width =
-          (this.daysBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
-      }
+      left = this.daysBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
+      width = (this.daysBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
 
       return { order, left, width };
     });
@@ -142,22 +239,57 @@ export class WorkCenterTimeline {
     }
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const x = event.clientX - rect.left;
-
-    const adjustedX = x - GUTTER_WIDTH_PX / 2;
-    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timescale()));
-    if (dayIndex < 0) return;
-    const clickedDate = this.addDays(this.dateRange().start, dayIndex);
-    const endDate = this.addDays(clickedDate, 7);
-
+    const scale = this.timescale();
+    let dayIndex = null;
+    if (scale === 'week') {
+      const weekCellWidth = getTimescaleUnitWidth(scale);
+      const weekIndex = Math.floor(x / weekCellWidth);
+      const weekCellLeft = weekIndex * weekCellWidth;
+      const slotWidth = (weekCellWidth - GUTTER_WIDTH_PX) / 7;
+      const dayOfWeek = Math.floor((x - weekCellLeft - GUTTER_WIDTH_PX / 2) / slotWidth);
+      if (dayOfWeek < 0 || dayOfWeek > 6) {
+        return;
+      }
+      dayIndex = weekIndex * 7 + dayOfWeek;
+    } else if (scale === 'month') {
+      const monthCellWidth = getTimescaleUnitWidth(scale);
+      const monthIndex = Math.floor(x / monthCellWidth);
+      const monthCellLeft = monthIndex * monthCellWidth;
+      const rangeStart = this.dateRange().start;
+      const refDate = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + monthIndex, 1);
+      const daysInMonth = new Date(refDate.getFullYear(), refDate.getMonth() + 1, 0).getDate();
+      const slotWidth = (monthCellWidth - GUTTER_WIDTH_PX) / daysInMonth;
+      const dayOfMonth = Math.floor((x - monthCellLeft - GUTTER_WIDTH_PX / 2) / slotWidth);
+      if (dayOfMonth < 0 || dayOfMonth >= daysInMonth) {
+        return;
+      }
+      dayIndex = 0;
+      for (let i = 0; i < monthIndex; i++) {
+        const d = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + i + 1, 0).getDate();
+        dayIndex += d;
+      }
+      dayIndex += dayOfMonth;
+    } else {
+      const adjustedX = x - GUTTER_WIDTH_PX / 2;
+      const idx = Math.floor(adjustedX / getTimescaleUnitWidth(scale));
+      if (idx < 0) {
+        return;
+      }
+      dayIndex = idx;
+    }
+    const rangeStart = this.dateRange().start;
+    const clickedDate = this.addDays(rangeStart, dayIndex);
+    // Only allow today or future
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (clickedDate < today) return;
     // only create if no order occupies this day
     const isOccupied = this.visibleOrders().some((order) => {
       const start = this.toLocalDate(order.data.startDate);
       const end = this.toLocalDate(order.data.endDate);
       return clickedDate >= start && clickedDate <= end;
     });
-
     if (isOccupied) return;
-
     this.workOrderDrawerService.openDrawer({
       mode: 'create',
       workOrder: {
@@ -168,7 +300,7 @@ export class WorkCenterTimeline {
           workCenterId: this.workCenter().docId,
           status: 'open',
           startDate: this.toIso(clickedDate),
-          endDate: this.toIso(endDate),
+          endDate: this.toIso(this.addDays(clickedDate, 7)),
         },
       },
       currentWorkOrders: this.workOrders(),
@@ -202,12 +334,52 @@ export class WorkCenterTimeline {
   onMouseMove(event: MouseEvent) {
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const x = event.clientX - rect.left;
-
-    const adjustedX = x - GUTTER_WIDTH_PX / 2;
-    const dayIndex = Math.floor(adjustedX / getTimescaleUnitWidth(this.timescale()));
-    if (dayIndex < 0) {
-      this.hoveredDayIndex.set(null);
-      return;
+    const scale = this.timescale();
+    let dayIndex = null;
+    if (scale === 'week') {
+      // Find which week cell
+      const weekCellWidth = getTimescaleUnitWidth(scale);
+      const weekIndex = Math.floor(x / weekCellWidth);
+      const weekCellLeft = weekIndex * weekCellWidth;
+      const slotWidth = (weekCellWidth - GUTTER_WIDTH_PX) / 7;
+      const dayOfWeek = Math.floor((x - weekCellLeft - GUTTER_WIDTH_PX / 2) / slotWidth);
+      if (dayOfWeek < 0 || dayOfWeek > 6) {
+        this.hoveredDayIndex.set(null);
+        return;
+      }
+      // Calculate global day index from visible range start
+      dayIndex = weekIndex * 7 + dayOfWeek;
+    } else if (scale === 'month') {
+      // Find which month cell
+      const monthCellWidth = getTimescaleUnitWidth(scale);
+      const monthIndex = Math.floor(x / monthCellWidth);
+      const monthCellLeft = monthIndex * monthCellWidth;
+      const rangeStart = this.dateRange().start;
+      // Get days in this month
+      const refDate = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + monthIndex, 1);
+      const daysInMonth = new Date(refDate.getFullYear(), refDate.getMonth() + 1, 0).getDate();
+      const slotWidth = (monthCellWidth - GUTTER_WIDTH_PX) / daysInMonth;
+      const dayOfMonth = Math.floor((x - monthCellLeft - GUTTER_WIDTH_PX / 2) / slotWidth);
+      if (dayOfMonth < 0 || dayOfMonth >= daysInMonth) {
+        this.hoveredDayIndex.set(null);
+        return;
+      }
+      // Calculate global day index from visible range start
+      dayIndex = 0;
+      for (let i = 0; i < monthIndex; i++) {
+        const d = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + i + 1, 0).getDate();
+        dayIndex += d;
+      }
+      dayIndex += dayOfMonth;
+    } else {
+      // day view
+      const adjustedX = x - GUTTER_WIDTH_PX / 2;
+      const idx = Math.floor(adjustedX / getTimescaleUnitWidth(scale));
+      if (idx < 0) {
+        this.hoveredDayIndex.set(null);
+        return;
+      }
+      dayIndex = idx;
     }
     this.hoveredDayIndex.set(dayIndex);
   }

@@ -26,8 +26,8 @@ export interface DateRange {
 }
 
 export const TIMESCALE_UNIT_DAY_WIDTH_PX = 150;
-export const TIMESCALE_UNIT_WEEK_WIDTH_PX = 100;
-export const TIMESCALE_UNIT_MONTH_WIDTH_PX = 80;
+export const TIMESCALE_UNIT_WEEK_WIDTH_PX = 1000;
+export const TIMESCALE_UNIT_MONTH_WIDTH_PX = 3500;
 
 // must match $timescale-unit-width-day, $timescale-unit-width-week, $timescale-unit-width-month in _variables.scss
 export const TIMESCALE_UNIT_WIDTH_LOOKUP: Record<Timescale, number> = {
@@ -128,9 +128,32 @@ export class Timeline implements OnInit, AfterViewInit {
   });
 
   readonly todayLeft = computed(() => {
-    const index = this.todayIndex();
-    if (index < 0) return -1;
-    return index * getTimescaleUnitWidth(this.timescale());
+    const scale = this.timescale();
+    const { start } = this.visibleDateRange();
+    if (this.today < start) return -1;
+    if (scale === 'week') {
+      // Find week index and offset within week
+      const weekIndex = this.weeksBetween(start, this.today);
+      const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale);
+      const weekCellWidth = getTimescaleUnitWidth(scale);
+      const slotWidth = weekCellWidth / 7;
+      let dayOfWeek = this.today.getDay();
+      dayOfWeek = (dayOfWeek + 6) % 7;
+      // Position at exact start of slot
+      return weekCellLeft + slotWidth * dayOfWeek;
+    } else if (scale === 'month') {
+      const monthIndex = this.monthsBetween(start, this.today);
+      const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale);
+      const monthCellWidth = getTimescaleUnitWidth(scale);
+      const daysInMonth = new Date(this.today.getFullYear(), this.today.getMonth() + 1, 0).getDate();
+      const slotWidth = monthCellWidth / daysInMonth;
+      const dayOfMonth = this.today.getDate() - 1;
+      return monthCellLeft + slotWidth * dayOfMonth;
+    } else {
+      const index = this.todayIndex();
+      if (index < 0) return -1;
+      return index * getTimescaleUnitWidth(scale);
+    }
   });
 
   // -----------------------------
