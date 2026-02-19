@@ -10,7 +10,7 @@
       <span>Work Center</span>
     </div>
 
-    <!-- RIGHT COLUMN (single scroll container) -->
+    <!-- TOP RIGHT (single scroll container) -->
     <div class="right-column hide-scrollbar" #scrollContainer>
       <!-- HEADER -->
       <div class="timeline-header">
@@ -19,12 +19,13 @@
         </div>
       </div>
 
+      <!-- TODAY TAG/LINE -->
       @if (todayLeft() >= 0) {
         <div class="today-line" [style.left.px]="todayLeft()"></div>
         <div class="today-tag" [style.left.px]="todayLeft()">Current day</div>
       }
 
-      <!-- BODY -->
+      <!-- BOTTOM RIGHT -->
       <div class="timeline-rows" [ngClass]="timescale()" [style.width.px]="totalWidth()">
         @for (group of workOrdersGroupByWorkCenters(); track group.workCenter.docId) {
           <div
@@ -44,7 +45,7 @@
       </div>
     </div>
 
-    <!-- LEFT COLUMN BODY -->
+    <!-- BOTTOM LEFT -->
     <div class="work-centers">
       @for (group of workOrdersGroupByWorkCenters(); track group.workCenter.docId) {
         <div

@@ -75,7 +75,7 @@
           @if (endDate.touched && endDate.errors?.['required']) {
             End date is required.
           }
-          @if (endDate.touched && formGroup.hasError('overlappingRange')) {
+          @if (formGroup.hasError('overlappingRange')) {
             The selected end date overlaps with the next scheduled work order.
           }
         </span>
@@ -96,9 +96,6 @@
         <span class="validation-error">
           @if (startDate.touched && startDate.errors?.['required']) {
             Start date is required.
-          }
-          @if (startDate.touched && formGroup.hasError('overlappingRange')) {
-            The selected start date overlaps with the previous scheduled work order.
           }
         </span>
       </div>
