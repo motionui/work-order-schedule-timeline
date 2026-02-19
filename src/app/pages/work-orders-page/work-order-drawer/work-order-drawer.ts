@@ -1,3 +1,6 @@
+/**
+ * Component for the work order drawer, which uses NgbOffcanvas to display a form for creating or editing work orders, and listens to the WorkOrderDrawerService for state changes to open or close the drawer accordingly
+ */
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, TemplateRef, ViewChild } from '@angular/core';
 
@@ -52,15 +55,18 @@ export class WorkOrderDrawer {
       backdropClass: 'work-order-backdrop',
     });
 
+    // setting focus to the first input when the drawer is opened for better UX and accessibility
+    // doing this directly on the ngb offcanvas shown event to ensure the offcanvas is fully rendered before trying to focus the input
     this.offcanvasRef.shown.subscribe(() => {
       // wait 1 frame so offcanvas layout is settled
       requestAnimationFrame(() => {
-        const el = document.getElementById('name') as HTMLInputElement | null;
-        el?.focus();
-        el?.select();
+        const element = document.getElementById('name') as HTMLInputElement | null;
+        element?.focus();
+        element?.select();
       });
     });
 
+    // close the draw when the user clicks outside of it or presses the escape key, and clear the drawer state in the service to reflect that it's closed
     this.offcanvasRef.result.finally(() => {
       this.offcanvasRef = undefined;
       this.drawerService.closeDrawer();

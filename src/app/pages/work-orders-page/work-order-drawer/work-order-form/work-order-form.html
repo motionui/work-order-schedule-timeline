@@ -1,4 +1,5 @@
 <!-- @upgrade Add ARIA attributes and roles to all form fields and groups for accessibility compliance -->
+
 <section class="work-order-form">
   <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()">
     <header class="header">
@@ -24,8 +25,8 @@
         <label for="name">Work Order Name</label>
         <input id="name" type="text" placeholder="Work Order Name" formControlName="name" />
         <span class="validation-error">
-          @if (name.touched && name.errors?.['required']) {
-            Work order name is required.
+          @if (name.touched && nameErrorMessage(); as message) {
+            {{ message }}
           }
         </span>
       </div>

@@ -1,3 +1,7 @@
+/**
+ * Component to display a work center in the timeline, with the work center name displayed and the work orders for that center shown in the timeline below
+ */
+
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
@@ -12,5 +16,5 @@ import { WorkCenterDocument } from '../../../../core/models/work-center.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkCenter {
-  workCenter = input<WorkCenterDocument>();
+  workCenter = input.required<WorkCenterDocument>();
 }

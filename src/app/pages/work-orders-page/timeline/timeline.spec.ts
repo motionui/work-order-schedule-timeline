@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Timeline } from './timeline';
-import { WorkOrderStore } from '../../../core/services/work-order.store';
+
 import { WorkCenterDocument } from '../../../core/models/work-center.model';
 import { WorkOrderDocument } from '../../../core/models/work-order.model';
+import { WorkOrderStore } from '../../../core/services/work-order.store';
+import { Timeline } from './timeline';
 
 const mockWorkCenters: WorkCenterDocument[] = [
   { docId: '1', docType: 'workCenter', data: { name: 'Center 1' } },
