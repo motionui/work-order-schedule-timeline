@@ -241,9 +241,11 @@ export class Timeline implements OnInit {
     }
 
     const centerOffset = container.clientWidth / 2;
+    const target = todayPixel - centerOffset;
+    const max = container.scrollWidth - container.clientWidth;
 
     container.scrollTo({
-      left: todayPixel - centerOffset + getTimescaleUnitWidth(this.timescale()) / 2,
+      left: Math.max(0, Math.min(target, max)),
       behavior: 'smooth',
     });
   }
