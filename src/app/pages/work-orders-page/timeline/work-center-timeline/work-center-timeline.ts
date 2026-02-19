@@ -51,9 +51,9 @@ export class WorkCenterTimeline {
       const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
       const weekCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
       const slotWidth = weekCellWidth / 7;
-      // Move 2px left, extend width by 2px
-      left = weekCellLeft + slotWidth * dayOfWeek + 3;
-      width = slotWidth - 6;
+      // @upgrade Find out exactly why we need to add hacky 6px to align the hover preview with the work order bars in week view, and remove this magic number if possible
+      left = weekCellLeft + slotWidth * dayOfWeek + 6;
+      width = slotWidth - 11;
     } else if (scale === 'month') {
       clickedDate = this.addDays(rangeStart, index);
       const monthIndex =
