@@ -1,5 +1,8 @@
 {
   "name": "work-order-schedule-timeline",
+  "repository": {
+    "url": "https://github.com/motionui/work-order-schedule-timeline"
+  },
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -14,7 +17,7 @@
   "lint-staged": {
     "*.{ts,html,scss,json,md}": "prettier --write"
   },
-  "private": true,
+  "private": false,
   "packageManager": "npm@11.6.2",
   "dependencies": {
     "@angular/common": "^21.1.0",
