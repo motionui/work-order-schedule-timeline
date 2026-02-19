@@ -65,7 +65,8 @@ export class Timeline implements OnInit, AfterViewInit {
   // timescale select on work order page
   timescale = signal<Timescale>('day');
 
-  private readonly today = this.startOfDay(new Date());
+  // private readonly today = this.startOfDay(new Date());
+  private readonly today = this.startOfDay(new Date('2026-02-01'));
 
   visibleStartDate = computed(() => {
     const scale = this.timescale();
