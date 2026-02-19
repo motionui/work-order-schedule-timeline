@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { isoToDisplay } from '../../../../../core/common/date-helpers';
 import { WorkOrderDocument } from '../../../../../core/models/work-order.model';
 import { StatusBadge } from '../../../components/status-badge/status-badge';
 
@@ -28,14 +29,8 @@ export class WorkOrder {
     if (!wo?.data) {
       return '';
     }
-    return `${wo.data.name} (${wo.data.status}) ${this.isoToDisplay(wo.data.startDate)} – ${this.isoToDisplay(wo.data.endDate)}`;
+    return `${wo.data.name} (${wo.data.status}) ${isoToDisplay(wo.data.startDate)} – ${isoToDisplay(wo.data.endDate)}`;
   });
-
-  // @upgrade Create seperate helper file for date formatting utilities
-  isoToDisplay(iso: string): string {
-    const [year, month, day] = iso.split('-');
-    return `${month}.${day}.${year}`;
-  }
 
   onClickEdit() {
     const workOrder = this.workOrder();

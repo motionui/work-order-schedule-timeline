@@ -32,3 +32,8 @@ export function weeksBetween(start: Date, end: Date): number {
 export function monthsBetween(start: Date, end: Date): number {
   return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
 }
+
+export function isoToDisplay(iso: string): string {
+  const [year, month, day] = iso.split('-');
+  return `${month}.${day}.${year}`;
+}

@@ -57,9 +57,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Extrusion Batch Alpha',
       workCenterId: 'f7ef9888-a8a0-45d9-a3d0-5e08d724cd47',
-      status: 'open',
+      status: 'complete',
       startDate: '2026-02-05',
-      endDate: '2026-02-06',
+      endDate: '2026-02-07',
     },
   },
   {
@@ -68,9 +68,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Extrusion Batch Beta',
       workCenterId: 'f7ef9888-a8a0-45d9-a3d0-5e08d724cd47',
-      status: 'in-progress',
+      status: 'complete',
       startDate: '2026-02-09',
-      endDate: '2026-02-10',
+      endDate: '2026-02-11',
     },
   },
   {
@@ -91,7 +91,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
       name: 'Extrusion Batch Delta',
       workCenterId: 'f7ef9888-a8a0-45d9-a3d0-5e08d724cd47',
       status: 'blocked',
-      startDate: '2026-02-18',
+      startDate: '2026-02-16',
       endDate: '2026-02-18',
     },
   },
@@ -101,7 +101,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Extrusion Batch Epsilon',
       workCenterId: 'f7ef9888-a8a0-45d9-a3d0-5e08d724cd47',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-02-22',
       endDate: '2026-02-23',
     },
@@ -112,8 +112,8 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Extrusion Batch Zeta',
       workCenterId: 'f7ef9888-a8a0-45d9-a3d0-5e08d724cd47',
-      status: 'in-progress',
-      startDate: '2026-02-27',
+      status: 'open',
+      startDate: '2026-02-25',
       endDate: '2026-02-28',
     },
   },
@@ -123,20 +123,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Extrusion Batch Eta',
       workCenterId: 'f7ef9888-a8a0-45d9-a3d0-5e08d724cd47',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-03-02',
       endDate: '2026-03-03',
-    },
-  },
-  {
-    docId: '85a2278a-fa7a-44f0-86b2-b577581cb3c9',
-    docType: 'workOrder',
-    data: {
-      name: 'Extrusion Batch Theta',
-      workCenterId: 'f7ef9888-a8a0-45d9-a3d0-5e08d724cd47',
-      status: 'in-progress',
-      startDate: '2026-03-04',
-      endDate: '2026-03-04',
     },
   },
   {
@@ -156,7 +145,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'CNC Milling Run Beta',
       workCenterId: 'c6a0c010-4732-4f60-b449-56b9c66af5ff',
-      status: 'in-progress',
+      status: 'complete',
       startDate: '2026-02-05',
       endDate: '2026-02-06',
     },
@@ -180,7 +169,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
       workCenterId: 'c6a0c010-4732-4f60-b449-56b9c66af5ff',
       status: 'blocked',
       startDate: '2026-02-09',
-      endDate: '2026-02-10',
+      endDate: '2026-02-12',
     },
   },
   {
@@ -189,7 +178,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'CNC Milling Run Epsilon',
       workCenterId: 'c6a0c010-4732-4f60-b449-56b9c66af5ff',
-      status: 'in-progress',
+      status: 'complete',
       startDate: '2026-02-16',
       endDate: '2026-02-17',
     },
@@ -211,7 +200,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'CNC Milling Run Eta',
       workCenterId: 'c6a0c010-4732-4f60-b449-56b9c66af5ff',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-02-21',
       endDate: '2026-02-22',
     },
@@ -222,7 +211,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'CNC Milling Run Theta',
       workCenterId: 'c6a0c010-4732-4f60-b449-56b9c66af5ff',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-02-24',
       endDate: '2026-02-25',
     },
@@ -233,9 +222,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Assembly Order Alpha',
       workCenterId: 'aa2dec9b-bf84-4cd1-a7b5-fe0fdfd43913',
-      status: 'open',
+      status: 'complete',
       startDate: '2026-02-07',
-      endDate: '2026-02-08',
+      endDate: '2026-02-11',
     },
   },
   {
@@ -244,7 +233,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Assembly Order Beta',
       workCenterId: 'aa2dec9b-bf84-4cd1-a7b5-fe0fdfd43913',
-      status: 'in-progress',
+      status: 'complete',
       startDate: '2026-02-12',
       endDate: '2026-02-13',
     },
@@ -277,7 +266,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Assembly Order Epsilon',
       workCenterId: 'aa2dec9b-bf84-4cd1-a7b5-fe0fdfd43913',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-02-23',
       endDate: '2026-02-24',
     },
@@ -288,31 +277,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Assembly Order Zeta',
       workCenterId: 'aa2dec9b-bf84-4cd1-a7b5-fe0fdfd43913',
-      status: 'in-progress',
-      startDate: '2026-02-28',
-      endDate: '2026-02-29',
-    },
-  },
-  {
-    docId: 'b7c22955-5372-4630-86dc-6c039bd7c049',
-    docType: 'workOrder',
-    data: {
-      name: 'Assembly Order Eta',
-      workCenterId: 'aa2dec9b-bf84-4cd1-a7b5-fe0fdfd43913',
-      status: 'in-progress',
-      startDate: '2026-03-03',
-      endDate: '2026-03-03',
-    },
-  },
-  {
-    docId: '08d33fc7-f922-4b2d-a322-69f83d9c9573',
-    docType: 'workOrder',
-    data: {
-      name: 'Assembly Order Theta',
-      workCenterId: 'aa2dec9b-bf84-4cd1-a7b5-fe0fdfd43913',
-      status: 'in-progress',
-      startDate: '2026-03-04',
-      endDate: '2026-03-04',
+      status: 'open',
+      startDate: '2026-02-26',
+      endDate: '2026-02-28',
     },
   },
   {
@@ -321,7 +288,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Quality Check Alpha',
       workCenterId: '1aa06bb8-c697-49c8-a1d6-e578c570ee27',
-      status: 'open',
+      status: 'complete',
       startDate: '2026-02-05',
       endDate: '2026-02-06',
     },
@@ -332,7 +299,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Quality Check Beta',
       workCenterId: '1aa06bb8-c697-49c8-a1d6-e578c570ee27',
-      status: 'in-progress',
+      status: 'complete',
       startDate: '2026-02-09',
       endDate: '2026-02-10',
     },
@@ -354,8 +321,8 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Quality Check Delta',
       workCenterId: '1aa06bb8-c697-49c8-a1d6-e578c570ee27',
-      status: 'blocked',
-      startDate: '2026-02-18',
+      status: 'complete',
+      startDate: '2026-02-16',
       endDate: '2026-02-18',
     },
   },
@@ -365,7 +332,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Quality Check Epsilon',
       workCenterId: '1aa06bb8-c697-49c8-a1d6-e578c570ee27',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-02-22',
       endDate: '2026-02-23',
     },
@@ -376,8 +343,8 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Quality Check Zeta',
       workCenterId: '1aa06bb8-c697-49c8-a1d6-e578c570ee27',
-      status: 'in-progress',
-      startDate: '2026-02-27',
+      status: 'open',
+      startDate: '2026-02-25',
       endDate: '2026-02-28',
     },
   },
@@ -387,19 +354,8 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Quality Check Eta',
       workCenterId: '1aa06bb8-c697-49c8-a1d6-e578c570ee27',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-03-02',
-      endDate: '2026-03-03',
-    },
-  },
-  {
-    docId: '2cc470d5-f2f8-4ed3-acfc-4e3b21f3ea99',
-    docType: 'workOrder',
-    data: {
-      name: 'Quality Check Theta',
-      workCenterId: '1aa06bb8-c697-49c8-a1d6-e578c570ee27',
-      status: 'in-progress',
-      startDate: '2026-03-04',
       endDate: '2026-03-04',
     },
   },
@@ -409,9 +365,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Packaging Run Alpha',
       workCenterId: '9cd1855b-017d-4dbc-abf0-2adab414efa1',
-      status: 'open',
+      status: 'complete',
       startDate: '2026-02-05',
-      endDate: '2026-02-06',
+      endDate: '2026-02-08',
     },
   },
   {
@@ -420,9 +376,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Packaging Run Beta',
       workCenterId: '9cd1855b-017d-4dbc-abf0-2adab414efa1',
-      status: 'in-progress',
-      startDate: '2026-02-09',
-      endDate: '2026-02-10',
+      status: 'complete',
+      startDate: '2026-02-10',
+      endDate: '2026-02-11',
     },
   },
   {
@@ -442,8 +398,8 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Packaging Run Delta',
       workCenterId: '9cd1855b-017d-4dbc-abf0-2adab414efa1',
-      status: 'blocked',
-      startDate: '2026-02-18',
+      status: 'complete',
+      startDate: '2026-02-17',
       endDate: '2026-02-18',
     },
   },
@@ -453,9 +409,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Packaging Run Epsilon',
       workCenterId: '9cd1855b-017d-4dbc-abf0-2adab414efa1',
-      status: 'in-progress',
-      startDate: '2026-02-22',
-      endDate: '2026-02-23',
+      status: 'open',
+      startDate: '2026-02-20',
+      endDate: '2026-02-25',
     },
   },
   {
@@ -464,9 +420,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Packaging Run Zeta',
       workCenterId: '9cd1855b-017d-4dbc-abf0-2adab414efa1',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-02-27',
-      endDate: '2026-02-28',
+      endDate: '2026-03-01',
     },
   },
   {
@@ -475,20 +431,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Packaging Run Eta',
       workCenterId: '9cd1855b-017d-4dbc-abf0-2adab414efa1',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-03-02',
-      endDate: '2026-03-03',
-    },
-  },
-  {
-    docId: '901a217c-6405-4fc0-bc6a-d96a10abc68f',
-    docType: 'workOrder',
-    data: {
-      name: 'Packaging Run Theta',
-      workCenterId: '9cd1855b-017d-4dbc-abf0-2adab414efa1',
-      status: 'in-progress',
-      startDate: '2026-03-04',
-      endDate: '2026-03-04',
+      endDate: '2026-03-05',
     },
   },
   {
@@ -497,9 +442,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Shipping Lot Alpha',
       workCenterId: 'e1894d1f-65c5-465a-bf00-2d865d22bb33',
-      status: 'open',
-      startDate: '2026-02-05',
-      endDate: '2026-02-06',
+      status: 'complete',
+      startDate: '2026-02-06',
+      endDate: '2026-02-07',
     },
   },
   {
@@ -508,9 +453,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Shipping Lot Beta',
       workCenterId: 'e1894d1f-65c5-465a-bf00-2d865d22bb33',
-      status: 'in-progress',
+      status: 'complete',
       startDate: '2026-02-09',
-      endDate: '2026-02-10',
+      endDate: '2026-02-11',
     },
   },
   {
@@ -530,8 +475,8 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Shipping Lot Delta',
       workCenterId: 'e1894d1f-65c5-465a-bf00-2d865d22bb33',
-      status: 'blocked',
-      startDate: '2026-02-18',
+      status: 'complete',
+      startDate: '2026-02-17',
       endDate: '2026-02-18',
     },
   },
@@ -541,7 +486,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Shipping Lot Epsilon',
       workCenterId: 'e1894d1f-65c5-465a-bf00-2d865d22bb33',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-02-22',
       endDate: '2026-02-23',
     },
@@ -552,7 +497,7 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Shipping Lot Zeta',
       workCenterId: 'e1894d1f-65c5-465a-bf00-2d865d22bb33',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-02-27',
       endDate: '2026-02-28',
     },
@@ -563,20 +508,9 @@ export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
     data: {
       name: 'Shipping Lot Eta',
       workCenterId: 'e1894d1f-65c5-465a-bf00-2d865d22bb33',
-      status: 'in-progress',
+      status: 'open',
       startDate: '2026-03-02',
       endDate: '2026-03-03',
-    },
-  },
-  {
-    docId: '2eefc907-f4b3-4807-a4fc-3a4324892417',
-    docType: 'workOrder',
-    data: {
-      name: 'Shipping Lot Theta',
-      workCenterId: 'e1894d1f-65c5-465a-bf00-2d865d22bb33',
-      status: 'in-progress',
-      startDate: '2026-03-04',
-      endDate: '2026-03-04',
     },
   },
 ];

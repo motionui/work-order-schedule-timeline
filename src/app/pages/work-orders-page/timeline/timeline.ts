@@ -67,7 +67,8 @@ export class Timeline implements OnInit {
   // If your timeline starts at 1/31 and you set today to 2/1, but the slot calculation uses (getDate() - 1),
   // then day 1 of the month (2/1) will be at offset 0, which is the same as the first slot (1/31).
   // This causes the today line to appear on the first visible day, not the actual 2/1 slot.
-  private readonly today = startOfDay(addDays(new Date('2026-02-09'), 1));
+  // private readonly today = startOfDay(addDays(new Date('2026-02-09'), 1));
+  private readonly today = startOfDay(new Date());
 
   // UI state for hover work center work orders timeline
   // This is needed to highlight the entire row of the work center
