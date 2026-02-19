@@ -4,8 +4,12 @@ $grid-header-row-height: 33px;
 $grid-data-row-height: 48px;
 
 // must match const TIMESCALE_UNIT_*_WIDTH_PX in timeline.ts
-$timescale-unit-day-width-px: 150px;
-$timescale-unit-week-width-px: 1000px;
-$timescale-unit-month-width-px: 3500px;
+$timescale-unit-day-width: 150;
+$timescale-unit-week-width: 1200;
+$timescale-unit-month-width: 5000;
+
+$timescale-unit-day-width-px: #{$timescale-unit-day-width}px;
+$timescale-unit-week-width-px: #{$timescale-unit-week-width}px;
+$timescale-unit-month-width-px: #{$timescale-unit-month-width}px;
 
 $offcanvas-width: 591px;

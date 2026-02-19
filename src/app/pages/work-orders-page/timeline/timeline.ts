@@ -32,8 +32,8 @@ export interface DateRange {
 }
 
 export const TIMESCALE_UNIT_DAY_WIDTH_PX = 150;
-export const TIMESCALE_UNIT_WEEK_WIDTH_PX = 1000;
-export const TIMESCALE_UNIT_MONTH_WIDTH_PX = 3500;
+export const TIMESCALE_UNIT_WEEK_WIDTH_PX = 1200;
+export const TIMESCALE_UNIT_MONTH_WIDTH_PX = 5000;
 
 // must match $timescale-unit-width-day, $timescale-unit-width-week, $timescale-unit-width-month in _variables.scss
 export const TIMESCALE_UNIT_WIDTH_LOOKUP: Record<Timescale, number> = {
@@ -71,12 +71,12 @@ export class Timeline implements OnInit {
   // timescale select on work order page
   timescale = signal<Timescale>('day');
 
-  // private readonly today = this.startOfDay(new Date());
   // Add 1 day for correct alignment
   // If your timeline starts at 1/31 and you set today to 2/1, but the slot calculation uses (getDate() - 1),
   // then day 1 of the month (2/1) will be at offset 0, which is the same as the first slot (1/31).
   // This causes the today line to appear on the first visible day, not the actual 2/1 slot.
-  private readonly today = this.startOfDay(this.addDays(new Date('2026-02-09'), 1));
+  private readonly today = this.startOfDay(this.addDays(new Date('2026-02-18'), 1));
+  // private readonly today = this.startOfDay(new Date());
 
   // UI state for hover work center work orders timeline
   // This is needed to highlight the entire row of the work center

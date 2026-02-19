@@ -48,13 +48,6 @@ export const SAMPLE_WORK_CENTERS: WorkCenterDocument[] = [
       name: 'Shipping Line',
     },
   },
-  {
-    docId: '3fc1af3b-c159-434b-bdb8-5e03ac92e5a8',
-    docType: 'workCenter',
-    data: {
-      name: 'Return Line',
-    },
-  },
 ];
 
 export const SAMPLE_WORK_ORDERS: WorkOrderDocument[] = [
