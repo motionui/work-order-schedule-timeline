@@ -1,4 +1,7 @@
-// @upgrade Add ARIA roles and labels to timeline and timeline cells for accessibility compliance
+/**
+ * Timeline component for displaying work centers and their associated work orders on a timescale, with the ability to select different timescales (day, week, month) and view details of each work order in a tooltip. The timeline is horizontally scrollable and centers on the current date by default.
+ */
+
 import { CommonModule } from '@angular/common';
 import {
   afterNextRender,
@@ -47,7 +50,6 @@ export function getTimescaleUnitWidth(scale: Timescale): number {
 export const GUTTER_WIDTH_PX = 8;
 
 const VISIBLE_DAYS = 14;
-const VISIBLE_WEEKS = 0; // not used, replaced by months for week view
 const VISIBLE_MONTHS_WEEK_VIEW = 2; // ±2 months for week view
 const VISIBLE_MONTHS_MONTH_VIEW = 6; // ±6 months for month view
 const MILLI_SECONDS_IN_A_DAY = 1000 * 60 * 60 * 24;

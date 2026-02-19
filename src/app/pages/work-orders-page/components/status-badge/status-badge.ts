@@ -1,3 +1,7 @@
+/**
+ * Component to display a badge representing the status of a work order, with the status label computed from the input status value
+ */
+
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
@@ -12,7 +16,9 @@ import { WORK_ORDER_STATUS, WorkOrderStatus } from '../../../../core/models/work
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatusBadge {
-  status = input<WorkOrderStatus>('open');
+  status = input.required<WorkOrderStatus>();
 
+  // whenever the input status changes, compute the corresponding label
+  // from the WORK_ORDER_STATUS mapping for display in the badge
   statusLabel = computed(() => WORK_ORDER_STATUS[this.status()]);
 }

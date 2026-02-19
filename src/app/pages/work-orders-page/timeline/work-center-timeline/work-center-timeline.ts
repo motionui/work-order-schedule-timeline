@@ -1,8 +1,11 @@
-// Constants for timeline layout
-const MONTH_LEFT_PADDING = 4;
-const MONTH_RIGHT_PADDING = 4;
-const MONTH_GAP = 2;
-// @upgrade Add ARIA roles and labels to work center timeline and work order bars for accessibility
+/**
+ * Component to display the timeline for a work center, including the timeline header with the timescale and date range, and the work orders for that center displayed in the timeline
+ */
+
+/**
+ * @upgrade Add ARIA roles and labels to timeline and timeline cells for accessibility compliance
+ */
+
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 
@@ -14,6 +17,11 @@ import { WorkOrderStore } from '../../../../core/services/work-order.store';
 import { DateRange, getTimescaleUnitWidth, GUTTER_WIDTH_PX } from '../timeline';
 import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrder } from './work-order/work-order';
+
+// Constants for timeline layout
+const MONTH_LEFT_PADDING = 4;
+const MONTH_RIGHT_PADDING = 4;
+const MONTH_GAP = 2;
 
 @Component({
   selector: 'app-work-center-timeline',
@@ -27,7 +35,7 @@ export class WorkCenterTimeline {
   private workOrderDrawerService = inject(WorkOrderDrawerService);
   private workOrderStore = inject(WorkOrderStore);
 
-  timescale = input<Timescale>('day');
+  timescale = input.required<Timescale>();
   dateRange = input.required<DateRange>();
   workCenter = input.required<WorkCenterDocument>();
   workOrders = input.required<WorkOrderDocument[]>();
@@ -51,7 +59,10 @@ export class WorkCenterTimeline {
       const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
       const weekCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
       const slotWidth = weekCellWidth / 7;
-      // @upgrade Find out exactly why we need to add hacky 6px to align the hover preview with the work order bars in week view, and remove this magic number if possible
+
+      /**
+       * @upgrade Investigate why we need to add hacky 6px and 11px to align the hover preview
+       */
       left = weekCellLeft + slotWidth * dayOfWeek + 6;
       width = slotWidth - 11;
     } else if (scale === 'month') {

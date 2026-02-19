@@ -1,4 +1,7 @@
-// @upgrade Add ARIA roles and labels to timeline header for screen reader support
+/**
+ * Component to display the header of the timeline, showing the date labels based on the selected timescale and date range
+ */
+
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
@@ -14,7 +17,7 @@ import { Timescale } from '../timescale-select/timescale-select';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineHeader {
-  timescale = input<Timescale>('day');
+  timescale = input.required<Timescale>();
   dateRange = input.required<DateRange>();
 
   columns = computed(() => {

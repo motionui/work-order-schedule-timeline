@@ -1,6 +1,6 @@
 <div
   class="work-order custom-hand-cursor"
-  [ngClass]="workOrder()?.data?.status"
+  [ngClass]="workOrder().data.status"
   [ngbTooltip]="tooltipText()"
   placement="top"
   [openDelay]="0"
@@ -8,13 +8,13 @@
   container="body"
 >
   <span class="name truncate">
-    {{ workOrder()?.data?.name }}
+    {{ workOrder().data.name }}
   </span>
 
   <div class="status">
-    <app-status-badge [status]="workOrder()?.data?.status || ''" />
+    <app-status-badge [status]="workOrder().data.status || ''" />
     <div class="dropdown-slot">
-      @if (workOrder()?.data?.status !== 'complete') {
+      @if (workOrder().data.status !== 'complete') {
         <div ngbDropdown container="body">
           <button class="three-dots-button custom-hand-cursor" ngbDropdownToggle>
             <img src="images/three-dots.svg" class="icon" />

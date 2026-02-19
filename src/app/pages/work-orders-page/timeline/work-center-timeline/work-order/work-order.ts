@@ -1,3 +1,7 @@
+/**
+ * Component to display a work order in the timeline, with a tooltip showing the work order details and buttons to edit or delete the work order
+ */
+
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
@@ -14,7 +18,7 @@ import { StatusBadge } from '../../../components/status-badge/status-badge';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkOrder {
-  workOrder = input<WorkOrderDocument>();
+  workOrder = input.required<WorkOrderDocument>();
 
   edit = output<WorkOrderDocument>();
   delete = output<WorkOrderDocument>();
@@ -27,6 +31,7 @@ export class WorkOrder {
     return `${wo.data.name} (${wo.data.status}) ${this.isoToDisplay(wo.data.startDate)} – ${this.isoToDisplay(wo.data.endDate)}`;
   });
 
+  // @upgrade Create seperate helper file for date formatting utilities
   isoToDisplay(iso: string): string {
     const [year, month, day] = iso.split('-');
     return `${month}.${day}.${year}`;

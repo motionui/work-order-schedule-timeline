@@ -6,6 +6,7 @@ import { PageHeader } from './page-header/page-header';
 import { Timeline } from './timeline/timeline';
 import { WorkOrderDrawer } from './work-order-drawer/work-order-drawer';
 
+// Main page component for the work orders page, which sets the page title on init and contains the page header, timeline, and work order drawer components
 @Component({
   selector: 'app-work-orders-page',
   standalone: true,

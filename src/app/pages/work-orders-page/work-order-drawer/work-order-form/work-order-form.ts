@@ -1,3 +1,7 @@
+/**
+ * Component for the work order form displayed in the drawer, with inputs for the work order data and a reactive form to edit the work order details, including validation for required fields, date range, and overlapping work orders
+ */
+
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import {
@@ -37,7 +41,7 @@ export class WorkOrderForm {
   private workOrderStore = inject(WorkOrderStore);
   private workOrderDrawerService = inject(WorkOrderDrawerService);
 
-  formData = input<WorkOrderFormData | null>();
+  formData = input.required<WorkOrderFormData | null>();
 
   protected formGroup: FormGroup;
   protected statusOptions = WORK_ORDER_STATUS_OPTIONS;
@@ -47,7 +51,12 @@ export class WorkOrderForm {
       {
         name: new FormControl<string>('', {
           nonNullable: true,
-          validators: [Validators.required],
+          validators: [
+            Validators.required,
+            Validators.minLength(5),
+            Validators.maxLength(50),
+            Validators.pattern(/^[a-zA-Z0-9\s\-]+$/),
+          ],
         }),
         status: new FormControl<WorkOrderStatus>('open', {
           nonNullable: true,
@@ -83,6 +92,7 @@ export class WorkOrderForm {
     });
   }
 
+  // Getters for easy access to form controls in the template
   get name(): FormControl {
     return this.formGroup.get('name') as FormControl;
   }
@@ -99,9 +109,32 @@ export class WorkOrderForm {
     return this.formGroup.get('endDate') as FormControl;
   }
 
-  /**
-   * Properly typed Angular ValidatorFn
-   */
+  // Method to generate user-friendly error messages for the name field based on the validation errors present
+  protected nameErrorMessage(): string | null {
+    if (!this.name.errors) {
+      return null;
+    }
+
+    if (this.name.errors['required']) {
+      return 'Work order name is required.';
+    }
+
+    if (this.name.errors['minlength']) {
+      return 'Work order name must be at least 5 characters long.';
+    }
+
+    if (this.name.errors['maxlength']) {
+      return 'Work order name cannot exceed 50 characters.';
+    }
+
+    if (this.name.errors['pattern']) {
+      return 'Work order name contains invalid characters.';
+    }
+
+    return null;
+  }
+
+  // Custom validator to check that the end date is not before the start date and that the selected date range does not overlap with existing work orders
   private dateRangeValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const group = control as FormGroup;
     const start = group.get('startDate')?.value as NgbDateStruct | null;
@@ -149,13 +182,17 @@ export class WorkOrderForm {
   }
 
   private toDateStruct(iso: string | null): NgbDateStruct | null {
-    if (!iso) return null;
+    if (!iso) {
+      return null;
+    }
     const [year, month, day] = iso.split('-').map(Number);
     return { year, month, day };
   }
 
   private toIso(date: NgbDateStruct | null): string {
-    if (!date) return '';
+    if (!date) {
+      return '';
+    }
     const mm = String(date.month).padStart(2, '0');
     const dd = String(date.day).padStart(2, '0');
     return `${date.year}-${mm}-${dd}`;
@@ -172,10 +209,11 @@ export class WorkOrderForm {
     }
 
     const data = this.formData();
-    if (!data) return;
+    if (!data) {
+      return;
+    }
 
     const formValue = this.formGroup.getRawValue();
-
     const payload: WorkOrderDocument = {
       ...data.workOrder,
       data: {
