@@ -137,21 +137,19 @@ export class Timeline implements OnInit, AfterViewInit {
       const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale);
       const weekCellWidth = getTimescaleUnitWidth(scale);
       const slotWidth = weekCellWidth / 7;
-      // Day of week: 0=Monday, 6=Sunday
       let dayOfWeek = this.today.getDay();
       dayOfWeek = (dayOfWeek + 6) % 7;
+      // Position at exact start of slot
       return weekCellLeft + slotWidth * dayOfWeek;
     } else if (scale === 'month') {
-      // Find month index and offset within month
       const monthIndex = this.monthsBetween(start, this.today);
       const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale);
       const monthCellWidth = getTimescaleUnitWidth(scale);
       const daysInMonth = new Date(this.today.getFullYear(), this.today.getMonth() + 1, 0).getDate();
       const slotWidth = monthCellWidth / daysInMonth;
-      const dayOfMonth = this.today.getDate() - 1; // 0-based
+      const dayOfMonth = this.today.getDate() - 1;
       return monthCellLeft + slotWidth * dayOfMonth;
     } else {
-      // day mode
       const index = this.todayIndex();
       if (index < 0) return -1;
       return index * getTimescaleUnitWidth(scale);

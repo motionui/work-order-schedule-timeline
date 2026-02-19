@@ -201,9 +201,10 @@
   top: 0;
   bottom: 0;
   width: 3px;
-
   background-color: #d4d7ff;
   pointer-events: none;
+  left: 0;
+  margin-left: 0;
 }
 
 .today-tag {
