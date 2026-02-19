@@ -1,3 +1,7 @@
+// Constants for timeline layout
+const MONTH_LEFT_PADDING = 4;
+const MONTH_RIGHT_PADDING = 4;
+const MONTH_GAP = 2;
 // @upgrade Add ARIA roles and labels to work center timeline and work order bars for accessibility
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
@@ -59,11 +63,10 @@ export class WorkCenterTimeline {
       const daysInMonth = new Date(clickedDate.getFullYear(), clickedDate.getMonth() + 1, 0).getDate();
       const dayOfMonth = clickedDate.getDate() - 1;
       const slotWidth = monthCellWidth / daysInMonth;
-      const leftPadding = 4;
-      const rightPadding = 4;
-      // For hoverPreview, treat as single-day slot
-      left = monthCellLeft + slotWidth * dayOfMonth;
-      width = slotWidth - leftPadding - rightPadding;
+      // For hoverPreview, treat as single-day slot, match bar logic
+      // Add 2px extra spacing to separate preview from today's line
+      left = Math.round(monthCellLeft + slotWidth * dayOfMonth + MONTH_LEFT_PADDING + 6);
+      width = Math.round(slotWidth - MONTH_LEFT_PADDING - MONTH_RIGHT_PADDING - 10);
     } else {
       // day
       clickedDate = this.addDays(rangeStart, index);
@@ -178,12 +181,13 @@ export class WorkCenterTimeline {
           const clampedEnd = orderEnd > monthEnd ? monthEnd : orderEnd;
           const startDayOfMonth = clampedStart.getDate() - 1; // 0-based
           const endDayOfMonth = clampedEnd.getDate() - 1; // 0-based
-          // Add spacing between adjacent work orders (2px gap between slots)
+          // Add spacing between adjacent work orders
           const slotCount = endDayOfMonth - startDayOfMonth + 1;
-          const gap = 2;
-          const left = Math.round(monthCellLeft + slotWidth * startDayOfMonth + 4);
+          const left = Math.round(monthCellLeft + slotWidth * startDayOfMonth + MONTH_LEFT_PADDING);
           const width =
-            slotCount === 1 ? Math.round(slotWidth - 8) : Math.round(slotWidth * slotCount - gap * (slotCount - 1) - 8);
+            slotCount === 1
+              ? Math.round(slotWidth - MONTH_LEFT_PADDING - MONTH_RIGHT_PADDING)
+              : Math.round(slotWidth * slotCount - MONTH_GAP * (slotCount - 1) - MONTH_LEFT_PADDING - MONTH_RIGHT_PADDING);
           result.push({ order, left, width });
         }
       }
