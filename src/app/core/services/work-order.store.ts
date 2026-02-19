@@ -31,8 +31,6 @@ export class WorkOrderStore {
           : workOrder,
       ),
     );
-
-    console.log(JSON.stringify(this.workOrders()));
   }
 
   delete(workOrder: WorkOrderDocument): void {
