@@ -75,10 +75,7 @@ export class TimelineHeader {
     }
   }
 
-  // -----------------------------
-  // Helpers
-  // -----------------------------
-
+  // Helper to format date as "MMM d" (e.g. "Jan 5") for consistent formatting in header and today tag
   private startOfDay(date: Date): Date {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }

@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { PageHeader } from './page-header/page-header';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+
+import { PageHeader } from './page-header/page-header';
 import { Timeline } from './timeline/timeline';
 import { WorkOrderDrawer } from './work-order-drawer/work-order-drawer';
-import { WorkOrderDocument } from '../../core/models/work-order.model';
-import { WorkOrderDrawerService } from '../../core/services/work-order-drawer.service';
 
 @Component({
   selector: 'app-work-orders-page',
@@ -17,13 +16,8 @@ import { WorkOrderDrawerService } from '../../core/services/work-order-drawer.se
 })
 export class WorkOrdersPage implements OnInit {
   private titleService = inject(Title);
-  protected workOrderDrawerService = inject(WorkOrderDrawerService);
-
-  // selectedWorkOrder = signal<WorkOrderDocument | undefined>(undefined);
 
   ngOnInit(): void {
     this.titleService.setTitle('Naologic: Work Orders');
   }
-
-  onDelete(workOrder: WorkOrderDocument): void {}
 }

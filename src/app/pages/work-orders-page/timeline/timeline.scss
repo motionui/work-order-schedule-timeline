@@ -209,7 +209,10 @@
 
 .today-tag {
   position: absolute;
-  top: 32px;
+  // if we following the origin css in sketch
+  // top should be 32px
+  // in sketch, the first work center work order row is taller than the rest
+  top: 22px;
 
   padding: 2px 8px;
   border-radius: 6px;
