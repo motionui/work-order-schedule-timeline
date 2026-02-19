@@ -181,8 +181,9 @@ export class WorkCenterTimeline {
           // Add spacing between adjacent work orders (2px gap between slots)
           const slotCount = endDayOfMonth - startDayOfMonth + 1;
           const gap = 2;
-          const left = monthCellLeft + slotWidth * startDayOfMonth;
-          const width = slotCount === 1 ? slotWidth : slotWidth * slotCount - gap * (slotCount - 1);
+          const left = Math.round(monthCellLeft + slotWidth * startDayOfMonth + 4);
+          const width =
+            slotCount === 1 ? Math.round(slotWidth - 8) : Math.round(slotWidth * slotCount - gap * (slotCount - 1) - 8);
           result.push({ order, left, width });
         }
       }
