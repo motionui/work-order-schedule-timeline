@@ -38,6 +38,15 @@ export interface WorkOrderFormData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkOrderForm {
+  // Date bounds for datepickers (shared for start and end)
+  protected minDate: NgbDateStruct = this.getToday();
+  protected maxDate: NgbDateStruct = { year: 2100, month: 12, day: 31 };
+
+  // Helper: get today's date as NgbDateStruct
+  private getToday(): NgbDateStruct {
+    const today = new Date();
+    return { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
+  }
   private workOrderStore = inject(WorkOrderStore);
   private workOrderDrawerService = inject(WorkOrderDrawerService);
 
@@ -89,7 +98,53 @@ export class WorkOrderForm {
       });
 
       this.formGroup.updateValueAndValidity();
+
+      // --- Calculate min/max date bounds for datepickers ---
+      // Only consider work orders for the same work center
+      const workOrders = data.currentWorkOrders.filter(
+        (wo) => wo.data.workCenterId === workOrder.data.workCenterId && wo.docId !== workOrder.docId,
+      );
+      // Sort by startDate
+      workOrders.sort((a, b) => a.data.startDate.localeCompare(b.data.startDate));
+
+      // Use workOrder.data.startDate as the clicked date
+      const clicked = this.toLocalDate(workOrder.data.startDate);
+
+      // Find previous and next work orders
+      let prevEnd: Date | null = null;
+      let nextStart: Date | null = null;
+      for (const wo of workOrders) {
+        const woStart = this.toLocalDate(wo.data.startDate);
+        const woEnd = this.toLocalDate(wo.data.endDate);
+        if (woEnd < clicked && (!prevEnd || woEnd > prevEnd)) {
+          prevEnd = woEnd;
+        }
+        if (woStart > clicked && (!nextStart || woStart < nextStart)) {
+          nextStart = woStart;
+        }
+      }
+
+      // minDate is the day after prevEnd or clicked date
+      const min = prevEnd ? this.addDays(prevEnd, 1) : clicked;
+      // maxDate is the day before nextStart or clicked date
+      const max = nextStart ? this.addDays(nextStart, -1) : clicked;
+
+      // Both start and end date pickers use the same bounds
+      this.minDate = this.toDateStructISO(min);
+      this.maxDate = this.toDateStructISO(max);
     });
+  }
+
+  // Helper: add days to a date
+  private addDays(date: Date, days: number): Date {
+    const d = new Date(date);
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+
+  // Helper: convert Date to NgbDateStruct
+  private toDateStructISO(date: Date): NgbDateStruct {
+    return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
   }
 
   // Getters for easy access to form controls in the template
