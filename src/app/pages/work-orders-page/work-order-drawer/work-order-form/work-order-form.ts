@@ -3,7 +3,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -16,7 +16,7 @@ import {
 
 import { NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { WORK_ORDER_STATUS_OPTIONS, WorkOrderDocument, WorkOrderStatus } from '../../../../core/models/work-order.model';
+import { WORK_ORDER_STATUS_OPTIONS, WorkOrderDocument } from '../../../../core/models/work-order.model';
 import { DataPickerDateFormatService } from '../../../../core/services/data-picker-date-format.service';
 import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
 import { WorkOrderStore } from '../../../../core/services/work-order.store';
@@ -38,15 +38,6 @@ export interface WorkOrderFormData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkOrderForm {
-  // Date bounds for datepickers (shared for start and end)
-  protected minDate: NgbDateStruct = this.getToday();
-  protected maxDate: NgbDateStruct = { year: 2100, month: 12, day: 31 };
-
-  // Helper: get today's date as NgbDateStruct
-  private getToday(): NgbDateStruct {
-    const today = new Date();
-    return { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
-  }
   private workOrderStore = inject(WorkOrderStore);
   private workOrderDrawerService = inject(WorkOrderDrawerService);
 
@@ -54,6 +45,47 @@ export class WorkOrderForm {
 
   protected formGroup: FormGroup;
   protected statusOptions = WORK_ORDER_STATUS_OPTIONS;
+
+  // Date bounds for datepickers (shared for start and end) as computed signals
+  protected readonly minDate = computed(() => {
+    const data = this.formData();
+    if (!data) return this.getToday();
+    const workOrder = data.workOrder;
+    const workOrders = data.currentWorkOrders.filter(
+      (wo) => wo.data.workCenterId === workOrder.data.workCenterId && wo.docId !== workOrder.docId,
+    );
+    workOrders.sort((a, b) => a.data.startDate.localeCompare(b.data.startDate));
+    const clicked = this.toLocalDate(workOrder.data.startDate);
+    let prevEnd: Date | null = null;
+    for (const wo of workOrders) {
+      const woEnd = this.toLocalDate(wo.data.endDate);
+      if (woEnd < clicked && (!prevEnd || woEnd > prevEnd)) {
+        prevEnd = woEnd;
+      }
+    }
+    const min = prevEnd ? this.addDays(prevEnd, 1) : clicked;
+    return this.toDateStructISO(min);
+  });
+
+  protected readonly maxDate = computed(() => {
+    const data = this.formData();
+    if (!data) return { year: 2100, month: 12, day: 31 };
+    const workOrder = data.workOrder;
+    const workOrders = data.currentWorkOrders.filter(
+      (wo) => wo.data.workCenterId === workOrder.data.workCenterId && wo.docId !== workOrder.docId,
+    );
+    workOrders.sort((a, b) => a.data.startDate.localeCompare(b.data.startDate));
+    const clicked = this.toLocalDate(workOrder.data.startDate);
+    let nextStart: Date | null = null;
+    for (const wo of workOrders) {
+      const woStart = this.toLocalDate(wo.data.startDate);
+      if (woStart > clicked && (!nextStart || woStart < nextStart)) {
+        nextStart = woStart;
+      }
+    }
+    const max = nextStart ? this.addDays(nextStart, -1) : clicked;
+    return this.toDateStructISO(max);
+  });
 
   constructor() {
     this.formGroup = new FormGroup(
@@ -67,7 +99,7 @@ export class WorkOrderForm {
             Validators.pattern(/^[a-zA-Z0-9\s\-]+$/),
           ],
         }),
-        status: new FormControl<WorkOrderStatus>('open', {
+        status: new FormControl('open', {
           nonNullable: true,
           validators: [Validators.required],
         }),
@@ -83,12 +115,10 @@ export class WorkOrderForm {
       },
     );
 
+    // Auto-populate form fields when formData changes
     effect(() => {
       const data = this.formData();
-      if (!data) {
-        return;
-      }
-
+      if (!data) return;
       const workOrder = data.workOrder;
       this.formGroup.patchValue({
         name: workOrder.data.name,
@@ -96,55 +126,8 @@ export class WorkOrderForm {
         startDate: this.toDateStruct(workOrder.data.startDate),
         endDate: this.toDateStruct(workOrder.data.endDate),
       });
-
       this.formGroup.updateValueAndValidity();
-
-      // --- Calculate min/max date bounds for datepickers ---
-      // Only consider work orders for the same work center
-      const workOrders = data.currentWorkOrders.filter(
-        (wo) => wo.data.workCenterId === workOrder.data.workCenterId && wo.docId !== workOrder.docId,
-      );
-      // Sort by startDate
-      workOrders.sort((a, b) => a.data.startDate.localeCompare(b.data.startDate));
-
-      // Use workOrder.data.startDate as the clicked date
-      const clicked = this.toLocalDate(workOrder.data.startDate);
-
-      // Find previous and next work orders
-      let prevEnd: Date | null = null;
-      let nextStart: Date | null = null;
-      for (const wo of workOrders) {
-        const woStart = this.toLocalDate(wo.data.startDate);
-        const woEnd = this.toLocalDate(wo.data.endDate);
-        if (woEnd < clicked && (!prevEnd || woEnd > prevEnd)) {
-          prevEnd = woEnd;
-        }
-        if (woStart > clicked && (!nextStart || woStart < nextStart)) {
-          nextStart = woStart;
-        }
-      }
-
-      // minDate is the day after prevEnd or clicked date
-      const min = prevEnd ? this.addDays(prevEnd, 1) : clicked;
-      // maxDate is the day before nextStart or clicked date
-      const max = nextStart ? this.addDays(nextStart, -1) : clicked;
-
-      // Both start and end date pickers use the same bounds
-      this.minDate = this.toDateStructISO(min);
-      this.maxDate = this.toDateStructISO(max);
     });
-  }
-
-  // Helper: add days to a date
-  private addDays(date: Date, days: number): Date {
-    const d = new Date(date);
-    d.setDate(d.getDate() + days);
-    return d;
-  }
-
-  // Helper: convert Date to NgbDateStruct
-  private toDateStructISO(date: Date): NgbDateStruct {
-    return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
   }
 
   // Getters for easy access to form controls in the template
@@ -230,6 +213,24 @@ export class WorkOrderForm {
 
     return null;
   };
+
+  // Helper: get today's date as NgbDateStruct
+  private getToday(): NgbDateStruct {
+    const today = new Date();
+    return { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
+  }
+
+  // Helper: add days to a date
+  private addDays(date: Date, days: number): Date {
+    const d = new Date(date);
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+
+  // Helper: convert Date to NgbDateStruct
+  private toDateStructISO(date: Date): NgbDateStruct {
+    return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
+  }
 
   private toLocalDate(iso: string): Date {
     const [year, month, day] = iso.split('-').map(Number);
