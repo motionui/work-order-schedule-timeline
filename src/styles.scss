@@ -18,7 +18,7 @@ body {
 }
 
 body {
-  margin: 0;
+  margin: spacing.$space-0;
   font-family: typography.$font-family-base;
   background-color: colors.$white;
   -webkit-font-smoothing: antialiased;
@@ -84,7 +84,7 @@ body {
 // form-field input override
 .form-field input {
   height: 38px;
-  padding: 0 12px;
+  padding: spacing.$space-0 spacing.$space-12px;
   border-radius: 5px;
   background: #fff;
 

@@ -51,3 +51,15 @@ Status text colors:
 ```scss
 @include colors.apply-text-color(muted);
 ```
+
+## Spacing Tokens
+
+- Defined in `src/styles/_spacing.scss`
+- Base grid unit: `4px` (`$spacing-base-unit`)
+- Grid scale: `0, 4, 8, 12, 16, 20, 24`
+- Explicit non-grid exceptions (kept to preserve current layout): `1, 2, 5, 10, 22, 26, 31, 45, 101`
+
+Rule:
+
+- Use the grid scale first.
+- Use exception tokens only for intentional optical/layout offsets.

@@ -1,4 +1,5 @@
 @use 'colors' as colors;
+@use 'spacing' as spacing;
 @use 'typography' as typography;
 @use 'variables' as variables;
 
@@ -8,22 +9,22 @@
 }
 
 .work-order-form {
-  padding: 16px 0;
+  padding: spacing.$space-16px spacing.$space-0;
 }
 
 .header {
-  padding: 24px;
+  padding: spacing.$space-24px;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 5px;
+  gap: spacing.$space-5px;
 }
 
 .header-group {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: spacing.$space-5px;
 
   .title {
     color: colors.$text-2;
@@ -42,27 +43,27 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 16px;
+  gap: spacing.$space-16px;
 }
 
 .separator {
-  margin-top: 16px;
+  margin-top: spacing.$space-16px;
   width: 100%;
   height: 1px;
   border-top: 1px solid rgba(230, 235, 240, 1);
 }
 
 .form-fields {
-  padding: 24px;
+  padding: spacing.$space-24px;
 
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: spacing.$space-10px;
 
   .form-field {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: spacing.$space-8px;
 
     > * {
       width: 100%;
@@ -75,7 +76,7 @@
     }
 
     .validation-error {
-      padding: 0 0 0 12px;
+      padding: spacing.$space-0 spacing.$space-0 spacing.$space-0 spacing.$space-12px;
       color: colors.$text-danger;
       margin: 0;
       @include typography.apply-type(body-tight);

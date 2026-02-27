@@ -22,7 +22,7 @@
   justify-content: space-between;
   align-items: center;
   border-radius: 8px;
-  padding: 10px 8px;
+  padding: spacing.$space-10px spacing.$space-8px;
 
   .three-dots {
     visibility: hidden;
@@ -40,7 +40,7 @@
 }
 
 .three-dots-button {
-  padding: 8px;
+  padding: spacing.$space-8px;
   background: transparent;
   border: none;
   width: 24px;
@@ -73,7 +73,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 4px;
+  gap: spacing.$space-4px;
 }
 
 .dropdown-toggle::after {
@@ -112,7 +112,7 @@
 
 .work-order-menu .dropdown-item {
   height: 28px;
-  padding: 5px 12px;
+  padding: spacing.$space-5px spacing.$space-12px;
   color: colors.$text-2;
   @include typography.apply-type(body-md);
 

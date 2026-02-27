@@ -11,17 +11,17 @@
 @use 'variables' as variables;
 
 .timeline {
-  padding-top: 26px;
+  padding-top: spacing.$space-26px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: spacing.$space-24px;
 }
 
 .timeline-actions {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 20px;
+  gap: spacing.$space-20px;
 }
 
 .today-button {
@@ -31,7 +31,7 @@
   min-height: 25px;
   border-radius: 5px;
   box-shadow: 1px 2.5px 3px -1.5px rgba(200, 207, 233, 1);
-  padding: 5px 8px;
+  padding: spacing.$space-5px spacing.$space-8px;
   background: #6366f1;
   color: colors.$text-inverse;
   @include typography.apply-type(body-sm);
@@ -63,7 +63,7 @@
 
   display: flex;
   align-items: center;
-  padding-left: 31px;
+  padding-left: spacing.$space-31px;
 
   & > span {
     color: colors.$text-muted;
@@ -172,7 +172,7 @@
 }
 
 .work-center-row {
-  padding-left: 31px;
+  padding-left: spacing.$space-31px;
   border-bottom: 1px solid colors.$border-default;
 }
 
@@ -216,9 +216,9 @@
   // if we following the origin css in sketch
   // top should be 32px
   // in sketch, the first work center work order row is taller than the rest
-  top: 22px;
+  top: spacing.$space-22px;
 
-  padding: 2px 8px;
+  padding: spacing.$space-2px spacing.$space-8px;
   border-radius: 6px;
 
   background: #6366f1;

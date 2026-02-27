@@ -6,6 +6,7 @@
  */
 
 @use 'colors' as colors;
+@use 'spacing' as spacing;
 @use 'typography' as typography;
 @use 'variables' as variables;
 
@@ -73,18 +74,18 @@
 .trigger {
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: spacing.$space-0;
 }
 
 .label {
-  padding: 5px 8px;
+  padding: spacing.$space-5px spacing.$space-8px;
   color: colors.$text-muted;
   @include typography.apply-type(body-sm);
   background-color: #f1f3f8bf;
 }
 
 .value {
-  padding: 0 2px 0 8px;
+  padding: spacing.$space-0 spacing.$space-2px spacing.$space-0 spacing.$space-8px;
   color: colors.$text-link;
   @include typography.apply-type(label-sm);
   background-color: colors.$white;

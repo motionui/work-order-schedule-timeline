@@ -1,10 +1,11 @@
 @use 'variables' as variables;
 @use 'colors' as colors;
+@use 'spacing' as spacing;
 @use 'typography' as typography;
 
 .tooltip-inner {
-  margin: 5px;
-  padding: 4px 8px;
+  margin: spacing.$space-5px;
+  padding: spacing.$space-4px spacing.$space-8px;
   box-shadow:
     0 2px 4px -2px #c8cfe9,
     0 0 16px -8px #e6ebf0;
@@ -24,5 +25,5 @@
 }
 
 .dropdown-menu {
-  margin-top: 5px;
+  margin-top: spacing.$space-5px;
 }

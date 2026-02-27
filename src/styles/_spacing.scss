@@ -1,8 +1,40 @@
 /**
  * @upgrade Create design system spacing tokens based on sketch and update components to use tokens instead of hard coded spacing values
  */
-$spacing-1: 4px;
-$spacing-2: 8px;
-$spacing-3: 12px;
-$spacing-4: 16px;
-$spacing-5: 24px;
+$space-unit: 4px;
+
+// Grid scale (multiples of 4px)
+$space-0: 0;
+$space-1: $space-unit;
+$space-2: $space-unit * 2;
+$space-3: $space-unit * 3;
+$space-4: $space-unit * 4;
+$space-5: $space-unit * 5;
+$space-6: $space-unit * 6;
+
+// Backward-compatible px aliases
+$spacing-base-unit: $space-unit;
+$space-4px: $space-1;
+$space-8px: $space-2;
+$space-12px: $space-3;
+$space-16px: $space-4;
+$space-20px: $space-5;
+$space-24px: $space-6;
+
+// Explicit optical/layout exceptions (non-multiples of 4px)
+$space-1px: 1px;
+$space-2px: 2px;
+$space-5px: 5px;
+$space-10px: 10px;
+$space-22px: 22px;
+$space-26px: 26px;
+$space-31px: 31px;
+$space-45px: 45px;
+$space-101px: 101px;
+
+// Backward-compatible aliases
+$spacing-1: $space-4px;
+$spacing-2: $space-8px;
+$spacing-3: $space-12px;
+$spacing-4: $space-16px;
+$spacing-5: $space-24px;
