@@ -7,6 +7,7 @@
 
 @use 'colors' as colors;
 @use 'spacing' as spacing;
+@use 'typography' as typography;
 @use 'variables' as variables;
 
 .timeline-header {
@@ -21,11 +22,8 @@
   display: flex;
   min-width: max-content;
 
-  // @upgrade: Font styles should be defined in typography design tokens, but for this exercise, we will hardcode them here
-  font-size: 14px;
-  color: #687196;
-  font-weight: 500;
-  line-height: 1.2;
+  color: colors.$text-muted;
+  @include typography.apply-type(label-md);
 }
 
 .timeline-header-cell {

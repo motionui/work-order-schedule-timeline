@@ -18,10 +18,7 @@
   height: 22px;
   border-radius: 5px;
 
-  // @upgrade: Font styles should be defined in typography design tokens, but for this exercise, we will hardcode them here
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.2;
+  @include typography.apply-type(body-md);
   white-space: nowrap;
 }
 

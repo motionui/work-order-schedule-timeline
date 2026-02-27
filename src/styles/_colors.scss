@@ -3,10 +3,19 @@
  */
 
 $white: #fff;
+$danger: #ff0000;
 
 $text-1: #030929;
 $text-2: #2f3059;
 $text-4: #687196;
+$text-placeholder: #a4aac0;
+
+$text-primary: $text-1;
+$text-secondary: $text-2;
+$text-muted: $text-4;
+$text-inverse: $white;
+$text-link: #3e40db;
+$text-danger: $danger;
 
 $background-default: #ffffff;
 $border-default: #e5e7eb;
@@ -36,3 +45,27 @@ $status-blocked-parent-background-color: #fffcf1;
 $status-blocked-parent-border-color: #fff5cf;
 
 $dropdown-selected-color: #3e40db;
+
+$text-color-tokens: (
+  primary: $text-primary,
+  secondary: $text-secondary,
+  muted: $text-muted,
+  inverse: $text-inverse,
+  link: $text-link,
+  placeholder: $text-placeholder,
+  danger: $text-danger,
+  status-open: $status-open-color,
+  status-in-progress: $status-in-progress-color,
+  status-complete: $status-complete-color,
+  status-blocked: $status-blocked-color,
+);
+
+@mixin apply-text-color($token) {
+  $color: map-get($text-color-tokens, $token);
+
+  @if $color == null {
+    @error "Unknown text color token: #{$token}.";
+  }
+
+  color: $color;
+}

@@ -21,7 +21,5 @@
 
 .name {
   color: colors.$text-1;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.2;
+  @include typography.apply-type(label-md);
 }

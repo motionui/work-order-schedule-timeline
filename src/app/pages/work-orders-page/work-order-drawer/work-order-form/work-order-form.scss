@@ -27,18 +27,14 @@
 
   .title {
     color: colors.$text-2;
-    font-size: 20px;
-    font-weight: 500;
+    @include typography.apply-type(drawer-title);
     font-style: normal;
-    line-height: 1.2;
   }
 
   .description {
     color: colors.$text-4;
-    font-size: 16px;
-    font-weight: 500;
+    @include typography.apply-type(drawer-subtitle);
     font-style: normal;
-    line-height: 1.2;
   }
 }
 
@@ -74,19 +70,15 @@
 
     label {
       color: colors.$text-4;
-      font-size: 14px;
-      font-weight: 500;
+      @include typography.apply-type(label-md);
       font-style: normal;
-      line-height: 1.2;
     }
 
     .validation-error {
       padding: 0 0 0 12px;
-      color: red;
+      color: colors.$text-danger;
       margin: 0;
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 1;
+      @include typography.apply-type(body-tight);
       min-height: 14px;
     }
   }
@@ -94,6 +86,6 @@
 
 .form-field input::placeholder,
 :host ::ng-deep .form-field input.form-control::placeholder {
-  color: #a4aac0;
+  color: colors.$text-placeholder;
   opacity: 1;
 }

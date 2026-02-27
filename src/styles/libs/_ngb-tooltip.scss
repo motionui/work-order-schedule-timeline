@@ -1,5 +1,6 @@
 @use 'variables' as variables;
 @use 'colors' as colors;
+@use 'typography' as typography;
 
 .tooltip-inner {
   margin: 5px;
@@ -8,11 +9,10 @@
     0 2px 4px -2px #c8cfe9,
     0 0 16px -8px #e6ebf0;
   border-radius: 8px;
-  background-color: #687196;
+  background-color: colors.$text-muted;
 
-  color: colors.$white;
-  font-size: 14px;
-  font-weight: 400;
+  color: colors.$text-inverse;
+  @include typography.apply-type(body-md);
 }
 
 .tooltip.show {

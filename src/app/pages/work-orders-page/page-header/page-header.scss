@@ -12,8 +12,6 @@
 }
 
 .header-label {
-  line-height: 34px;
-  font-size: typography.$font-size-xl;
-  font-weight: typography.$font-weight-medium;
+  @include typography.apply-type(page-title);
   color: colors.$text-1;
 }

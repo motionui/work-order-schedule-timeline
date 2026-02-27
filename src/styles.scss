@@ -29,9 +29,7 @@ body {
 .naologic-button {
   height: 32px;
   border-radius: 7px;
-  font-size: 15px;
-  line-height: 1.2;
-  font-weight: 400;
+  @include typography.apply-type(button);
   outline: none;
   border: none;
   min-width: 70px;
@@ -108,7 +106,7 @@ body {
 }
 
 input:-webkit-autofill {
-  -webkit-text-fill-color: #2f3059;
+  -webkit-text-fill-color: colors.$text-secondary;
 
   -webkit-box-shadow:
     0 0 0 1000px #ffffff inset,
@@ -119,7 +117,7 @@ input:-webkit-autofill {
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
-  -webkit-text-fill-color: #2f3059;
+  -webkit-text-fill-color: colors.$text-secondary;
 }
 
 .hide-scrollbar {

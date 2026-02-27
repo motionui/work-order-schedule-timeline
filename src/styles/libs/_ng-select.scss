@@ -48,8 +48,7 @@
   padding: 5px 12px;
   height: 28px;
   color: colors.$text-2;
-  font-size: 14px;
-  font-weight: 400;
+  @include typography.apply-type(body-md);
 }
 
 .ng-option-selected {
@@ -59,7 +58,7 @@
 // since we do not include the ng-select css
 // create the ng-select dropdown indicator
 .ng-select .ng-arrow {
-  border-color: #687196 transparent transparent;
+  border-color: colors.$text-muted transparent transparent;
   border-style: solid;
   border-width: 5px 5px 0 5px;
   width: 0;
@@ -67,6 +66,6 @@
 }
 
 .ng-select.ng-select-opened .ng-arrow {
-  border-color: transparent transparent #687196 transparent;
+  border-color: transparent transparent colors.$text-muted transparent;
   border-width: 0 5px 5px 5px;
 }
