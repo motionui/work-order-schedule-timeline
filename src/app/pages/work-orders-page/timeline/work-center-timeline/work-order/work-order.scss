@@ -10,7 +10,13 @@
 @use 'typography' as typography;
 @use 'variables' as variables;
 
+:host {
+  display: block;
+  width: 100%;
+}
+
 .work-order {
+  width: 100%;
   height: 38px;
   display: flex;
   justify-content: space-between;
