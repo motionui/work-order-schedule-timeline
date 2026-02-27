@@ -10,7 +10,17 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
-import { monthsBetween, weeksBetween } from '../../../../core/common/date-helpers';
+import {
+  addDays,
+  dateToIso,
+  daysBetween,
+  daysInMonth,
+  isoToLocalDate,
+  monthsBetween,
+  startOfDay,
+  startOfWeek,
+  weeksBetween,
+} from '../../../../core/common/date-helpers';
 import { getTimescaleUnitWidth } from '../../../../core/common/timescale-helpers';
 import { WorkCenterDocument } from '../../../../core/models/work-center.model';
 import { WorkOrderDocument } from '../../../../core/models/work-order.model';
@@ -56,7 +66,7 @@ export class WorkCenterTimeline {
     let width = 0;
 
     if (scale === 'week') {
-      clickedDate = this.addDays(rangeStart, index);
+      clickedDate = addDays(rangeStart, index);
       const weekIndex = Math.floor(index / 7);
       const dayOfWeek = index % 7;
       const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
@@ -69,35 +79,33 @@ export class WorkCenterTimeline {
       left = weekCellLeft + slotWidth * dayOfWeek + 6;
       width = slotWidth - 11;
     } else if (scale === 'month') {
-      clickedDate = this.addDays(rangeStart, index);
+      clickedDate = addDays(rangeStart, index);
       const monthIndex =
         clickedDate.getFullYear() * 12 + clickedDate.getMonth() - (rangeStart.getFullYear() * 12 + rangeStart.getMonth());
       const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
       const monthCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
-      const daysInMonth = new Date(clickedDate.getFullYear(), clickedDate.getMonth() + 1, 0).getDate();
+      const totalDaysInMonth = daysInMonth(clickedDate);
       const dayOfMonth = clickedDate.getDate() - 1;
-      const slotWidth = monthCellWidth / daysInMonth;
+      const slotWidth = monthCellWidth / totalDaysInMonth;
       // For hoverPreview, treat as single-day slot, match bar logic
       // Add 2px extra spacing to separate preview from today's line
       left = Math.round(monthCellLeft + slotWidth * dayOfMonth + MONTH_LEFT_PADDING + 6);
       width = Math.round(slotWidth - MONTH_LEFT_PADDING - MONTH_RIGHT_PADDING - 10);
     } else {
       // day
-      clickedDate = this.addDays(rangeStart, index);
+      clickedDate = addDays(rangeStart, index);
       left = index * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2 + 4;
       width = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX - 8;
     }
 
     // Only allow today or future
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const slotDate = new Date(clickedDate);
-    slotDate.setHours(0, 0, 0, 0);
+    const today = startOfDay(new Date());
+    const slotDate = startOfDay(clickedDate);
     if (slotDate < today) return null;
 
     const isOccupied = this.visibleOrders().some((order) => {
-      const start = this.toLocalDate(order.data.startDate);
-      const end = this.toLocalDate(order.data.endDate);
+      const start = isoToLocalDate(order.data.startDate);
+      const end = isoToLocalDate(order.data.endDate);
       return clickedDate >= start && clickedDate <= end;
     });
 
@@ -113,8 +121,8 @@ export class WorkCenterTimeline {
     const { start, end } = this.dateRange();
     const scale = this.timescale();
     return this.workOrders().filter((order) => {
-      const s = new Date(order.data.startDate);
-      const e = new Date(order.data.endDate);
+      const s = isoToLocalDate(order.data.startDate);
+      const e = isoToLocalDate(order.data.endDate);
       // For week/month, show if any overlap with the interval
       return e >= start && s <= end;
     });
@@ -127,11 +135,11 @@ export class WorkCenterTimeline {
     // For week view, group orders by week start
     if (scale === 'week') {
       // ...existing code for week view...
-      const weekGroups = new Map<string, WorkOrderDocument[]>();
+      const weekGroups = new Map<number, WorkOrderDocument[]>();
       for (const order of this.visibleOrders()) {
-        const orderStart = this.toLocalDate(order.data.startDate);
-        const weekStart = this.startOfWeek(orderStart, 1);
-        const key = weekStart.toISOString();
+        const orderStart = isoToLocalDate(order.data.startDate);
+        const weekStartDate = startOfWeek(orderStart, 1);
+        const key = weekStartDate.getTime();
         if (!weekGroups.has(key)) weekGroups.set(key, []);
         weekGroups.get(key)!.push(order);
       }
@@ -143,8 +151,8 @@ export class WorkCenterTimeline {
         const weekCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
         const slotWidth = weekCellWidth / 7;
         for (const order of orders) {
-          const orderStart = this.toLocalDate(order.data.startDate);
-          const orderEnd = this.toLocalDate(order.data.endDate);
+          const orderStart = isoToLocalDate(order.data.startDate);
+          const orderEnd = isoToLocalDate(order.data.endDate);
           // Clamp to this week
           const weekStartDay = weekStart.getDate();
           const weekEnd = new Date(weekStart);
@@ -169,11 +177,11 @@ export class WorkCenterTimeline {
     // For month view, group orders by month start
     if (scale === 'month') {
       // Group orders by month start date string
-      const monthGroups = new Map<string, WorkOrderDocument[]>();
+      const monthGroups = new Map<number, WorkOrderDocument[]>();
       for (const order of this.visibleOrders()) {
-        const orderStart = this.toLocalDate(order.data.startDate);
+        const orderStart = isoToLocalDate(order.data.startDate);
         const monthStart = new Date(orderStart.getFullYear(), orderStart.getMonth(), 1);
-        const key = monthStart.toISOString();
+        const key = monthStart.getTime();
         if (!monthGroups.has(key)) monthGroups.set(key, []);
         monthGroups.get(key)!.push(order);
       }
@@ -184,11 +192,11 @@ export class WorkCenterTimeline {
         const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
         const monthCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
         // Number of days in this month
-        const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
-        const slotWidth = monthCellWidth / daysInMonth;
+        const totalDaysInMonth = daysInMonth(monthStart);
+        const slotWidth = monthCellWidth / totalDaysInMonth;
         for (const order of orders) {
-          const orderStart = this.toLocalDate(order.data.startDate);
-          const orderEnd = this.toLocalDate(order.data.endDate);
+          const orderStart = isoToLocalDate(order.data.startDate);
+          const orderEnd = isoToLocalDate(order.data.endDate);
           // Clamp to this month
           const clampedStart = orderStart < monthStart ? monthStart : orderStart;
           const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0);
@@ -209,8 +217,8 @@ export class WorkCenterTimeline {
     }
     // Day view: unchanged
     return this.visibleOrders().map((order) => {
-      const orderStart = this.toLocalDate(order.data.startDate);
-      const orderEnd = this.toLocalDate(order.data.endDate);
+      const orderStart = isoToLocalDate(order.data.startDate);
+      const orderEnd = isoToLocalDate(order.data.endDate);
 
       let clampedStart = orderStart < range.start ? range.start : orderStart;
       let clampedEnd = orderEnd > range.end ? range.end : orderEnd;
@@ -218,24 +226,12 @@ export class WorkCenterTimeline {
       let left = 0;
       let width = 0;
 
-      left = this.daysBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
-      width = (this.daysBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
+      left = daysBetween(range.start, clampedStart) * getTimescaleUnitWidth(this.timescale()) + GUTTER_WIDTH_PX / 2;
+      width = (daysBetween(clampedStart, clampedEnd) + 1) * getTimescaleUnitWidth(this.timescale()) - GUTTER_WIDTH_PX - 1;
 
       return { order, left, width };
     });
   });
-
-  // Helper to get the start of the week (Monday by default)
-  private startOfWeek(date: Date, weekStart: number = 1): Date {
-    const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day < weekStart ? -7 : 0) + weekStart;
-    return new Date(d.setDate(diff));
-  }
-
-  private startOfDay(date: Date): Date {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  }
 
   onTimelineClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
@@ -262,10 +258,10 @@ export class WorkCenterTimeline {
       const monthCellLeft = monthIndex * monthCellWidth;
       const rangeStart = this.dateRange().start;
       const refDate = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + monthIndex, 1);
-      const daysInMonth = new Date(refDate.getFullYear(), refDate.getMonth() + 1, 0).getDate();
-      const slotWidth = (monthCellWidth - GUTTER_WIDTH_PX) / daysInMonth;
+      const totalDaysInMonth = daysInMonth(refDate);
+      const slotWidth = (monthCellWidth - GUTTER_WIDTH_PX) / totalDaysInMonth;
       const dayOfMonth = Math.floor((x - monthCellLeft - GUTTER_WIDTH_PX / 2) / slotWidth);
-      if (dayOfMonth < 0 || dayOfMonth >= daysInMonth) {
+      if (dayOfMonth < 0 || dayOfMonth >= totalDaysInMonth) {
         return;
       }
       dayIndex = 0;
@@ -283,15 +279,14 @@ export class WorkCenterTimeline {
       dayIndex = idx;
     }
     const rangeStart = this.dateRange().start;
-    const clickedDate = this.addDays(rangeStart, dayIndex);
+    const clickedDate = addDays(rangeStart, dayIndex);
     // Only allow today or future
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = startOfDay(new Date());
     if (clickedDate < today) return;
     // only create if no order occupies this day
     const isOccupied = this.visibleOrders().some((order) => {
-      const start = this.toLocalDate(order.data.startDate);
-      const end = this.toLocalDate(order.data.endDate);
+      const start = isoToLocalDate(order.data.startDate);
+      const end = isoToLocalDate(order.data.endDate);
       return clickedDate >= start && clickedDate <= end;
     });
     if (isOccupied) return;
@@ -304,36 +299,12 @@ export class WorkCenterTimeline {
           name: '',
           workCenterId: this.workCenter().docId,
           status: 'open',
-          startDate: this.toIso(clickedDate),
-          endDate: this.toIso(this.addDays(clickedDate, 7)),
+          startDate: dateToIso(clickedDate),
+          endDate: dateToIso(addDays(clickedDate, 7)),
         },
       },
       currentWorkOrders: this.workOrders(),
     });
-  }
-
-  private toIso(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  private daysBetween(a: Date, b: Date): number {
-    const start = new Date(a.getFullYear(), a.getMonth(), a.getDate());
-    const end = new Date(b.getFullYear(), b.getMonth(), b.getDate());
-    return Math.floor((end.getTime() - start.getTime()) / 86400000);
-  }
-
-  private addDays(date: Date, days: number): Date {
-    const d = new Date(date);
-    d.setDate(d.getDate() + days);
-    return d;
-  }
-
-  private toLocalDate(iso: string): Date {
-    const [year, month, day] = iso.split('-').map(Number);
-    return new Date(year, month - 1, day);
   }
 
   onMouseMove(event: MouseEvent) {
@@ -362,10 +333,10 @@ export class WorkCenterTimeline {
       const rangeStart = this.dateRange().start;
       // Get days in this month
       const refDate = new Date(rangeStart.getFullYear(), rangeStart.getMonth() + monthIndex, 1);
-      const daysInMonth = new Date(refDate.getFullYear(), refDate.getMonth() + 1, 0).getDate();
-      const slotWidth = (monthCellWidth - GUTTER_WIDTH_PX) / daysInMonth;
+      const totalDaysInMonth = daysInMonth(refDate);
+      const slotWidth = (monthCellWidth - GUTTER_WIDTH_PX) / totalDaysInMonth;
       const dayOfMonth = Math.floor((x - monthCellLeft - GUTTER_WIDTH_PX / 2) / slotWidth);
-      if (dayOfMonth < 0 || dayOfMonth >= daysInMonth) {
+      if (dayOfMonth < 0 || dayOfMonth >= totalDaysInMonth) {
         this.hoveredDayIndex.set(null);
         return;
       }
