@@ -1,5 +1,4 @@
 /**
- * @upgrade
  * Font definitions and color should be coming from design tokens, but for the sake of this exercise, we will hardcode them here. 
  * In a real application, we would want to use design tokens to ensure consistency across the application and make it easier to 
  * update styles in the future.
@@ -31,7 +30,7 @@
 
 .hover-preview {
   position: absolute;
-  top: spacing.$space-4px;
+  top: spacing.$space-unit * 1;
   height: 38px;
   background-color: #6570ff1a;
   border: 1px solid #c3c7ff;

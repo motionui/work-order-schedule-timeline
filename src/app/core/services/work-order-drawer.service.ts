@@ -1,7 +1,3 @@
-/**
- * Service to manage the state of the work order drawer, including opening and closing it with WorkOrderFormData
- */
-
 import { Injectable, signal } from '@angular/core';
 
 import { WorkOrderFormData } from '../../pages/work-orders-page/work-order-drawer/work-order-form/work-order-form';

@@ -7,7 +7,7 @@
 .ng-select .ng-select-container {
   height: 38px;
   min-height: 38px;
-  padding: spacing.$space-0 spacing.$space-12px;
+  padding: spacing.$space-unit * 0 spacing.$space-unit * 3;
   border-radius: 5px;
   background: #fff;
 
@@ -42,11 +42,11 @@
 }
 
 .ng-dropdown-panel-items {
-  padding: spacing.$space-12px spacing.$space-0;
+  padding: spacing.$space-unit * 3 spacing.$space-unit * 0;
 }
 
 .ng-option {
-  padding: spacing.$space-5px spacing.$space-12px;
+  padding: spacing.$space-5px spacing.$space-unit * 3;
   height: 28px;
   color: colors.$text-2;
   @include typography.apply-type(body-md);

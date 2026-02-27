@@ -1,5 +1,4 @@
 /**
- * @upgrade
  * Font definitions and color should be coming from design tokens, but for the sake of this exercise, we will hardcode them here. 
  * In a real application, we would want to use design tokens to ensure consistency across the application and make it easier to 
  * update styles in the future.
@@ -74,18 +73,18 @@
 .trigger {
   display: flex;
   align-items: center;
-  gap: spacing.$space-0;
+  gap: spacing.$space-unit * 0;
 }
 
 .label {
-  padding: spacing.$space-5px spacing.$space-8px;
+  padding: spacing.$space-5px spacing.$space-unit * 2;
   color: colors.$text-muted;
   @include typography.apply-type(body-sm);
   background-color: #f1f3f8bf;
 }
 
 .value {
-  padding: spacing.$space-0 spacing.$space-2px spacing.$space-0 spacing.$space-8px;
+  padding: spacing.$space-unit * 0 spacing.$space-2px spacing.$space-unit * 0 spacing.$space-unit * 2;
   color: colors.$text-link;
   @include typography.apply-type(label-sm);
   background-color: colors.$white;

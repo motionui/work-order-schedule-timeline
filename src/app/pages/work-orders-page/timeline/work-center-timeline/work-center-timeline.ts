@@ -1,11 +1,3 @@
-/**
- * Component to display the timeline for a work center, including the timeline header with the timescale and date range, and the work orders for that center displayed in the timeline
- */
-
-/**
- * @upgrade Add ARIA roles and labels to timeline and timeline cells for accessibility compliance
- */
-
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 

@@ -1,5 +1,4 @@
 /**
- * @upgrade
  * Font definitions and color should be coming from design tokens, but for the sake of this exercise, we will hardcode them here. 
  * In a real application, we would want to use design tokens to ensure consistency across the application and make it easier to 
  * update styles in the future.
@@ -22,7 +21,7 @@
   justify-content: space-between;
   align-items: center;
   border-radius: 8px;
-  padding: spacing.$space-10px spacing.$space-8px;
+  padding: spacing.$space-10px spacing.$space-unit * 2;
 
   .three-dots {
     visibility: hidden;
@@ -40,7 +39,7 @@
 }
 
 .three-dots-button {
-  padding: spacing.$space-8px;
+  padding: spacing.$space-unit * 2;
   background: transparent;
   border: none;
   width: 24px;
@@ -73,7 +72,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: spacing.$space-4px;
+  gap: spacing.$space-unit * 1;
 }
 
 .dropdown-toggle::after {
@@ -112,7 +111,7 @@
 
 .work-order-menu .dropdown-item {
   height: 28px;
-  padding: spacing.$space-5px spacing.$space-12px;
+  padding: spacing.$space-5px spacing.$space-unit * 3;
   color: colors.$text-2;
   @include typography.apply-type(body-md);
 

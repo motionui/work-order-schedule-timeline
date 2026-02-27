@@ -1,7 +1,3 @@
-/**
- * Component to display a work center in the timeline, with the work center name displayed and the work orders for that center shown in the timeline below
- */
-
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 

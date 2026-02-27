@@ -1,7 +1,3 @@
-/**
- * Timeline component for displaying work centers and their associated work orders on a timescale, with the ability to select different timescales (day, week, month) and view details of each work order in a tooltip. The timeline is horizontally scrollable and centers on the current date by default.
- */
-
 import { CommonModule } from '@angular/common';
 import {
   afterNextRender,

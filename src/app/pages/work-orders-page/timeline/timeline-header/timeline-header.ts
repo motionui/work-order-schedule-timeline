@@ -1,7 +1,3 @@
-/**
- * Component to display the header of the timeline, showing the date labels based on the selected timescale and date range
- */
-
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 

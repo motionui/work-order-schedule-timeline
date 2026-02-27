@@ -1,5 +1,4 @@
 /**
- * @upgrade
  * Font definitions and color should be coming from design tokens, but for the sake of this exercise, we will hardcode them here. 
  * In a real application, we would want to use design tokens to ensure consistency across the application and make it easier to 
  * update styles in the future.
@@ -14,14 +13,14 @@
   padding-top: spacing.$space-26px;
   display: flex;
   flex-direction: column;
-  gap: spacing.$space-24px;
+  gap: spacing.$space-unit * 6;
 }
 
 .timeline-actions {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: spacing.$space-20px;
+  gap: spacing.$space-unit * 5;
 }
 
 .today-button {
@@ -31,7 +30,7 @@
   min-height: 25px;
   border-radius: 5px;
   box-shadow: 1px 2.5px 3px -1.5px rgba(200, 207, 233, 1);
-  padding: spacing.$space-5px spacing.$space-8px;
+  padding: spacing.$space-5px spacing.$space-unit * 2;
   background: #6366f1;
   color: colors.$text-inverse;
   @include typography.apply-type(body-sm);
@@ -218,7 +217,7 @@
   // in sketch, the first work center work order row is taller than the rest
   top: spacing.$space-22px;
 
-  padding: spacing.$space-2px spacing.$space-8px;
+  padding: spacing.$space-2px spacing.$space-unit * 2;
   border-radius: 6px;
 
   background: #6366f1;

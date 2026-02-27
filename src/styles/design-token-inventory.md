@@ -55,8 +55,16 @@ Status text colors:
 ## Spacing Tokens
 
 - Defined in `src/styles/_spacing.scss`
-- Base grid unit: `4px` (`$spacing-base-unit`)
-- Grid scale: `0, 4, 8, 12, 16, 20, 24`
+- Base grid unit: `4px` (`$space-unit`, alias `$spacing-base-unit`)
+- Grid scale usage:
+
+```scss
+spacing.$space-unit * 0 // 0
+spacing.$space-unit * 1 // 4px
+spacing.$space-unit * 2 // 8px
+spacing.$space-unit * 3 // 12px
+```
+
 - Explicit non-grid exceptions (kept to preserve current layout): `1, 2, 5, 10, 22, 26, 31, 45, 101`
 
 Rule:

@@ -1,7 +1,3 @@
-/**
- * Component for the work order form displayed in the drawer, with inputs for the work order data and a reactive form to edit the work order details, including validation for required fields, date range, and overlapping work orders
- */
-
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import {

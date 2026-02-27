@@ -5,7 +5,7 @@
 
 .tooltip-inner {
   margin: spacing.$space-5px;
-  padding: spacing.$space-4px spacing.$space-8px;
+  padding: spacing.$space-unit * 1 spacing.$space-unit * 2;
   box-shadow:
     0 2px 4px -2px #c8cfe9,
     0 0 16px -8px #e6ebf0;

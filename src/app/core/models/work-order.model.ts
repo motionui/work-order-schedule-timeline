@@ -1,7 +1,3 @@
-/**
- * Define constants and types related to work orders in the application
- */
-
 import { DocumentType } from './doc-type.model';
 
 // Define constants and types related to work orders in the application

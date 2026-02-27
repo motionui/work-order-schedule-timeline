@@ -1,5 +1,13 @@
 /**
- * @upgrade Create design system typography tokens based on sketch and update components to use tokens instead of hard coded typography values
+ * Design System: Typography
+ *
+ * Intent:
+ * - Centralize all font primitives and semantic type styles.
+ * - Keep typography consistent for Circular-Std across the application.
+ *
+ * Usage:
+ * - Apply semantic styles with `@include typography.apply-type(<token>)`.
+ * - Add new semantic tokens in `$typography-tokens` before using ad hoc font declarations.
  */
 $font-family-base: 'Circular-Std', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 

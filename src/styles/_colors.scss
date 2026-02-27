@@ -1,5 +1,13 @@
 /**
- * @upgrade Create design system color tokens based on sketch and update components to use tokens instead of hard coded colors
+ * Design System: Color
+ *
+ * Intent:
+ * - Centralize reusable color primitives and semantic text color tokens.
+ * - Provide consistent visual language for text, status, and surfaces.
+ *
+ * Usage:
+ * - Prefer semantic tokens (`$text-primary`, `$text-muted`, etc.) over raw hex values.
+ * - Optional helper: `@include colors.apply-text-color(<token>)` for tokenized text color.
  */
 
 $white: #fff;

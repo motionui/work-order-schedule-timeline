@@ -1,7 +1,3 @@
-/**
- * Service to manage the state of work centers and work orders, providing methods to add, update, delete, and load sample data
- */
-
 import { Injectable, signal } from '@angular/core';
 
 import { WorkCenterDocument } from '../models/work-center.model';
