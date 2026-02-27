@@ -23,8 +23,8 @@ import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrder } from './work-order/work-order';
 
 // Constants for timeline layout
-const ITEM_LEFT_GAP_PX = 4;
-const ITEM_RIGHT_GAP_PX = 5;
+const ITEM_LEFT_GAP_PX = 6;
+const ITEM_RIGHT_GAP_PX = 7;
 
 @Component({
   selector: 'app-work-center-timeline',

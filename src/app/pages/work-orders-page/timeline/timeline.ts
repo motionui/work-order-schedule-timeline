@@ -41,7 +41,7 @@ export interface DateRange {
 const VISIBLE_DAYS = 14;
 const VISIBLE_MONTHS_WEEK_VIEW = 2; // ±2 months for week view
 const VISIBLE_MONTHS_MONTH_VIEW = 6; // ±6 months for month view
-const GUTTER_WIDTH_PX = 8;
+const TODAY_LINE_LEFT_OFFSET_PX = -1;
 
 @Component({
   selector: 'app-timeline',
@@ -135,28 +135,26 @@ export class Timeline implements OnInit {
     const scale = this.timescale();
     const { start } = this.visibleDateRange();
     if (this.today < start) return -1;
+    const unitWidth = getTimescaleUnitWidth(scale);
+
     if (scale === 'week') {
-      // Find week index and offset within week
       const weekIndex = weeksBetween(start, this.today);
-      const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
-      const weekCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
-      const slotWidth = weekCellWidth / 7;
+      const weekCellLeft = weekIndex * unitWidth;
+      const slotWidth = unitWidth / 7;
       let dayOfWeek = this.today.getDay();
       dayOfWeek = (dayOfWeek + 6) % 7;
-      // Position at exact start of slot
-      return weekCellLeft + slotWidth * dayOfWeek;
+      return Math.round(weekCellLeft + slotWidth * dayOfWeek) + TODAY_LINE_LEFT_OFFSET_PX;
     } else if (scale === 'month') {
       const monthIndex = monthsBetween(start, this.today);
-      const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale) + GUTTER_WIDTH_PX / 2;
-      const monthCellWidth = getTimescaleUnitWidth(scale) - GUTTER_WIDTH_PX;
+      const monthCellLeft = monthIndex * unitWidth;
       const daysInMonth = new Date(this.today.getFullYear(), this.today.getMonth() + 1, 0).getDate();
-      const slotWidth = monthCellWidth / daysInMonth;
+      const slotWidth = unitWidth / daysInMonth;
       const dayOfMonth = this.today.getDate() - 1;
-      return monthCellLeft + slotWidth * dayOfMonth;
+      return Math.round(monthCellLeft + slotWidth * dayOfMonth) + TODAY_LINE_LEFT_OFFSET_PX;
     } else {
       const index = this.todayIndex();
       if (index < 0) return -1;
-      return index * getTimescaleUnitWidth(scale);
+      return index * unitWidth + TODAY_LINE_LEFT_OFFSET_PX;
     }
   });
 
@@ -207,9 +205,8 @@ export class Timeline implements OnInit {
 
     if (scale === 'week') {
       const weekIndex = weeksBetween(start, this.today);
-      const weekCellLeft = weekIndex * unitWidth + GUTTER_WIDTH_PX / 2;
-      const weekCellWidth = unitWidth - GUTTER_WIDTH_PX;
-      const slotWidth = weekCellWidth / 7;
+      const weekCellLeft = weekIndex * unitWidth;
+      const slotWidth = unitWidth / 7;
 
       let dayOfWeek = this.today.getDay();
       dayOfWeek = (dayOfWeek + 6) % 7; // Monday start
@@ -217,12 +214,11 @@ export class Timeline implements OnInit {
       todayPixel = weekCellLeft + slotWidth * dayOfWeek + slotWidth / 2;
     } else if (scale === 'month') {
       const monthIndex = monthsBetween(start, this.today);
-      const monthCellLeft = monthIndex * unitWidth + GUTTER_WIDTH_PX / 2;
+      const monthCellLeft = monthIndex * unitWidth;
 
       const daysInMonth = new Date(this.today.getFullYear(), this.today.getMonth() + 1, 0).getDate();
 
-      const monthCellWidth = unitWidth - GUTTER_WIDTH_PX;
-      const slotWidth = monthCellWidth / daysInMonth;
+      const slotWidth = unitWidth / daysInMonth;
       const dayOfMonth = this.today.getDate() - 1;
 
       todayPixel = monthCellLeft + slotWidth * dayOfMonth + slotWidth / 2;
