@@ -228,3 +228,23 @@
   pointer-events: none;
   z-index: 25;
 }
+
+@media (max-width: 1024px) {
+  .work-orders-timeline {
+    grid-template-columns: 280px 1fr;
+  }
+
+  .work-center-header {
+    padding-left: spacing.$space-unit * 4;
+  }
+
+  .work-center-header > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .work-center-row {
+    padding-left: spacing.$space-unit * 4;
+  }
+}

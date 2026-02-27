@@ -13,6 +13,12 @@
   background-color: colors.$white;
 }
 
+@media (max-width: 1024px) {
+  .offcanvas.work-order-drawer {
+    width: 460px;
+  }
+}
+
 // ngb offcanvas backdrop override
 .offcanvas-backdrop.work-order-backdrop {
   background-color: #f7f9fc80;

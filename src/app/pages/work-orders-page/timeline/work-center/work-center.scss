@@ -21,4 +21,9 @@
 .name {
   color: colors.$text-1;
   @include typography.apply-type(label-md);
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

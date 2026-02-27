@@ -12,3 +12,9 @@
 .work-orders-page {
   padding-left: spacing.$space-101px;
 }
+
+@media (max-width: 1024px) {
+  .work-orders-page {
+    padding-left: spacing.$space-unit * 6;
+  }
+}
