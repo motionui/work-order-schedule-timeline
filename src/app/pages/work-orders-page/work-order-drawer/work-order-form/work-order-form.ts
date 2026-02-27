@@ -42,6 +42,8 @@ export interface WorkOrderFormData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkOrderForm {
+  private static readonly DEFAULT_MAX_DATE: NgbDateStruct = { year: 2100, month: 12, day: 31 };
+
   private workOrderStore = inject(WorkOrderStore);
   private workOrderDrawerService = inject(WorkOrderDrawerService);
 
@@ -73,7 +75,7 @@ export class WorkOrderForm {
 
   protected readonly maxDate = computed(() => {
     const data = this.formData();
-    if (!data) return { year: 2100, month: 12, day: 31 };
+    if (!data) return WorkOrderForm.DEFAULT_MAX_DATE;
     const workOrder = data.workOrder;
     const workOrders = data.currentWorkOrders.filter(
       (wo) => wo.data.workCenterId === workOrder.data.workCenterId && wo.docId !== workOrder.docId,
@@ -87,7 +89,10 @@ export class WorkOrderForm {
         nextStart = woStart;
       }
     }
-    const max = nextStart ? addDays(nextStart, -1) : clicked;
+    const max = nextStart ? addDays(nextStart, -1) : null;
+    if (!max) {
+      return WorkOrderForm.DEFAULT_MAX_DATE;
+    }
     return dateToNgbDateStruct(max);
   });
 
@@ -200,10 +205,12 @@ export class WorkOrderForm {
     }
 
     const currentId = data.workOrder?.docId;
+    const currentWorkCenterId = data.workOrder?.data.workCenterId;
 
     // overlap validation
     const hasOverlap = data.currentWorkOrders.some((order) => {
       if (order.docId === currentId) return false;
+      if (order.data.workCenterId !== currentWorkCenterId) return false;
 
       const orderStart = isoToLocalDate(order.data.startDate);
       const orderEnd = isoToLocalDate(order.data.endDate);
