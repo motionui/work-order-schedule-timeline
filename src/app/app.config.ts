@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 
-import { MockDataRepository } from './core/services/mock-data-repository';
+import { LocalStorageRepository } from './core/services/local-storage-repository';
 import { WorkOrdersRepository } from './core/services/work-orders-repostory';
 
 export const appConfig: ApplicationConfig = {
@@ -8,7 +8,11 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     {
       provide: WorkOrdersRepository,
-      useClass: MockDataRepository,
+      // mock data from mock-data.ts
+      // useClass: MockDataRepository,
+
+      // data from localStorage
+      useClass: LocalStorageRepository,
     },
   ],
 };
