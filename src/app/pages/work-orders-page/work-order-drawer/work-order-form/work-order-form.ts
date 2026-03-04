@@ -23,7 +23,7 @@ import {
 import { WORK_ORDER_STATUS_OPTIONS, WorkOrderDocument } from '../../../../core/models/work-order.model';
 import { DataPickerDateFormatService } from '../../../../core/services/data-picker-date-format.service';
 import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
-import { WorkOrderStore } from '../../../../core/services/work-order.store';
+import { WorkOrdersRepository } from '../../../../core/services/work-orders-repostory';
 import { StatusBadge } from '../../components/status-badge/status-badge';
 
 export interface WorkOrderFormData {
@@ -44,7 +44,7 @@ export interface WorkOrderFormData {
 export class WorkOrderForm {
   private static readonly DEFAULT_MAX_DATE: NgbDateStruct = { year: 2100, month: 12, day: 31 };
 
-  private workOrderStore = inject(WorkOrderStore);
+  private workOrdersRepository = inject(WorkOrdersRepository);
   private workOrderDrawerService = inject(WorkOrderDrawerService);
 
   formData = input.required<WorkOrderFormData | null>();
@@ -236,11 +236,10 @@ export class WorkOrderForm {
     }
 
     const data = this.formData();
-    if (!data) {
-      return;
-    }
+    if (!data) return;
 
     const formValue = this.formGroup.getRawValue();
+
     const payload: WorkOrderDocument = {
       ...data.workOrder,
       data: {
@@ -252,12 +251,19 @@ export class WorkOrderForm {
       },
     };
 
-    if (data.mode === 'create') {
-      this.workOrderStore.add(payload);
-    } else {
-      this.workOrderStore.update(payload);
-    }
+    const action$ =
+      data.mode === 'create'
+        ? this.workOrdersRepository.addWorkOrder(payload)
+        : this.workOrdersRepository.updateWorkOrder(payload);
 
-    this.workOrderDrawerService.closeDrawer();
+    action$.subscribe({
+      next: () => {
+        this.workOrderDrawerService.closeDrawer();
+      },
+      error: (err) => {
+        console.error(err);
+        // optionally show error signal
+      },
+    });
   }
 }

@@ -14,6 +14,7 @@ import {
   ViewChild,
 } from '@angular/core';
 
+import { forkJoin } from 'rxjs';
 import {
   addDays,
   MILLI_SECONDS_IN_A_DAY,
@@ -26,7 +27,7 @@ import {
 import { getTimescaleUnitWidth } from '../../../core/common/timescale-helpers';
 import { WorkCenterDocument } from '../../../core/models/work-center.model';
 import { WorkOrderDocument } from '../../../core/models/work-order.model';
-import { WorkOrderStore } from '../../../core/services/work-order.store';
+import { WorkOrdersRepository } from '../../../core/services/work-orders-repostory';
 import { TimelineHeader } from './timeline-header/timeline-header';
 import { Timescale, TimescaleSelect } from './timescale-select/timescale-select';
 import { WorkCenterTimeline } from './work-center-timeline/work-center-timeline';
@@ -53,7 +54,7 @@ const TODAY_LINE_LEFT_OFFSET_PX = -1;
 })
 export class Timeline implements OnInit {
   private injector = inject(Injector);
-  private readonly store = inject(WorkOrderStore);
+  private workOrdersRepository = inject(WorkOrdersRepository);
 
   @ViewChild('scrollContainer', { static: false }) private scrollContainer!: ElementRef<HTMLDivElement>;
 
@@ -160,8 +161,8 @@ export class Timeline implements OnInit {
 
   // group work orders by work center
   workOrdersGroupByWorkCenters = computed<{ workCenter: WorkCenterDocument; workOrders: WorkOrderDocument[] }[]>(() => {
-    const centers = this.store.workCenters$();
-    const orders = this.store.workOrders$();
+    const centers = this.workOrdersRepository.workCenters();
+    const orders = this.workOrdersRepository.workOrders();
 
     const map = new Map<string, WorkOrderDocument[]>();
 
@@ -190,7 +191,7 @@ export class Timeline implements OnInit {
 
   // component lifecycle methods for loading data and centering today on init
   ngOnInit(): void {
-    this.store.loadSampleData();
+    forkJoin([this.workOrdersRepository.loadWorkCenters(), this.workOrdersRepository.loadWorkOrders()]).subscribe();
   }
 
   protected centerToday(): void {

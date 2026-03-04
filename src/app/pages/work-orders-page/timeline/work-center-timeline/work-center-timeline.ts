@@ -17,7 +17,7 @@ import { getTimescaleUnitWidth } from '../../../../core/common/timescale-helpers
 import { WorkCenterDocument } from '../../../../core/models/work-center.model';
 import { WorkOrderDocument } from '../../../../core/models/work-order.model';
 import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
-import { WorkOrderStore } from '../../../../core/services/work-order.store';
+import { WorkOrdersRepository } from '../../../../core/services/work-orders-repostory';
 import { DateRange } from '../timeline';
 import { Timescale } from '../timescale-select/timescale-select';
 import { WorkOrder } from './work-order/work-order';
@@ -36,7 +36,7 @@ const ITEM_RIGHT_GAP_PX = 7;
 })
 export class WorkCenterTimeline {
   private workOrderDrawerService = inject(WorkOrderDrawerService);
-  private workOrderStore = inject(WorkOrderStore);
+  private workOrdersRepository = inject(WorkOrdersRepository);
 
   timescale = input.required<Timescale>();
   dateRange = input.required<DateRange>();
@@ -370,6 +370,6 @@ export class WorkCenterTimeline {
   }
 
   onDelete(workOrder: WorkOrderDocument) {
-    this.workOrderStore.delete(workOrder);
+    this.workOrdersRepository.deleteWorkOrder(workOrder).subscribe();
   }
 }
