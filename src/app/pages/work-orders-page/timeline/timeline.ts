@@ -1,7 +1,3 @@
-/**
- * Timeline component for displaying work centers and their associated work orders on a timescale, with the ability to select different timescales (day, week, month) and view details of each work order in a tooltip. The timeline is horizontally scrollable and centers on the current date by default.
- */
-
 import { CommonModule } from '@angular/common';
 import {
   afterNextRender,
@@ -18,6 +14,7 @@ import {
   ViewChild,
 } from '@angular/core';
 
+import { forkJoin } from 'rxjs';
 import {
   addDays,
   MILLI_SECONDS_IN_A_DAY,
@@ -30,7 +27,7 @@ import {
 import { getTimescaleUnitWidth } from '../../../core/common/timescale-helpers';
 import { WorkCenterDocument } from '../../../core/models/work-center.model';
 import { WorkOrderDocument } from '../../../core/models/work-order.model';
-import { WorkOrderStore } from '../../../core/services/work-order.store';
+import { WorkOrdersRepository } from '../../../core/services/work-orders-repostory';
 import { TimelineHeader } from './timeline-header/timeline-header';
 import { Timescale, TimescaleSelect } from './timescale-select/timescale-select';
 import { WorkCenterTimeline } from './work-center-timeline/work-center-timeline';
@@ -45,6 +42,7 @@ export interface DateRange {
 const VISIBLE_DAYS = 14;
 const VISIBLE_MONTHS_WEEK_VIEW = 2; // ±2 months for week view
 const VISIBLE_MONTHS_MONTH_VIEW = 6; // ±6 months for month view
+const TODAY_LINE_LEFT_OFFSET_PX = -1;
 
 @Component({
   selector: 'app-timeline',
@@ -56,7 +54,7 @@ const VISIBLE_MONTHS_MONTH_VIEW = 6; // ±6 months for month view
 })
 export class Timeline implements OnInit {
   private injector = inject(Injector);
-  private readonly store = inject(WorkOrderStore);
+  private workOrdersRepository = inject(WorkOrdersRepository);
 
   @ViewChild('scrollContainer', { static: false }) private scrollContainer!: ElementRef<HTMLDivElement>;
 
@@ -138,35 +136,33 @@ export class Timeline implements OnInit {
     const scale = this.timescale();
     const { start } = this.visibleDateRange();
     if (this.today < start) return -1;
+    const unitWidth = getTimescaleUnitWidth(scale);
+
     if (scale === 'week') {
-      // Find week index and offset within week
       const weekIndex = weeksBetween(start, this.today);
-      const weekCellLeft = weekIndex * getTimescaleUnitWidth(scale);
-      const weekCellWidth = getTimescaleUnitWidth(scale);
-      const slotWidth = weekCellWidth / 7;
+      const weekCellLeft = weekIndex * unitWidth;
+      const slotWidth = unitWidth / 7;
       let dayOfWeek = this.today.getDay();
       dayOfWeek = (dayOfWeek + 6) % 7;
-      // Position at exact start of slot
-      return weekCellLeft + slotWidth * dayOfWeek;
+      return Math.round(weekCellLeft + slotWidth * dayOfWeek) + TODAY_LINE_LEFT_OFFSET_PX;
     } else if (scale === 'month') {
       const monthIndex = monthsBetween(start, this.today);
-      const monthCellLeft = monthIndex * getTimescaleUnitWidth(scale);
-      const monthCellWidth = getTimescaleUnitWidth(scale);
+      const monthCellLeft = monthIndex * unitWidth;
       const daysInMonth = new Date(this.today.getFullYear(), this.today.getMonth() + 1, 0).getDate();
-      const slotWidth = monthCellWidth / daysInMonth;
+      const slotWidth = unitWidth / daysInMonth;
       const dayOfMonth = this.today.getDate() - 1;
-      return monthCellLeft + slotWidth * dayOfMonth;
+      return Math.round(monthCellLeft + slotWidth * dayOfMonth) + TODAY_LINE_LEFT_OFFSET_PX;
     } else {
       const index = this.todayIndex();
       if (index < 0) return -1;
-      return index * getTimescaleUnitWidth(scale);
+      return index * unitWidth + TODAY_LINE_LEFT_OFFSET_PX;
     }
   });
 
   // group work orders by work center
   workOrdersGroupByWorkCenters = computed<{ workCenter: WorkCenterDocument; workOrders: WorkOrderDocument[] }[]>(() => {
-    const centers = this.store.workCenters$();
-    const orders = this.store.workOrders$();
+    const centers = this.workOrdersRepository.workCenters();
+    const orders = this.workOrdersRepository.workOrders();
 
     const map = new Map<string, WorkOrderDocument[]>();
 
@@ -195,7 +191,7 @@ export class Timeline implements OnInit {
 
   // component lifecycle methods for loading data and centering today on init
   ngOnInit(): void {
-    this.store.loadSampleData();
+    forkJoin([this.workOrdersRepository.loadWorkCenters(), this.workOrdersRepository.loadWorkOrders()]).subscribe();
   }
 
   protected centerToday(): void {
@@ -211,7 +207,6 @@ export class Timeline implements OnInit {
     if (scale === 'week') {
       const weekIndex = weeksBetween(start, this.today);
       const weekCellLeft = weekIndex * unitWidth;
-
       const slotWidth = unitWidth / 7;
 
       let dayOfWeek = this.today.getDay();

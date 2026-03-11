@@ -3,10 +3,6 @@
  * with the selected value stored in a model and the label computed for display in the dropdown
  */
 
-/**
- * @upgrade Add ARIA roles and labels to timeline and timeline cells for accessibility compliance
- */
-
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';

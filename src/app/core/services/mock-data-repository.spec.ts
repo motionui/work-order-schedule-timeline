@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WorkOrderStore } from './work-order.store';
+import { MockDataRepository } from './mock-data-repository';
 
-describe('WorkOrderStore', () => {
-  let service: WorkOrderStore;
+describe('MockDataRepository', () => {
+  let service: MockDataRepository;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(WorkOrderStore);
+    service = TestBed.inject(MockDataRepository);
   });
 
   it('should be created', () => {

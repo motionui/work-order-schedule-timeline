@@ -1,7 +1,3 @@
-/**
- * Component for the work order form displayed in the drawer, with inputs for the work order data and a reactive form to edit the work order details, including validation for required fields, date range, and overlapping work orders
- */
-
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import {
@@ -16,10 +12,18 @@ import {
 
 import { NgbDateParserFormatter, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
+import {
+  addDays,
+  dateToNgbDateStruct,
+  isoToLocalDate,
+  isoToNgbDateStruct,
+  ngbDateStructToDate,
+  ngbDateStructToIso,
+} from '../../../../core/common/date-helpers';
 import { WORK_ORDER_STATUS_OPTIONS, WorkOrderDocument } from '../../../../core/models/work-order.model';
 import { DataPickerDateFormatService } from '../../../../core/services/data-picker-date-format.service';
 import { WorkOrderDrawerService } from '../../../../core/services/work-order-drawer.service';
-import { WorkOrderStore } from '../../../../core/services/work-order.store';
+import { WorkOrdersRepository } from '../../../../core/services/work-orders-repostory';
 import { StatusBadge } from '../../components/status-badge/status-badge';
 
 export interface WorkOrderFormData {
@@ -38,7 +42,9 @@ export interface WorkOrderFormData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorkOrderForm {
-  private workOrderStore = inject(WorkOrderStore);
+  private static readonly DEFAULT_MAX_DATE: NgbDateStruct = { year: 2100, month: 12, day: 31 };
+
+  private workOrdersRepository = inject(WorkOrdersRepository);
   private workOrderDrawerService = inject(WorkOrderDrawerService);
 
   formData = input.required<WorkOrderFormData | null>();
@@ -49,42 +55,45 @@ export class WorkOrderForm {
   // Date bounds for datepickers (shared for start and end) as computed signals
   protected readonly minDate = computed(() => {
     const data = this.formData();
-    if (!data) return this.getToday();
+    if (!data) return dateToNgbDateStruct(new Date());
     const workOrder = data.workOrder;
     const workOrders = data.currentWorkOrders.filter(
       (wo) => wo.data.workCenterId === workOrder.data.workCenterId && wo.docId !== workOrder.docId,
     );
     workOrders.sort((a, b) => a.data.startDate.localeCompare(b.data.startDate));
-    const clicked = this.toLocalDate(workOrder.data.startDate);
+    const clicked = isoToLocalDate(workOrder.data.startDate);
     let prevEnd: Date | null = null;
     for (const wo of workOrders) {
-      const woEnd = this.toLocalDate(wo.data.endDate);
+      const woEnd = isoToLocalDate(wo.data.endDate);
       if (woEnd < clicked && (!prevEnd || woEnd > prevEnd)) {
         prevEnd = woEnd;
       }
     }
-    const min = prevEnd ? this.addDays(prevEnd, 1) : clicked;
-    return this.toDateStructISO(min);
+    const min = prevEnd ? addDays(prevEnd, 1) : clicked;
+    return dateToNgbDateStruct(min);
   });
 
   protected readonly maxDate = computed(() => {
     const data = this.formData();
-    if (!data) return { year: 2100, month: 12, day: 31 };
+    if (!data) return WorkOrderForm.DEFAULT_MAX_DATE;
     const workOrder = data.workOrder;
     const workOrders = data.currentWorkOrders.filter(
       (wo) => wo.data.workCenterId === workOrder.data.workCenterId && wo.docId !== workOrder.docId,
     );
     workOrders.sort((a, b) => a.data.startDate.localeCompare(b.data.startDate));
-    const clicked = this.toLocalDate(workOrder.data.startDate);
+    const clicked = isoToLocalDate(workOrder.data.startDate);
     let nextStart: Date | null = null;
     for (const wo of workOrders) {
-      const woStart = this.toLocalDate(wo.data.startDate);
+      const woStart = isoToLocalDate(wo.data.startDate);
       if (woStart > clicked && (!nextStart || woStart < nextStart)) {
         nextStart = woStart;
       }
     }
-    const max = nextStart ? this.addDays(nextStart, -1) : clicked;
-    return this.toDateStructISO(max);
+    const max = nextStart ? addDays(nextStart, -1) : null;
+    if (!max) {
+      return WorkOrderForm.DEFAULT_MAX_DATE;
+    }
+    return dateToNgbDateStruct(max);
   });
 
   constructor() {
@@ -123,8 +132,8 @@ export class WorkOrderForm {
       this.formGroup.patchValue({
         name: workOrder.data.name,
         status: workOrder.data.status,
-        startDate: this.toDateStruct(workOrder.data.startDate),
-        endDate: this.toDateStruct(workOrder.data.endDate),
+        startDate: isoToNgbDateStruct(workOrder.data.startDate),
+        endDate: isoToNgbDateStruct(workOrder.data.endDate),
       });
       this.formGroup.updateValueAndValidity();
     });
@@ -182,8 +191,8 @@ export class WorkOrderForm {
       return null;
     }
 
-    const startDate = new Date(start.year, start.month - 1, start.day);
-    const endDate = new Date(end.year, end.month - 1, end.day);
+    const startDate = ngbDateStructToDate(start);
+    const endDate = ngbDateStructToDate(end);
 
     // end date cannot be before start date
     if (endDate < startDate) {
@@ -196,13 +205,15 @@ export class WorkOrderForm {
     }
 
     const currentId = data.workOrder?.docId;
+    const currentWorkCenterId = data.workOrder?.data.workCenterId;
 
     // overlap validation
     const hasOverlap = data.currentWorkOrders.some((order) => {
       if (order.docId === currentId) return false;
+      if (order.data.workCenterId !== currentWorkCenterId) return false;
 
-      const orderStart = this.toLocalDate(order.data.startDate);
-      const orderEnd = this.toLocalDate(order.data.endDate);
+      const orderStart = isoToLocalDate(order.data.startDate);
+      const orderEnd = isoToLocalDate(order.data.endDate);
 
       return startDate <= orderEnd && endDate >= orderStart;
     });
@@ -213,46 +224,6 @@ export class WorkOrderForm {
 
     return null;
   };
-
-  // Helper: get today's date as NgbDateStruct
-  private getToday(): NgbDateStruct {
-    const today = new Date();
-    return { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() };
-  }
-
-  // Helper: add days to a date
-  private addDays(date: Date, days: number): Date {
-    const d = new Date(date);
-    d.setDate(d.getDate() + days);
-    return d;
-  }
-
-  // Helper: convert Date to NgbDateStruct
-  private toDateStructISO(date: Date): NgbDateStruct {
-    return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
-  }
-
-  private toLocalDate(iso: string): Date {
-    const [year, month, day] = iso.split('-').map(Number);
-    return new Date(year, month - 1, day);
-  }
-
-  private toDateStruct(iso: string | null): NgbDateStruct | null {
-    if (!iso) {
-      return null;
-    }
-    const [year, month, day] = iso.split('-').map(Number);
-    return { year, month, day };
-  }
-
-  private toIso(date: NgbDateStruct | null): string {
-    if (!date) {
-      return '';
-    }
-    const mm = String(date.month).padStart(2, '0');
-    const dd = String(date.day).padStart(2, '0');
-    return `${date.year}-${mm}-${dd}`;
-  }
 
   onClickCancel(): void {
     this.workOrderDrawerService.closeDrawer();
@@ -265,28 +236,34 @@ export class WorkOrderForm {
     }
 
     const data = this.formData();
-    if (!data) {
-      return;
-    }
+    if (!data) return;
 
     const formValue = this.formGroup.getRawValue();
+
     const payload: WorkOrderDocument = {
       ...data.workOrder,
       data: {
         ...data.workOrder.data,
         name: formValue.name,
         status: formValue.status,
-        startDate: this.toIso(formValue.startDate),
-        endDate: this.toIso(formValue.endDate),
+        startDate: ngbDateStructToIso(formValue.startDate),
+        endDate: ngbDateStructToIso(formValue.endDate),
       },
     };
 
-    if (data.mode === 'create') {
-      this.workOrderStore.add(payload);
-    } else {
-      this.workOrderStore.update(payload);
-    }
+    const action$ =
+      data.mode === 'create'
+        ? this.workOrdersRepository.addWorkOrder(payload)
+        : this.workOrdersRepository.updateWorkOrder(payload);
 
-    this.workOrderDrawerService.closeDrawer();
+    action$.subscribe({
+      next: () => {
+        this.workOrderDrawerService.closeDrawer();
+      },
+      error: (err) => {
+        console.error(err);
+        // optionally show error signal
+      },
+    });
   }
 }

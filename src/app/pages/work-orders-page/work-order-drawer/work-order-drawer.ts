@@ -1,6 +1,3 @@
-/**
- * Component for the work order drawer, which uses NgbOffcanvas to display a form for creating or editing work orders, and listens to the WorkOrderDrawerService for state changes to open or close the drawer accordingly
- */
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, TemplateRef, ViewChild } from '@angular/core';
 

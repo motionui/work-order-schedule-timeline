@@ -1,7 +1,3 @@
-/**
- * Service to handle date parsing and formatting for the ngb date picker component
- */
-
 import { Injectable } from '@angular/core';
 
 import { NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';

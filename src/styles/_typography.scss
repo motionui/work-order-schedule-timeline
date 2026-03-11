@@ -1,5 +1,13 @@
 /**
- * @upgrade Create design system typography tokens based on sketch and update components to use tokens instead of hard coded typography values
+ * Design System: Typography
+ *
+ * Intent:
+ * - Centralize all font primitives and semantic type styles.
+ * - Keep typography consistent for Circular-Std across the application.
+ *
+ * Usage:
+ * - Apply semantic styles with `@include typography.apply-type(<token>)`.
+ * - Add new semantic tokens in `$typography-tokens` before using ad hoc font declarations.
  */
 $font-family-base: 'Circular-Std', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
 
@@ -8,7 +16,100 @@ $font-weight-medium: 500;
 $font-weight-bold: 700;
 
 $font-size-xs: 12px;
+$font-size-s: 13px;
 $font-size-sm: 14px;
+$font-size-sm-plus: 15px;
 $font-size-md: 16px;
 $font-size-lg: 18px;
+$font-size-xl-2: 20px;
 $font-size-xl: 24px;
+
+$line-height-tight: 1;
+$line-height-base: 1.2;
+$line-height-page-header: 34px;
+
+// Semantic typography tokens derived from current usage
+$type-page-title: (
+  size: $font-size-xl,
+  weight: $font-weight-medium,
+  line-height: $line-height-page-header,
+);
+
+$type-drawer-title: (
+  size: $font-size-xl-2,
+  weight: $font-weight-medium,
+  line-height: $line-height-base,
+);
+
+$type-drawer-subtitle: (
+  size: $font-size-md,
+  weight: $font-weight-medium,
+  line-height: $line-height-base,
+);
+
+$type-label-md: (
+  size: $font-size-sm,
+  weight: $font-weight-medium,
+  line-height: $line-height-base,
+);
+
+$type-body-md: (
+  size: $font-size-sm,
+  weight: $font-weight-regular,
+  line-height: $line-height-base,
+);
+
+$type-label-sm: (
+  size: $font-size-s,
+  weight: $font-weight-medium,
+  line-height: $line-height-base,
+);
+
+$type-body-sm: (
+  size: $font-size-s,
+  weight: $font-weight-regular,
+  line-height: $line-height-base,
+);
+
+$type-label-xs: (
+  size: $font-size-xs,
+  weight: $font-weight-medium,
+  line-height: $line-height-base,
+);
+
+$type-button: (
+  size: $font-size-sm-plus,
+  weight: $font-weight-regular,
+  line-height: $line-height-base,
+);
+
+$type-body-tight: (
+  size: $font-size-sm,
+  weight: $font-weight-regular,
+  line-height: $line-height-tight,
+);
+
+$typography-tokens: (
+  page-title: $type-page-title,
+  drawer-title: $type-drawer-title,
+  drawer-subtitle: $type-drawer-subtitle,
+  label-md: $type-label-md,
+  body-md: $type-body-md,
+  label-sm: $type-label-sm,
+  body-sm: $type-body-sm,
+  label-xs: $type-label-xs,
+  button: $type-button,
+  body-tight: $type-body-tight,
+);
+
+@mixin apply-type($token) {
+  $type: map-get($typography-tokens, $token);
+
+  @if $type == null {
+    @error "Unknown typography token: #{$token}.";
+  }
+
+  font-size: map-get($type, size);
+  font-weight: map-get($type, weight);
+  line-height: map-get($type, line-height);
+}

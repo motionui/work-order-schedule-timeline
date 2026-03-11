@@ -1,7 +1,3 @@
-/**
- * Component to display a badge representing the status of a work order, with the status label computed from the input status value
- */
-
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 

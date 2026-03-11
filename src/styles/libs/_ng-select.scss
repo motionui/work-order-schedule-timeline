@@ -1,4 +1,5 @@
 @use 'colors' as colors;
+@use 'spacing' as spacing;
 @use 'typography' as typography;
 @use 'variables' as variables;
 
@@ -6,7 +7,7 @@
 .ng-select .ng-select-container {
   height: 38px;
   min-height: 38px;
-  padding: 0 12px;
+  padding: spacing.$space-unit * 0 spacing.$space-unit * 3;
   border-radius: 5px;
   background: #fff;
 
@@ -30,7 +31,7 @@
 }
 
 .ng-dropdown-panel {
-  margin-top: 5px;
+  margin-top: spacing.$space-5px;
 
   box-shadow:
     0 0 0 1px rgba(104, 113, 150, 0.1),
@@ -41,15 +42,14 @@
 }
 
 .ng-dropdown-panel-items {
-  padding: 12px 0;
+  padding: spacing.$space-unit * 3 spacing.$space-unit * 0;
 }
 
 .ng-option {
-  padding: 5px 12px;
+  padding: spacing.$space-5px spacing.$space-unit * 3;
   height: 28px;
   color: colors.$text-2;
-  font-size: 14px;
-  font-weight: 400;
+  @include typography.apply-type(body-md);
 }
 
 .ng-option-selected {
@@ -59,7 +59,7 @@
 // since we do not include the ng-select css
 // create the ng-select dropdown indicator
 .ng-select .ng-arrow {
-  border-color: #687196 transparent transparent;
+  border-color: colors.$text-muted transparent transparent;
   border-style: solid;
   border-width: 5px 5px 0 5px;
   width: 0;
@@ -67,6 +67,6 @@
 }
 
 .ng-select.ng-select-opened .ng-arrow {
-  border-color: transparent transparent #687196 transparent;
+  border-color: transparent transparent colors.$text-muted transparent;
   border-width: 0 5px 5px 5px;
 }

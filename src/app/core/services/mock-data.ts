@@ -1,7 +1,3 @@
-/**
- * Mock data for work centers and work orders, used to populate the store with sample data for testing and development purposes
- */
-
 import { WorkCenterDocument } from '../models/work-center.model';
 import { WorkOrderDocument } from '../models/work-order.model';
 

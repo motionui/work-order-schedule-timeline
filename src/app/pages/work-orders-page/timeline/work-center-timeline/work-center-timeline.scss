@@ -1,5 +1,4 @@
 /**
- * @upgrade
  * Font definitions and color should be coming from design tokens, but for the sake of this exercise, we will hardcode them here. 
  * In a real application, we would want to use design tokens to ensure consistency across the application and make it easier to 
  * update styles in the future.
@@ -7,6 +6,7 @@
 
 @use 'variables' as variables;
 @use 'colors' as colors;
+@use 'spacing' as spacing;
 
 :host {
   display: block;
@@ -25,14 +25,12 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  padding-left: 4px;
-  padding-right: 4px;
   box-sizing: border-box;
 }
 
 .hover-preview {
   position: absolute;
-  top: 4px;
+  top: spacing.$space-unit * 1;
   height: 38px;
   background-color: #6570ff1a;
   border: 1px solid #c3c7ff;

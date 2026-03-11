@@ -1,3 +1,5 @@
+@use 'spacing' as spacing;
+
 .dropdown-menu {
-  margin-top: 5px;
+  margin-top: spacing.$space-5px;
 }

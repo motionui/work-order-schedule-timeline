@@ -1,7 +1,3 @@
-/**
- * Component to display a work order in the timeline, with a tooltip showing the work order details and buttons to edit or delete the work order
- */
-
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 

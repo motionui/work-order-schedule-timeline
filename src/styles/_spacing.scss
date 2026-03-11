@@ -1,8 +1,41 @@
 /**
- * @upgrade Create design system spacing tokens based on sketch and update components to use tokens instead of hard coded spacing values
+ * Design System: Spacing
+ *
+ * Intent:
+ * - Provide one source of truth for spacing with a 4px base unit.
+ * - Keep layout spacing predictable and scalable across components.
+ *
+ * Usage:
+ * - Prefer `spacing.$space-unit * n` for grid-aligned spacing.
+ * - Use explicit `$space-*-px` exception tokens only for intentional optical offsets.
  */
-$spacing-1: 4px;
-$spacing-2: 8px;
-$spacing-3: 12px;
-$spacing-4: 16px;
-$spacing-5: 24px;
+$space-unit: 4px;
+
+// Single source of truth for grid spacing (multiples of 4px)
+@function space($multiplier) {
+  @if $multiplier == null {
+    @error "space() requires a numeric multiplier.";
+  }
+  @return $space-unit * $multiplier;
+}
+
+// Backward-compatible alias
+$spacing-base-unit: $space-unit;
+
+// Explicit optical/layout exceptions (non-multiples of 4px)
+$space-1px: 1px;
+$space-2px: 2px;
+$space-5px: 5px;
+$space-10px: 10px;
+$space-22px: 22px;
+$space-26px: 26px;
+$space-31px: 31px;
+$space-45px: 45px;
+$space-101px: 101px;
+
+// Backward-compatible aliases
+$spacing-1: space(1);
+$spacing-2: space(2);
+$spacing-3: space(3);
+$spacing-4: space(4);
+$spacing-5: space(6);
